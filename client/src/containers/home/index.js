@@ -19,11 +19,7 @@ class Home extends Component {
 
     axios
       .post(
-        `https://api.pinterest.com/v1/oauth/token?
-        grant_type=${userAuthCode}&
-        client_id=5073939286663940267&
-        client_secret=f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743&
-        code=xyz1010`
+        `https://api.pinterest.com/v1/oauth/token?grant_type=${userAuthCode}&client_id=5073939286663940267&client_secret=f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743&code=xyz1010`
       )
       .then(function(response) {
         console.log(response);
