@@ -12,32 +12,47 @@ class Home extends Component {
     recipelink: ""
   };
 
-    componentDidMount() {
-        let params = new URLSearchParams(window.location.href)
-        let code = params.get("code")
-        console.log(code)
+  componentDidMount() {
+    let params = new URLSearchParams(window.location.href);
+    let userAuthCode = params.get("code");
+    console.log(userAuthCode);
 
-        // let userAuthCode = window.location.search
-        // if (userAuthCode === "/") {
-        //     console.log("User hasn't been authenticated")
-        // } else {
-        //     console.log(userAuthCode)
-        // }
-        }
+    axios
+      .post(
+        `https://api.pinterest.com/v1/oauth/token?
+        grant_type=${userAuthCode}&
+        client_id=5073939286663940267&
+        client_secret=f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743&
+        code=xyz1010`
+      )
+      .then(function(response) {
+        console.log(response);
+      });
+    // if(userAuthCode === null) {
+    //     userAuthCode =
+    // }
 
-    // loadBooks = () => {
-    //   API.getBooks()
-    //     .then(res =>
-    //       this.setState({ books: res.data, title: "", author: "", synopsis: "" })
-    //     )
-    //     .catch(err => console.log(err));
-    // };
+    // let userAuthCode = window.location.search
+    // if (userAuthCode === "/") {
+    //     console.log("User hasn't been authenticated")
+    // } else {
+    //     console.log(userAuthCode)
+    // }
+  }
 
-    // deleteBook = id => {
-    //   API.deleteBook(id)
-    //     .then(res => this.loadBooks())
-    //     .catch(err => console.log(err));
-    // };
+  // loadBooks = () => {
+  //   API.getBooks()
+  //     .then(res =>
+  //       this.setState({ books: res.data, title: "", author: "", synopsis: "" })
+  //     )
+  //     .catch(err => console.log(err));
+  // };
+
+  // deleteBook = id => {
+  //   API.deleteBook(id)
+  //     .then(res => this.loadBooks())
+  //     .catch(err => console.log(err));
+  // };
 
   handleInputChange = event => {
     const { name, value } = event.target;
@@ -249,17 +264,16 @@ class Home extends Component {
       });
     }
   };
-  pinterestLogin= () => {
-    axios
-      .get("/api/pinterest"
-      )
-      .then(response => console.log(response));
+  pinterestLogin = () => {
+    axios.get("/api/pinterest").then(response => console.log(response));
   };
 
   render() {
     return (
       <div>
-        <a href="https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://serene-plateau-07976.herokuapp.com/&client_id=5073939286663940267&scope=read_public,write_public&state=8675309">Login to Pinterest</a>
+        <a href="https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://serene-plateau-07976.herokuapp.com/&client_id=5073939286663940267&scope=read_public,write_public&state=8675309">
+          Login to Pinterest
+        </a>
         <Form>
           <FormGroup>
             <Label for="exampleText">Enter link to Recipe article</Label>
