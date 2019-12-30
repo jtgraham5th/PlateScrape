@@ -16,7 +16,8 @@ class Home extends Component {
   componentDidMount() {
     let params = new URLSearchParams(window.location.href);
     let userAuthCode = params.get("code");
-    let accessToken = ''
+    let accessToken = "Aj5cBG-EFZy8RRy1skpJ0zVYY_QkFeSnWQ45H_lGakDl-YDIqwJUgDAAAAMgRmtif9EgrmUAAAAA" 
+    console.log(accessToken);
     console.log(userAuthCode);
 
     axios
@@ -25,9 +26,9 @@ class Home extends Component {
       )
       .then(function(response) {
         accessToken = response.data.access_token
-        console.log(accessToken);
       });
     if (accessToken.length > 1) {
+        console.log("yes")
         axios
             .get(`https://api.pinterest.com/v1/me/boards/?access_token=${accessToken}&fields=id%2Cname%2Curl%2Cimage%2Cdescription`
                 )
@@ -36,6 +37,7 @@ class Home extends Component {
                 userBoards: response
             })
             console.log(this.state.userBoards)
+            .catch(err => console.log(err));
             })
     }
 
