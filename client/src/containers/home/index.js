@@ -9,12 +9,14 @@ class Home extends Component {
     groceryList: [],
     fridge: [],
     newItem: "",
-    recipelink: ""
+    recipelink: "",
+    userBoards: []
   };
 
   componentDidMount() {
     let params = new URLSearchParams(window.location.href);
     let userAuthCode = params.get("code");
+    let accessToken = ''
     console.log(userAuthCode);
 
     axios
@@ -22,8 +24,21 @@ class Home extends Component {
         `https://api.pinterest.com/v1/oauth/token?grant_type=authorization_code&client_id=5073939286663940267&client_secret=f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743&code=${userAuthCode}`
       )
       .then(function(response) {
-        console.log(response);
+        accessToken = response.data.access_token
+        console.log(accessToken);
       });
+    if (accessToken.length > 1) {
+        axios
+            .get(`https://api.pinterest.com/v1/me/boards/?access_token=${accessToken}&fields=id%2Cname%2Curl%2Cimage%2Cdescription`
+                )
+            .then(function(response){
+            this.setState({
+                userBoards: response
+            })
+            console.log(this.state.userBoards)
+            })
+    }
+
     // if(userAuthCode === null) {
     //     userAuthCode =
     // }
