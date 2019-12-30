@@ -7,8 +7,12 @@ var cheerio = require("cheerio");
 
 // API Routes
 // router.use("/api", apiRoutes);
-router.get("/dunso", (req, res) => {
-  console.log("Is it working");
+router.get("/pinterest", (req, res) => {
+  axios.get("https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://localhost:3000&client_id=5073939286663940267&scope=read_public,write_public&state=8675309"
+).then((response) => {
+    //   console.log(response)
+      res.redirect(response)
+  });
 });
 // If no API routes are hit, send the React app
 router.get("/recipes/:id", (req, res) => {

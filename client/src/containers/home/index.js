@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Button, Form, FormGroup, Label, Input } from "reactstrap";
 var axios = require("axios");
-var cheerio = require("cheerio");
 
 class Home extends Component {
   state = {
@@ -241,10 +240,17 @@ class Home extends Component {
       });
     }
   };
+  pinterestLogin= () => {
+    axios
+      .get("/api/pinterest"
+      )
+      .then(response => console.log(response));
+  };
 
   render() {
     return (
       <div>
+        <a href="https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://localhost:3000&client_id=5073939286663940267&scope=read_public,write_public&state=8675309">Login to Pinterest</a>
         <Form>
           <FormGroup>
             <Label for="exampleText">Enter link to Recipe article</Label>
