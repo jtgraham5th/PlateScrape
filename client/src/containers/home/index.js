@@ -250,7 +250,7 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <a href="https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://localhost:3000&client_id=5073939286663940267&scope=read_public,write_public&state=8675309">Login to Pinterest</a>
+        <a href="https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://serene-plateau-07976.herokuapp.com/&client_id=5073939286663940267&scope=read_public,write_public&state=8675309">Login to Pinterest</a>
         <Form>
           <FormGroup>
             <Label for="exampleText">Enter link to Recipe article</Label>
