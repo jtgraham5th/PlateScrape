@@ -14,8 +14,7 @@ class Home extends Component {
 
   componentDidMount() {
     let params = new URLSearchParams(window.location.href);
-    let userAuthCode = params.get("state");
-    let userAuthCode = params.get("state");
+    let userAuthCode = params.get("code");
     console.log(userAuthCode);
 
     axios
