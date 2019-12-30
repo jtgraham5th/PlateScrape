@@ -12,23 +12,32 @@ class Home extends Component {
     recipelink: ""
   };
 
-  //   componentDidMount() {
-  //     this.loadBooks();
-  //   }
+    componentDidMount() {
+        let params = new URLSearchParams(window.location.href)
+        let code = params.get("code")
+        console.log(code)
 
-  //   loadBooks = () => {
-  //     API.getBooks()
-  //       .then(res =>
-  //         this.setState({ books: res.data, title: "", author: "", synopsis: "" })
-  //       )
-  //       .catch(err => console.log(err));
-  //   };
+        // let userAuthCode = window.location.search
+        // if (userAuthCode === "/") {
+        //     console.log("User hasn't been authenticated")
+        // } else {
+        //     console.log(userAuthCode)
+        // }
+        }
 
-  //   deleteBook = id => {
-  //     API.deleteBook(id)
-  //       .then(res => this.loadBooks())
-  //       .catch(err => console.log(err));
-  //   };
+    // loadBooks = () => {
+    //   API.getBooks()
+    //     .then(res =>
+    //       this.setState({ books: res.data, title: "", author: "", synopsis: "" })
+    //     )
+    //     .catch(err => console.log(err));
+    // };
+
+    // deleteBook = id => {
+    //   API.deleteBook(id)
+    //     .then(res => this.loadBooks())
+    //     .catch(err => console.log(err));
+    // };
 
   handleInputChange = event => {
     const { name, value } = event.target;
