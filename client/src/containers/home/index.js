@@ -1,6 +1,7 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { Link } from "react-router-dom";
 import "./style.css";
+import classnames from "classnames";
 import {
   Button,
   Form,
@@ -24,6 +25,7 @@ import {
   CardTitle
 } from "reactstrap";
 var axios = require("axios");
+const [activeTab, setActiveTab] = useState('1');
 
 class Home extends Component {
   state = {
@@ -37,7 +39,7 @@ class Home extends Component {
     boardPins: [],
     accessToken: ""
   };
-
+  
   componentDidMount() {
     let params = new URLSearchParams(window.location.href);
     let userAuthCode = params.get("code");
@@ -311,6 +313,7 @@ class Home extends Component {
           console.log(this.state.boardPins).catch(err => console.log(err));
         }.bind(this)
       );
+      if(activeTab !== event.target.key) setActiveTab(event.target.key);
   };
 
   render() {
@@ -327,7 +330,7 @@ class Home extends Component {
           <Nav tabs className="mt-3">
             {this.state.userBoards.map((board, i) => (
               <NavItem>
-                <NavLink key={i} id={board.id} onClick={this.displayPins}>
+                <NavLink key={i} id={board.id} onClick={this.displayPins} className={classnames({ active: activeTab === `${i}` })} >
                   {board.name}
                 </NavLink>
               </NavItem>
@@ -340,7 +343,7 @@ class Home extends Component {
         )}
         {this.state.togglePins ? (
           <TabContent activeTab={activeTab}>
-            <TabPane tabId={i}>
+            <TabPane tabId={activeTab}>
               <Row className="row-display">
                 {this.state.boardPins.map((pins, i) => (
                   <Col>
