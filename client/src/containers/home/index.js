@@ -19,6 +19,7 @@ import {
   NavLink,
   Container,
   TabContent,
+  TabPane,
   CardImg,
   CardTitle
 } from "reactstrap";
