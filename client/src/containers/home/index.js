@@ -25,7 +25,6 @@ import {
   CardTitle
 } from "reactstrap";
 var axios = require("axios");
-const [activeTab, setActiveTab] = useState('1');
 
 class Home extends Component {
   state = {
@@ -37,9 +36,10 @@ class Home extends Component {
     userBoards: [],
     togglePins: false,
     boardPins: [],
-    accessToken: ""
+    accessToken: "",
+    activeTab: 1
   };
-  
+
   componentDidMount() {
     let params = new URLSearchParams(window.location.href);
     let userAuthCode = params.get("code");
@@ -313,7 +313,9 @@ class Home extends Component {
           console.log(this.state.boardPins).catch(err => console.log(err));
         }.bind(this)
       );
-      if(activeTab !== event.target.key) setActiveTab(event.target.key);
+    if (this.state.activeTab !== event.target.key) {
+      this.setState({ activeTab: event.target.key });
+    }
   };
 
   render() {
@@ -330,7 +332,14 @@ class Home extends Component {
           <Nav tabs className="mt-3">
             {this.state.userBoards.map((board, i) => (
               <NavItem>
-                <NavLink key={i} id={board.id} onClick={this.displayPins} className={classnames({ active: activeTab === `${i}` })} >
+                <NavLink
+                  key={i}
+                  id={board.id}
+                  onClick={this.displayPins}
+                  className={classnames({
+                    active: this.state.activeTab === `${i}`
+                  })}
+                >
                   {board.name}
                 </NavLink>
               </NavItem>
@@ -342,8 +351,8 @@ class Home extends Component {
           </a>
         )}
         {this.state.togglePins ? (
-          <TabContent activeTab={activeTab}>
-            <TabPane tabId={activeTab}>
+          <TabContent activeTab={this.state.activeTab}>
+            <TabPane tabId={this.state.activeTab}>
               <Row className="row-display">
                 {this.state.boardPins.map((pins, i) => (
                   <Col>
