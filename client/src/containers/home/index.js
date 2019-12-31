@@ -305,27 +305,33 @@ class Home extends Component {
   render() {
     return (
       <div>
+        <Row style={{ backgroundColor: "#333", borderColor: "#333" }}>
+          <h3>Your Boards:</h3>
+        </Row>
         {this.state.userBoards.length > 1 ? (
           <Row className="row-display">
-              <h3>Your Boards:</h3>
             {this.state.userBoards.map((board, i) => (
               <Col>
                 <Card key={i}>
                   <CardHeader tag="h4">{board.name}</CardHeader>
                   <Row className="no-gutters">
-                    <img
-                      className="col"
-                      width="60px"
-                      height="60px"
-                      src={board.image["60x60"].url}
-                      alt="Card image cap"
-                    />
-                    <CardText className="col">{board.description}</CardText>
-                    </Row>
-                    <CardBody>
-                      <CardLink href={board.url}>View on Pinterest</CardLink>
-                    </CardBody>
-                  
+                    <Col md="2">
+                      <img
+                        className="col"
+                        width="60px"
+                        height="60px"
+                        src={board.image["60x60"].url}
+                        alt="Card image cap"
+                      />
+                    </Col>
+                    <Col md="5">
+                      <CardText>{board.description}</CardText>
+                    </Col>
+                  </Row>
+                  <CardBody>
+                    <CardLink href={board.url}>View on Pinterest</CardLink>
+                  </CardBody>
+
                   <Button
                     id={board.id}
                     onClick={this.displayPins}

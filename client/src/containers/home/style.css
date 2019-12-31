@@ -2,6 +2,5 @@
   overflow-x: auto;
   white-space: nowrap;
   flex-wrap: nowrap;
-  display: inline-block;
   float: none;
 }
