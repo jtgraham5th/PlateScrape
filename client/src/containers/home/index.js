@@ -38,7 +38,7 @@ class Home extends Component {
             })
             console.log(this.state.userBoards)
             .catch(err => console.log(err));
-            })
+            }.bind(this))
     }
 
     // if(userAuthCode === null) {
