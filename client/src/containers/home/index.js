@@ -15,7 +15,8 @@ import {
   Row,
   Col,
   Nav,
-  NavItem
+  NavItem,
+  NavLink
 } from "reactstrap";
 var axios = require("axios");
 
@@ -92,7 +93,6 @@ class Home extends Component {
       [name]: value
     });
   };
-
   handleFormSubmit = event => {
     event.preventDefault();
     const url = encodeURIComponent(this.state.recipelink);
@@ -124,7 +124,6 @@ class Home extends Component {
       );
     }
   };
-
   addToList = data => {
     data.map((ingredient, i) => {
       console.log(ingredient);
@@ -178,7 +177,6 @@ class Home extends Component {
     }
     return result;
   };
-
   addToFridge = event => {
     console.log(this.props);
     let newIngredientName = event.target.name;
@@ -218,7 +216,6 @@ class Home extends Component {
     console.log(this.state.fridge);
     //   });
   };
-
   toggleFridgeEdit = event => {
     let ingredientName = event.target.dataset.name;
     console.log(event.target.dataset.name);
@@ -229,7 +226,6 @@ class Home extends Component {
     }));
     console.log(this.state.fridge);
   };
-
   handleInput = event => {
     console.log(event.target);
     console.log(event);
@@ -246,7 +242,6 @@ class Home extends Component {
       }));
     }
   };
-
   handleSubmit = event => {
     event.preventDefault();
     let ingredientName = event.target.name;
@@ -257,7 +252,6 @@ class Home extends Component {
       )
     }));
   };
-
   handleNewFridgeItem = event => {
     console.log(event.target);
     console.log(event);
@@ -267,7 +261,6 @@ class Home extends Component {
       newItem: newValue
     });
   };
-
   addNewFridgeItem = event => {
     event.preventDefault();
     let newIngredientName = this.state.newItem;
@@ -299,7 +292,6 @@ class Home extends Component {
   pinterestLogin = () => {
     axios.get("/api/pinterest").then(response => console.log(response));
   };
-
   displayPins = event => {
     console.log(event.target.id);
   };
@@ -311,16 +303,15 @@ class Home extends Component {
           Your Boards
         </Row>
         {this.state.userBoards.length > 1 ? (
-          <Row >
-              <h3>Your Boards:</h3>
-            <Nav tabs>
+          <Nav tabs>
             {this.state.userBoards.map((board, i) => (
-              <NavItem key={i} id={board.id}
-              onClick={this.displayPins}>{board.name}</NavItem>
-            //   
+              <NavItem>
+                <NavLink key={i} id={board.id} onClick={this.displayPins}>
+                  {board.name}
+                </NavLink>
+              </NavItem>
             ))}
-            </Nav>
-          </Row>
+          </Nav>
         ) : (
           <a href="https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://serene-plateau-07976.herokuapp.com/&client_id=5073939286663940267&scope=read_public,write_public&state=8675309">
             Login to Pinterest
