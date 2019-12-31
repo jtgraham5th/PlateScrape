@@ -306,42 +306,18 @@ class Home extends Component {
     return (
       <div>
         <Row style={{ backgroundColor: "#333", borderColor: "#333" }}>
-          <h3>Your Boards:</h3>
+          Your Boards
         </Row>
         {this.state.userBoards.length > 1 ? (
-          <Row className="row-display">
+          <Row >
+              <h3>Your Boards:</h3>
+            <Nav tabs>
             {this.state.userBoards.map((board, i) => (
-              <Col>
-                <Card key={i}>
-                  <CardHeader tag="h4">{board.name}</CardHeader>
-                  <Row className="no-gutters">
-                    <Col md="2">
-                      <img
-                        className="col"
-                        width="60px"
-                        height="60px"
-                        src={board.image["60x60"].url}
-                        alt="Card image cap"
-                      />
-                    </Col>
-                    <Col md="5">
-                      <CardText>{board.description}</CardText>
-                    </Col>
-                  </Row>
-                  <CardBody>
-                    <CardLink href={board.url}>View on Pinterest</CardLink>
-                  </CardBody>
-
-                  <Button
-                    id={board.id}
-                    onClick={this.displayPins}
-                    color="danger"
-                  >
-                    View Pins
-                  </Button>
-                </Card>
-              </Col>
+              <NavItem key={i} id={board.id}
+              onClick={this.displayPins}>{board.name}</NavItem>
+            //   
             ))}
+            </Nav>
           </Row>
         ) : (
           <a href="https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://serene-plateau-07976.herokuapp.com/&client_id=5073939286663940267&scope=read_public,write_public&state=8675309">
@@ -450,3 +426,33 @@ class Home extends Component {
 }
 
 export default Home;
+{/* <Col>
+            //     <Card key={i}>
+            //       <CardHeader tag="h4"></CardHeader>
+            //       <Row className="no-gutters">
+            //         <Col md="2">
+            //           <img */}
+            //             className="col"
+            //             width="60px"
+            //             height="60px"
+            //             src={board.image["60x60"].url}
+            //             alt="Card image cap"
+            //           />
+            //         </Col>
+            //         <Col md="5">
+            //           <CardText>{board.description}</CardText>
+            //         </Col>
+            //       </Row>
+            //       <CardBody>
+            //         <CardLink href={board.url}>View on Pinterest</CardLink>
+            //       </CardBody>
+
+            //       <Button
+            //         id={board.id}
+            //         onClick={this.displayPins}
+            //         color="danger"
+            //       >
+            //         View Pins
+            //       </Button>
+            //     </Card>
+            //   </Col></Col>
