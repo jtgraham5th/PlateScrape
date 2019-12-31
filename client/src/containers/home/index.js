@@ -17,7 +17,10 @@ import {
   Nav,
   NavItem,
   NavLink,
-  Container
+  Container,
+  TabContent,
+  CardImg,
+  CardTitle
 } from "reactstrap";
 var axios = require("axios");
 
@@ -39,7 +42,7 @@ class Home extends Component {
     let userAuthCode = params.get("code");
     let accessToken =
       "Aj5cBG-EFZy8RRy1skpJ0zVYY_QkFeSnWQ45H_lGakDl-YDIqwJUgDAAAAMgRmtif9EgrmUAAAAA";
-    this.setState({accessToken: accessToken});
+    this.setState({ accessToken: accessToken });
     console.log(accessToken);
     console.log(userAuthCode);
 
@@ -86,6 +89,10 @@ class Home extends Component {
     this.setState({
       [name]: value
     });
+  };
+  addRecipe = url => {
+    this.setState({ recipelink: url });
+    this.handleFormSubmit();
   };
   handleFormSubmit = event => {
     event.preventDefault();
@@ -288,20 +295,21 @@ class Home extends Component {
   };
   displayPins = event => {
     event.preventDefault();
-    let boardID = event.target.id
+    let boardID = event.target.id;
     console.log(event.target.id);
     this.setState({ togglePins: true });
     axios
-        .get(
-          `https://api.pinterest.com/v1/boards/${boardID}/pins/?access_token=${this.state.accessToken}&fields=id%2Clink%2Cnote%2Curl%2Cattribution%2Cimage%2Cmetadata%2Coriginal_link`)
-        .then(
-          function(response) {
-            this.setState({
-              boardPins: response.data.data
-            });
-            console.log(this.state.boardPins).catch(err => console.log(err));
-          }.bind(this)
-        );
+      .get(
+        `https://api.pinterest.com/v1/boards/${boardID}/pins/?access_token=${this.state.accessToken}&fields=id%2Clink%2Cnote%2Curl%2Cattribution%2Cimage%2Cmetadata%2Coriginal_link`
+      )
+      .then(
+        function(response) {
+          this.setState({
+            boardPins: response.data.data
+          });
+          console.log(this.state.boardPins).catch(err => console.log(err));
+        }.bind(this)
+      );
   };
 
   render() {
@@ -329,7 +337,47 @@ class Home extends Component {
             Login to Pinterest
           </a>
         )}
-        {this.state.togglePins ? <Row>{this.state.boardPins.map((pins,i) => (""))}</Row> : ""}
+        {this.state.togglePins ? (
+          <TabContent activeTab={activeTab}>
+            <TabPane tabId={i}>
+              <Row className="row-display">
+                {this.state.boardPins.map((pins, i) => (
+                  <Col>
+                    <Card key={i}>
+                      <Row noGutters={true}>
+                        <Col md="4">
+                          <CardImg
+                            src={pins.image.original.url}
+                            alt={pins.metadata.link.title}
+                            className="w-100"
+                          />
+                        </Col>
+                        <Col md="8">
+                          <CardBody>
+                            <CardTitle>{pins.metadata.link.title}</CardTitle>
+                            <CardText>
+                              {pins.metadata.link.description}
+                            </CardText>
+                            <Button
+                              id={pins.id}
+                              data-url={pins.original_link}
+                              onClick={this.addRecipe}
+                              color="danger"
+                            >
+                              Add Ingredients
+                            </Button>
+                          </CardBody>
+                        </Col>
+                      </Row>
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+            </TabPane>
+          </TabContent>
+        ) : (
+          ""
+        )}
 
         <Container>
           <Form>
