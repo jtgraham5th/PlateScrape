@@ -1,6 +1,17 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { Button, Form, FormGroup, Label, Input } from "reactstrap";
+import {
+  Button,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Card,
+  CardHeader,
+  CardBody,
+  CardLink,
+  CardText
+} from "reactstrap";
 var axios = require("axios");
 
 class Home extends Component {
@@ -16,7 +27,8 @@ class Home extends Component {
   componentDidMount() {
     let params = new URLSearchParams(window.location.href);
     let userAuthCode = params.get("code");
-    let accessToken = "Aj5cBG-EFZy8RRy1skpJ0zVYY_QkFeSnWQ45H_lGakDl-YDIqwJUgDAAAAMgRmtif9EgrmUAAAAA" 
+    let accessToken =
+      "Aj5cBG-EFZy8RRy1skpJ0zVYY_QkFeSnWQ45H_lGakDl-YDIqwJUgDAAAAMgRmtif9EgrmUAAAAA";
     console.log(accessToken);
     console.log(userAuthCode);
 
@@ -25,20 +37,22 @@ class Home extends Component {
         `https://api.pinterest.com/v1/oauth/token?grant_type=authorization_code&client_id=5073939286663940267&client_secret=f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743&code=${userAuthCode}`
       )
       .then(function(response) {
-        accessToken = response.data.access_token
+        accessToken = response.data.access_token;
       });
     if (accessToken.length > 1) {
-        console.log("yes")
-        axios
-            .get(`https://api.pinterest.com/v1/me/boards/?access_token=${accessToken}&fields=id%2Cname%2Curl%2Cimage%2Cdescription`
-                )
-            .then(function(response){
+      console.log("yes");
+      axios
+        .get(
+          `https://api.pinterest.com/v1/me/boards/?access_token=${accessToken}&fields=id%2Cname%2Curl%2Cimage%2Cdescription`
+        )
+        .then(
+          function(response) {
             this.setState({
-                userBoards: response
-            })
-            console.log(this.state.userBoards)
-            .catch(err => console.log(err));
-            }.bind(this))
+              userBoards: response.data.data
+            });
+            console.log(this.state.userBoards).catch(err => console.log(err));
+          }.bind(this)
+        );
     }
 
     // if(userAuthCode === null) {
@@ -281,12 +295,43 @@ class Home extends Component {
     axios.get("/api/pinterest").then(response => console.log(response));
   };
 
+  displayPins = event => {
+    console.log(event.target.id);
+  };
+
   render() {
     return (
       <div>
-        <a href="https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://serene-plateau-07976.herokuapp.com/&client_id=5073939286663940267&scope=read_public,write_public&state=8675309">
-          Login to Pinterest
-        </a>
+        {this.state.userBoards.length > 1 ? (
+          <row className="border">
+            {this.state.userBoards.map((board, i) => (
+              <Card key={i}>
+                <CardHeader tag="h3">{board.name}</CardHeader>
+                <img
+                  width="100%"
+                  src={board.image["60x60"].url}
+                  alt="Card image cap"
+                />
+                <CardBody>
+                  <CardText>{board.description}</CardText>
+                  <CardLink href={board.url}>View on Pinterest</CardLink>
+                  <Button
+                    id={board.id}
+                    onClick={this.displayPins}
+                    color="danger"
+                  >
+                    View Pins
+                  </Button>
+                </CardBody>
+              </Card>
+            ))}
+          </row>
+        ) : (
+          <a href="https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://serene-plateau-07976.herokuapp.com/&client_id=5073939286663940267&scope=read_public,write_public&state=8675309">
+            Login to Pinterest
+          </a>
+        )}
+
         <Form>
           <FormGroup>
             <Label for="exampleText">Enter link to Recipe article</Label>
