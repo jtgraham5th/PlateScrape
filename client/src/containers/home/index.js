@@ -307,17 +307,20 @@ class Home extends Component {
         {this.state.userBoards.length > 1 ? (
           <Row>
             {this.state.userBoards.map((board, i) => (
-                <Col xs="3">
-              <Card key={i}>
-                <CardHeader tag="h3">{board.name}</CardHeader>
-                <img
-                  className="w-100"
-                  src={board.image["60x60"].url}
-                  alt="Card image cap"
-                />
-                <CardBody>
-                  <CardText>{board.description}</CardText>
-                  <CardLink href={board.url}>View on Pinterest</CardLink>
+              <Col>
+                <Card key={i}>
+                  <CardHeader tag="h4">{board.name}</CardHeader>
+                  <img
+                    className="w-100"
+                    width="60px"
+                    height="60px"
+                    src={board.image["60x60"].url}
+                    alt="Card image cap"
+                  />
+                  <CardBody>
+                    <CardText>{board.description}</CardText>
+                    <CardLink href={board.url}>View on Pinterest</CardLink>
+                  </CardBody>
                   <Button
                     id={board.id}
                     onClick={this.displayPins}
@@ -325,8 +328,7 @@ class Home extends Component {
                   >
                     View Pins
                   </Button>
-                </CardBody>
-              </Card>
+                </Card>
               </Col>
             ))}
           </Row>
