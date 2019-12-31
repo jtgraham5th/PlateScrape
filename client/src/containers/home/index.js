@@ -307,6 +307,7 @@ class Home extends Component {
       <div>
         {this.state.userBoards.length > 1 ? (
           <Row className="row-display">
+              <h3>Your Boards:</h3>
             {this.state.userBoards.map((board, i) => (
               <Col>
                 <Card key={i}>
