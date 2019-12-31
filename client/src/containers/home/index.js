@@ -10,7 +10,9 @@ import {
   CardHeader,
   CardBody,
   CardLink,
-  CardText
+  CardText,
+  Row,
+  Col
 } from "reactstrap";
 var axios = require("axios");
 
@@ -303,12 +305,13 @@ class Home extends Component {
     return (
       <div>
         {this.state.userBoards.length > 1 ? (
-          <row className="border">
+          <Row>
             {this.state.userBoards.map((board, i) => (
+                <Col xs="3">
               <Card key={i}>
                 <CardHeader tag="h3">{board.name}</CardHeader>
                 <img
-                  width="100%"
+                  className="w-100"
                   src={board.image["60x60"].url}
                   alt="Card image cap"
                 />
@@ -324,8 +327,9 @@ class Home extends Component {
                   </Button>
                 </CardBody>
               </Card>
+              </Col>
             ))}
-          </row>
+          </Row>
         ) : (
           <a href="https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://serene-plateau-07976.herokuapp.com/&client_id=5073939286663940267&scope=read_public,write_public&state=8675309">
             Login to Pinterest
