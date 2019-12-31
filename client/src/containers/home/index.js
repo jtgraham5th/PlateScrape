@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import "./style.css";
 import {
   Button,
   Form,
@@ -305,7 +306,7 @@ class Home extends Component {
     return (
       <div>
         {this.state.userBoards.length > 1 ? (
-          <Row>
+          <Row className="row-display">
             {this.state.userBoards.map((board, i) => (
               <Col>
                 <Card key={i}>

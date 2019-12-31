@@ -1,0 +1,6 @@
+.row-display {
+  overflow-x: auto;
+  white-space: nowrap;
+  display: inline-block;
+  float: none;
+}
