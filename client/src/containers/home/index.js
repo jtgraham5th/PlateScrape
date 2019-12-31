@@ -287,6 +287,7 @@ class Home extends Component {
     axios.get("/api/pinterest").then(response => console.log(response));
   };
   displayPins = event => {
+    event.preventDefault();
     let boardID = event.target.id
     console.log(event.target.id);
     this.setState({ togglePins: true });
