@@ -16,7 +16,8 @@ import {
   Col,
   Nav,
   NavItem,
-  NavLink
+  NavLink,
+  Container
 } from "reactstrap";
 var axios = require("axios");
 
@@ -299,11 +300,11 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <Row style={{ backgroundColor: "#333", borderColor: "#333" }}>
-          Your Boards
+        <Row fluid style={{ backgroundColor: "#333", borderColor: "#333" }} className="text-white">
+          <h3>Your Boards</h3>
         </Row>
         {this.state.userBoards.length > 1 ? (
-          <Nav tabs>
+          <Nav tabs className="mt-3">
             {this.state.userBoards.map((board, i) => (
               <NavItem>
                 <NavLink key={i} id={board.id} onClick={this.displayPins}>
@@ -317,7 +318,7 @@ class Home extends Component {
             Login to Pinterest
           </a>
         )}
-
+        <Container>
         <Form>
           <FormGroup>
             <Label for="exampleText">Enter link to Recipe article</Label>
@@ -413,6 +414,7 @@ class Home extends Component {
             ))}
           </div>
         </div>
+        </Container>
       </div>
     );
   }
