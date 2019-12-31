@@ -28,7 +28,10 @@ class Home extends Component {
     fridge: [],
     newItem: "",
     recipelink: "",
-    userBoards: []
+    userBoards: [],
+    togglePins: false,
+    boardPins: [],
+    accessToken: ""
   };
 
   componentDidMount() {
@@ -36,6 +39,7 @@ class Home extends Component {
     let userAuthCode = params.get("code");
     let accessToken =
       "Aj5cBG-EFZy8RRy1skpJ0zVYY_QkFeSnWQ45H_lGakDl-YDIqwJUgDAAAAMgRmtif9EgrmUAAAAA";
+    this.setState({accessToken: accessToken});
     console.log(accessToken);
     console.log(userAuthCode);
 
@@ -61,17 +65,6 @@ class Home extends Component {
           }.bind(this)
         );
     }
-
-    // if(userAuthCode === null) {
-    //     userAuthCode =
-    // }
-
-    // let userAuthCode = window.location.search
-    // if (userAuthCode === "/") {
-    //     console.log("User hasn't been authenticated")
-    // } else {
-    //     console.log(userAuthCode)
-    // }
   }
 
   // loadBooks = () => {
@@ -294,13 +287,30 @@ class Home extends Component {
     axios.get("/api/pinterest").then(response => console.log(response));
   };
   displayPins = event => {
+    let boardID = event.target.id
     console.log(event.target.id);
+    this.setState({ togglePins: true });
+    axios
+        .get(
+          `https://api.pinterest.com/v1/boards/${boardID}/pins/?access_token=${this.state.accessToken}&fields=id%2Clink%2Cnote%2Curl%2Cattribution%2Cimage%2Cmetadata%2Coriginal_link`)
+        .then(
+          function(response) {
+            this.setState({
+              boardPins: response.data.data
+            });
+            console.log(this.state.boardPins).catch(err => console.log(err));
+          }.bind(this)
+        );
   };
 
   render() {
     return (
       <div>
-        <Row fluid style={{ backgroundColor: "#333", borderColor: "#333" }} className="text-white">
+        <Row
+          noGutters={true}
+          style={{ backgroundColor: "#333", borderColor: "#333" }}
+          className="text-white"
+        >
           <h3>Your Boards</h3>
         </Row>
         {this.state.userBoards.length > 1 ? (
@@ -318,102 +328,104 @@ class Home extends Component {
             Login to Pinterest
           </a>
         )}
+        {this.state.togglePins ? <Row>{this.state.boardPins.map((pins,i) => (""))}</Row> : ""}
+
         <Container>
-        <Form>
-          <FormGroup>
-            <Label for="exampleText">Enter link to Recipe article</Label>
-            <Input
-              type="textarea"
-              name="recipelink"
-              id="exampleText"
-              onChange={this.handleInputChange}
-            />
-          </FormGroup>
-          <Button onClick={this.handleFormSubmit}>Submit</Button>
-        </Form>
-        <div className="row">
-          <div className="col-md-3">
-            {this.state.recipes.map((recipe, i) => (
-              <div key={i} className="rounded border">
-                <small>{recipe.URL}</small>
-                {recipe.ingredients.map((ingredient, e) => (
-                  <h6 key={e}>
-                    {ingredient.amount} {ingredient.unit} {ingredient.name}
-                  </h6>
-                ))}
-              </div>
-            ))}
-          </div>
-          <div className="col-md-4 border rounded ">
-            <h1>Shopping List</h1>
-            {this.state.groceryList.map((ingredient, i) => (
-              <div className="border d-flex justify-content-between">
-                {ingredient.amount} {ingredient.unit} {ingredient.name}
-                <button
-                  className="btn-primary"
-                  name={ingredient.name}
-                  data-amount={ingredient.amount}
-                  data-unit={ingredient.unit}
-                  onClick={this.addToFridge}
-                >
+          <Form>
+            <FormGroup>
+              <Label for="exampleText">Enter link to Recipe article</Label>
+              <Input
+                type="textarea"
+                name="recipelink"
+                id="exampleText"
+                onChange={this.handleInputChange}
+              />
+            </FormGroup>
+            <Button onClick={this.handleFormSubmit}>Submit</Button>
+          </Form>
+          <div className="row">
+            <div className="col-md-3">
+              {this.state.recipes.map((recipe, i) => (
+                <div key={i} className="rounded border">
+                  <small>{recipe.URL}</small>
+                  {recipe.ingredients.map((ingredient, e) => (
+                    <h6 key={e}>
+                      {ingredient.amount} {ingredient.unit} {ingredient.name}
+                    </h6>
+                  ))}
+                </div>
+              ))}
+            </div>
+            <div className="col-md-4 border rounded ">
+              <h1>Shopping List</h1>
+              {this.state.groceryList.map((ingredient, i) => (
+                <div className="border d-flex justify-content-between">
+                  {ingredient.amount} {ingredient.unit} {ingredient.name}
+                  <button
+                    className="btn-primary"
+                    name={ingredient.name}
+                    data-amount={ingredient.amount}
+                    data-unit={ingredient.unit}
+                    onClick={this.addToFridge}
+                  >
+                    Add
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="col-md-4 border rounded">
+              <h1>Fridge</h1>
+              <form onSubmit={this.addNewFridgeItem} className="d-flex mb-2">
+                <input
+                  label="Add new item"
+                  type="text"
+                  className="w-100"
+                  placeholder="What do you already have?"
+                  onChange={this.handleNewFridgeItem}
+                ></input>
+                <button type="submit" className="btn-success">
                   Add
                 </button>
-              </div>
-            ))}
-          </div>
-          <div className="col-md-4 border rounded">
-            <h1>Fridge</h1>
-            <form onSubmit={this.addNewFridgeItem} className="d-flex mb-2">
-              <input
-                label="Add new item"
-                type="text"
-                className="w-100"
-                placeholder="What do you already have?"
-                onChange={this.handleNewFridgeItem}
-              ></input>
-              <button type="submit" className="btn-success">
-                Add
-              </button>
-            </form>
-            <div className="row">
-              <div className="col-md-6 border h6 p-0">Ingredient Name</div>
-              <div className="col-md-3 border h6 p-0">Needed</div>
-              <div className="col-md-3 border h6 p-0">Have</div>
-            </div>
-            {this.state.fridge.map((ingredient, i) => (
+              </form>
               <div className="row">
-                <div className="col-md-6 border">{ingredient.name}</div>
-                <small className="col-md-3 border p-0">
-                  {ingredient.amountNeeded} {ingredient.unit}
-                </small>
-                {!ingredient.edit ? (
-                  <small
-                    className="col-md-3 border p-0"
-                    data-name={ingredient.name}
-                    onClick={this.toggleFridgeEdit}
-                  >
-                    {ingredient.amountStored} {ingredient.unit}
-                  </small>
-                ) : (
-                  <small
-                    className="col-md-3 border p-0"
-                    data-name={ingredient.name}
-                  >
-                    <form name={ingredient.name} onSubmit={this.handleSubmit}>
-                      <input
-                        type="text"
-                        className="w-100"
-                        name={ingredient.name}
-                        placeholder={ingredient.amountStored}
-                        onChange={this.handleInput}
-                      ></input>
-                    </form>
-                  </small>
-                )}
+                <div className="col-md-6 border h6 p-0">Ingredient Name</div>
+                <div className="col-md-3 border h6 p-0">Needed</div>
+                <div className="col-md-3 border h6 p-0">Have</div>
               </div>
-            ))}
+              {this.state.fridge.map((ingredient, i) => (
+                <div className="row">
+                  <div className="col-md-6 border">{ingredient.name}</div>
+                  <small className="col-md-3 border p-0">
+                    {ingredient.amountNeeded} {ingredient.unit}
+                  </small>
+                  {!ingredient.edit ? (
+                    <small
+                      className="col-md-3 border p-0"
+                      data-name={ingredient.name}
+                      onClick={this.toggleFridgeEdit}
+                    >
+                      {ingredient.amountStored} {ingredient.unit}
+                    </small>
+                  ) : (
+                    <small
+                      className="col-md-3 border p-0"
+                      data-name={ingredient.name}
+                    >
+                      <form name={ingredient.name} onSubmit={this.handleSubmit}>
+                        <input
+                          type="text"
+                          className="w-100"
+                          name={ingredient.name}
+                          placeholder={ingredient.amountStored}
+                          onChange={this.handleInput}
+                        ></input>
+                      </form>
+                    </small>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
         </Container>
       </div>
     );
