@@ -13,7 +13,9 @@ import {
   CardLink,
   CardText,
   Row,
-  Col
+  Col,
+  Nav,
+  NavItem
 } from "reactstrap";
 var axios = require("axios");
 
@@ -426,33 +428,3 @@ class Home extends Component {
 }
 
 export default Home;
-{/* <Col>
-            //     <Card key={i}>
-            //       <CardHeader tag="h4"></CardHeader>
-            //       <Row className="no-gutters">
-            //         <Col md="2">
-            //           <img */}
-            //             className="col"
-            //             width="60px"
-            //             height="60px"
-            //             src={board.image["60x60"].url}
-            //             alt="Card image cap"
-            //           />
-            //         </Col>
-            //         <Col md="5">
-            //           <CardText>{board.description}</CardText>
-            //         </Col>
-            //       </Row>
-            //       <CardBody>
-            //         <CardLink href={board.url}>View on Pinterest</CardLink>
-            //       </CardBody>
-
-            //       <Button
-            //         id={board.id}
-            //         onClick={this.displayPins}
-            //         color="danger"
-            //       >
-            //         View Pins
-            //       </Button>
-            //     </Card>
-            //   </Col></Col>
