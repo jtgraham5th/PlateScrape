@@ -311,17 +311,20 @@ class Home extends Component {
               <Col>
                 <Card key={i}>
                   <CardHeader tag="h4">{board.name}</CardHeader>
-                  <img
-                    className="w-100"
-                    width="60px"
-                    height="60px"
-                    src={board.image["60x60"].url}
-                    alt="Card image cap"
-                  />
-                  <CardBody>
-                    <CardText>{board.description}</CardText>
-                    <CardLink href={board.url}>View on Pinterest</CardLink>
-                  </CardBody>
+                  <Row className="no-gutters">
+                    <img
+                      className="col"
+                      width="60px"
+                      height="60px"
+                      src={board.image["60x60"].url}
+                      alt="Card image cap"
+                    />
+                    <CardText className="col">{board.description}</CardText>
+                    </Row>
+                    <CardBody>
+                      <CardLink href={board.url}>View on Pinterest</CardLink>
+                    </CardBody>
+                  
                   <Button
                     id={board.id}
                     onClick={this.displayPins}
