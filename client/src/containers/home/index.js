@@ -346,7 +346,10 @@ class Home extends Component {
             ))}
           </Nav>
         ) : (
-          <a href="https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://serene-plateau-07976.herokuapp.com/&client_id=5073939286663940267&scope=read_public,write_public&state=8675309">
+          <a
+            className="btn btn-danger mx-auto"
+            href="https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://serene-plateau-07976.herokuapp.com/&client_id=5073939286663940267&scope=read_public,write_public&state=8675309"
+          >
             Login to Pinterest
           </a>
         )}
@@ -367,7 +370,7 @@ class Home extends Component {
                         </Col>
                         <Col md="8">
                           <CardBody>
-                            <CardTitle>{pins.metadata.link}</CardTitle>
+                            {/* <CardTitle>{pins.metadata.link.title}</CardTitle> */}
                             <CardText>
                               {/* {pins.metadata.link.description} */}
                             </CardText>
