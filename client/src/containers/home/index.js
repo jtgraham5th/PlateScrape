@@ -374,7 +374,7 @@ class Home extends Component {
                         </Col>
                         <Col md="8">
                           <CardBody>
-                            {/* <CardTitle>{pins.metadata.link.title}</CardTitle> */}
+                            <CardTitle>{pins.metadata.link.title}</CardTitle>
                             <CardText>
                               {/* {pins.metadata.link.description} */}
                             </CardText>
