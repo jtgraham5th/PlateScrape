@@ -361,15 +361,15 @@ class Home extends Component {
                         <Col md="4">
                           <CardImg
                             src={pins.image.original.url}
-                            alt={pins.metadata.link.title}
+                            // alt={pins.metadata.link.title}
                             className="w-100"
                           />
                         </Col>
                         <Col md="8">
                           <CardBody>
-                            <CardTitle>{pins.metadata.link.title}</CardTitle>
+                            {/* <CardTitle>{pins.metadata.link.title}</CardTitle> */}
                             <CardText>
-                              {pins.metadata.link.description}
+                              {/* {pins.metadata.link.description} */}
                             </CardText>
                             <Button
                               id={pins.id}
