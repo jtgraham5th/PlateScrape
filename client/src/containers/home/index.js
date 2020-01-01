@@ -310,7 +310,8 @@ class Home extends Component {
           this.setState({
             boardPins: response.data.data
           });
-          console.log(this.state.boardPins).catch(err => console.log(err));
+          console.log(JSON.stringify(this.state.boardPins),
+          console.log(Object.keys(this.state.boardPins))).catch(err => console.log(err));
         }.bind(this)
       );
     if (this.state.activeTab !== event.target.key) {
