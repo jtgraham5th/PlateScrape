@@ -310,11 +310,12 @@ class Home extends Component {
           this.setState({
             boardPins: response.data.data
           });
-          console.log(this.state.boardPins[0].metadata)
-          console.log(this.state.boardPins[0].metadata.link)
-          console.log(this.state.boardPins[0].metadata.link.title)
+          console.log(this.state.boardPins[0].metadata);
+          console.log(this.state.boardPins[0].metadata.link);
+          console
+            .log(this.state.boardPins[0].metadata.link.title)
 
-          .catch(err => console.log(err));
+            .catch(err => console.log(err));
         }.bind(this)
       );
     if (this.state.activeTab !== event.target.key) {
@@ -350,12 +351,14 @@ class Home extends Component {
             ))}
           </Nav>
         ) : (
-          <a
-            className="btn btn-danger mx-auto"
-            href="https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://serene-plateau-07976.herokuapp.com/&client_id=5073939286663940267&scope=read_public,write_public&state=8675309"
-          >
-            Login to Pinterest
-          </a>
+          <div className="mx-auto">
+            <a
+              className="btn btn-danger mx-auto"
+              href="https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://serene-plateau-07976.herokuapp.com/&client_id=5073939286663940267&scope=read_public,write_public&state=8675309"
+            >
+              Login to Pinterest
+            </a>
+          </div>
         )}
         {this.state.togglePins ? (
           <TabContent activeTab={this.state.activeTab}>
