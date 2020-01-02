@@ -367,7 +367,7 @@ class Home extends Component {
                 {this.state.boardPins.map((pins, i) => (
                   <Col>
                     <Card key={i}>
-                    {pins.metadata.link.map((meta,x) =>
+                    {pins.metadata.link.map((meta,x) => (
                       <Row noGutters={true}>
                         <Col md="4">
                           <CardImg
@@ -392,7 +392,7 @@ class Home extends Component {
                             </Button>
                           </CardBody>
                         </Col>
-                      </Row>)}
+                    </Row>))}
                     </Card>
                   </Col>
                 ))}
