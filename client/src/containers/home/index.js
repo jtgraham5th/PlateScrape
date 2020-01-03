@@ -94,6 +94,8 @@ class Home extends Component {
     });
   };
   addRecipe = url => {
+    console.log(this.state);
+    console.log(this.state.boardPins);
     this.setState({ recipelink: url });
     this.handleFormSubmit();
   };
