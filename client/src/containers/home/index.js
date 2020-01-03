@@ -309,6 +309,7 @@ class Home extends Component {
       )
       .then(
         function(response) {
+          let boardPins = this.state.boardPins;
           response.data.data.map((pin, index) => {
             const newPin = {
               id: pin.id,
@@ -319,7 +320,6 @@ class Home extends Component {
                 pin.metadata.link.description,
               ogLink: pin.original_link
             };
-            let boardPins = this.state.boardPins;
             boardPins.push(newPin);
           });
           this.setState({
@@ -374,7 +374,7 @@ class Home extends Component {
           <TabContent activeTab={this.state.activeTab}>
             <TabPane tabId={this.state.activeTab}>
               <Row className="row-display">
-                {this.state.boardPins.map((pins, i) => {
+                {this.state.boardPins.map((pins, i) => (
                   <Col>
                     <Card key={i}>
                       <Row noGutters={true}>
@@ -401,8 +401,8 @@ class Home extends Component {
                         </Col>
                       </Row>
                     </Card>
-                  </Col>;
-                })}
+                  </Col>
+                ))}
               </Row>
             </TabPane>
           </TabContent>
