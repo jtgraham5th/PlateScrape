@@ -366,7 +366,7 @@ class Home extends Component {
           <TabContent activeTab={this.state.activeTab}>
             <TabPane tabId={this.state.activeTab}>
               <Row className="row-display">
-                {this.state.boardPins.map((pins, i) => {
+                {this.state.boardPins.map((pins, i) => {(
                   <Col>
                     <Card key={i}>
                       <Row noGutters={true}>
@@ -396,7 +396,7 @@ class Home extends Component {
                     </Row>
                     </Card>
                   </Col>
-  })}
+                )})}
               </Row>
             </TabPane>
           </TabContent>
