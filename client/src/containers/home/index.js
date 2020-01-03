@@ -311,7 +311,8 @@ class Home extends Component {
         function(response) {
           let boardPins = this.state.boardPins;
           console.log(response.data.data)
-          response.data.data.map((pin, index) => {
+          var boarddata = JSON.parse(response.data.data)
+          boarddata.map((pin, index) => {
             const newPin = {
               id: pin.id,
               image: pin.image.original.url,
