@@ -315,10 +315,10 @@ class Home extends Component {
             const newPin = {
               id: pin.id,
               image: pin.image.original.url,
-              name: pin.metadata.article.name || pin.metadata.link.name,
-              description:
-                pin.metadata.article.description ||
-                pin.metadata.link.description,
+              name: pin.metadata,
+            //   description:
+            //     pin.metadata.article.description ||
+            //     pin.metadata.link.description,
               ogLink: pin.original_link
             };
             boardPins.push(newPin);
