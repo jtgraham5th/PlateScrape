@@ -309,15 +309,23 @@ class Home extends Component {
       )
       .then(
         function(response) {
-          this.setState({
-            boardPins: response.data.data
+          response.data.data.map((pin, index) => {
+            const newPin = {
+              id: pin.id,
+              image: pin.image.original.url,
+              name: pin.metadata.article.name || pin.metadata.link.name,
+              description:
+                pin.metadata.article.description ||
+                pin.metadata.link.description,
+              ogLink: pin.original_link
+            };
+            let boardPins = this.state.boardPins;
+            boardPins.push(newPin);
           });
-          console.log(this.state.boardPins[0].metadata);
-          console.log(this.state.boardPins[0].metadata.link);
-          console
-            .log(this.state.boardPins[0].metadata.link.title)
-
-            .catch(err => console.log(err));
+          this.setState({
+            boardPins
+          });
+          console.log(this.state.boardPins).catch(err => console.log(err));
         }.bind(this)
       );
     if (this.state.activeTab !== event.target.key) {
@@ -366,7 +374,7 @@ class Home extends Component {
           <TabContent activeTab={this.state.activeTab}>
             <TabPane tabId={this.state.activeTab}>
               <Row className="row-display">
-                {this.state.boardPins.map((pins, i) => {(
+                {this.state.boardPins.map((pins, i) => {
                   <Col>
                     <Card key={i}>
                       <Row noGutters={true}>
@@ -380,9 +388,7 @@ class Home extends Component {
                         <Col md="8">
                           <CardBody>
                             <CardTitle>{pins.metadata.link.title}</CardTitle>
-                            <CardText>
-                              {/* {meta.link.description} */}
-                            </CardText>
+                            <CardText>{/* {meta.link.description} */}</CardText>
                             <Button
                               id={pins.id}
                               data-url={pins.original_link}
@@ -393,10 +399,10 @@ class Home extends Component {
                             </Button>
                           </CardBody>
                         </Col>
-                    </Row>
+                      </Row>
                     </Card>
-                  </Col>
-                )})}
+                  </Col>;
+                })}
               </Row>
             </TabPane>
           </TabContent>
