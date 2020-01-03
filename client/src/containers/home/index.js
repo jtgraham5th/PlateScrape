@@ -315,7 +315,7 @@ class Home extends Component {
             const newPin = {
               id: pin.id,
               image: pin.image.original.url,
-              name: pin.metadata,
+              name: pin["metadata"].article.name || pin["metadata"].link.name,
             //   description:
             //     pin.metadata.article.description ||
             //     pin.metadata.link.description,
