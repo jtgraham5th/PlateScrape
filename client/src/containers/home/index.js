@@ -310,6 +310,7 @@ class Home extends Component {
       .then(
         function(response) {
           let boardPins = this.state.boardPins;
+          console.log(response.data.data)
           response.data.data.map((pin, index) => {
             const newPin = {
               id: pin.id,
