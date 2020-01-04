@@ -320,7 +320,7 @@ class Home extends Component {
             const newPin = {
               id: pin.id,
               image: pin.image.original.url,
-              name: link.name,
+              name: meta.link.name,
             //   description:
             //     pin.metadata.article.description ||
             //     pin.metadata.link.description,
