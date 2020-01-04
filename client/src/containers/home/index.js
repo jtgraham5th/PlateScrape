@@ -298,22 +298,18 @@ class Home extends Component {
   pinterestLogin = () => {
     axios.get("/api/pinterest").then(response => console.log(response));
   };
-  displayPins = event => {
+  displayPins = async  (event) => {
     event.preventDefault();
     let boardID = event.target.id;
     let boarddata = [];
     console.log(event.target.id);
     this.setState({ togglePins: true });
-    axios
+    const response = await axios
       .get(
         `https://api.pinterest.com/v1/boards/${boardID}/pins/?access_token=${this.state.accessToken}&fields=id%2Clink%2Cnote%2Curl%2Cattribution%2Cimage%2Cmetadata%2Coriginal_link`
-      )
-      .then(
-        function(response) {
-          boarddata = response.data.data;
-          console.log(response.data.data);
-        }.bind(this)
       );
+    const boarddata = await response.data.data;
+    console.log(boarddata);
     if (this.state.activeTab !== event.target.key) {
       this.setState({ activeTab: event.target.key });
     }
