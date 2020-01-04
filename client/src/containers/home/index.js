@@ -310,9 +310,9 @@ class Home extends Component {
       );
     boarddata = await response.data.data;
     console.log(boarddata);
-    if (this.state.activeTab !== event.target.key) {
-      this.setState({ activeTab: event.target.key });
-    }
+    // if (this.state.activeTab !== event.target.key) {
+    //   this.setState({ activeTab: event.target.key });
+    // }
     this.showPins(boarddata);
   };
   showPins = boarddata => {
