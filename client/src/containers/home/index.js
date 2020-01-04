@@ -309,10 +309,7 @@ class Home extends Component {
       )
       .then(
         function(response) {
-          let boardPins = this.state.boardPins;
-          console.log(response.data.data)
-          var boarddata = response.data.data
-          this.mapPins(boarddata)
+          this.mapPins(response.data.data)
         }.bind(this)
       );
     if (this.state.activeTab !== event.target.key) {
@@ -320,6 +317,7 @@ class Home extends Component {
     }
   };
   mapPins = (boarddata) => {
+    let boardPins = this.state.boardPins;  
     boarddata.map((pin, index) => {
         const newPin = {
           id: pin.id,
