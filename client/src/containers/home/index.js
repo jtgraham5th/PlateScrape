@@ -310,11 +310,11 @@ class Home extends Component {
       .then(
         function(response) {
           let boardPins = this.state.boardPins;
-          console.log(response.data.data)
-          var boarddata = JSON.stringify(response.data.data)
+          console.log(response.data.data);
+          var boarddata = response.data.data;
           boarddata.map((pin, index) => {
-            const link = JSON.parse(pin.metadata.link)
-            const meta = JSON.parse(pin.metadata)
+            const link = JSON.parse(pin.metadata.link);
+            const meta = JSON.parse(pin.metadata);
             console.log(link);
             console.log(meta);
             const newPin = {
