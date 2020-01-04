@@ -309,32 +309,35 @@ class Home extends Component {
       )
       .then(
         function(response) {
-          this.mapPins(response.data.data)
+          let boardPins = this.state.boardPins;
+          console.log(response.data.data)
+          var boarddata = JSON.stringify(response.data.data)
+          boarddata.map((pin, index) => {
+            const link = JSON.parse(pin.metadata.link)
+            const meta = JSON.parse(pin.metadata)
+            console.log(link);
+            console.log(meta);
+            const newPin = {
+              id: pin.id,
+              image: pin.image.original.url,
+              name: link.name,
+            //   description:
+            //     pin.metadata.article.description ||
+            //     pin.metadata.link.description,
+              ogLink: pin.original_link
+            };
+            boardPins.push(newPin);
+          });
+          this.setState({
+            boardPins
+          });
+          console.log(this.state.boardPins).catch(err => console.log(err));
         }.bind(this)
       );
     if (this.state.activeTab !== event.target.key) {
       this.setState({ activeTab: event.target.key });
     }
   };
-  mapPins = (boarddata) => {
-    let boardPins = this.state.boardPins;  
-    boarddata.map((pin, index) => {
-        const newPin = {
-          id: pin.id,
-          image: pin.image.original.url,
-          name: pin.metadata.article.name || pin.metadata.link.name,
-        //   description:
-        //     pin.metadata.article.description ||
-        //     pin.metadata.link.description,
-          ogLink: pin.original_link
-        };
-        boardPins.push(newPin);
-      });
-      this.setState({
-        boardPins
-      });
-      console.log(this.state.boardPins).catch(err => console.log(err));
-  }
 
   render() {
     return (
