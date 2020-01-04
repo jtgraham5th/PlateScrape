@@ -313,9 +313,9 @@ class Home extends Component {
           console.log(response.data.data);
           var boarddata = response.data.data;
           boarddata.map((pin, index) => {
-            const link = JSON.parse(pin.metadata.link);
+            // const link = JSON.parse(pin.metadata.link);
             const meta = JSON.parse(pin.metadata);
-            console.log(link);
+            // console.log(link);
             console.log(meta);
             const newPin = {
               id: pin.id,
