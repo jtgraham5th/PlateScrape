@@ -312,9 +312,9 @@ class Home extends Component {
         function(response) {
           console.log(response.data.data);
           boarddata = response.data.data;
-        }).catch(err => console.log(err))
+        }.catch(err => console.log(err))
         .bind(this)
-      ;
+      );
     if (this.state.activeTab !== event.target.key) {
       this.setState({ activeTab: event.target.key });
     }
