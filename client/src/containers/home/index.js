@@ -301,7 +301,7 @@ class Home extends Component {
   displayPins = event => {
     event.preventDefault();
     let boardID = event.target.id;
-    let boarddata = []
+    let boarddata = [];
     console.log(event.target.id);
     this.setState({ togglePins: true });
     axios
@@ -311,39 +311,38 @@ class Home extends Component {
       .then(
         function(response) {
           boarddata = response.data.data;
-          console.log(response.data.data)
-        .catch(err => console.log(err))}
-        .bind(this)
+          console.log(response.data.data);
+        }.bind(this)
       );
     if (this.state.activeTab !== event.target.key) {
       this.setState({ activeTab: event.target.key });
     }
-    this.showPins(boarddata)   
+    this.showPins(boarddata);
   };
-showPins = (boarddata) => {
-  let boardPins = this.state.boardPins;
-  console.log(boarddata);
-  boarddata.map((pin, index) => {
-    // const link = JSON.parse(pin.metadata.link);
-    const meta = JSON.parse(pin.metadata);
-    // console.log(link);
-    console.log(meta);
-    const newPin = {
-      id: pin.id,
-      image: pin.image.original.url,
-      name: meta.link.name,
-    //   description:
-    //     pin.metadata.article.description ||
-    //     pin.metadata.link.description,
-      ogLink: pin.original_link
-    };
-    boardPins.push(newPin);
-  });
-  this.setState({
-    boardPins
-  });
-  console.log(this.state.boardPins)
-};
+  showPins = boarddata => {
+    let boardPins = this.state.boardPins;
+    console.log(boarddata);
+    boarddata.map((pin, index) => {
+      // const link = JSON.parse(pin.metadata.link);
+      const meta = JSON.parse(pin.metadata);
+      // console.log(link);
+      console.log(meta);
+      const newPin = {
+        id: pin.id,
+        image: pin.image.original.url,
+        name: meta.link.name,
+        //   description:
+        //     pin.metadata.article.description ||
+        //     pin.metadata.link.description,
+        ogLink: pin.original_link
+      };
+      boardPins.push(newPin);
+    });
+    this.setState({
+      boardPins
+    });
+    console.log(this.state.boardPins);
+  };
   render() {
     return (
       <div>
