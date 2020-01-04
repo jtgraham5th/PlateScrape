@@ -320,14 +320,14 @@ class Home extends Component {
     console.log(boarddata);
     boarddata.map((pin, index) => {
       // const link = JSON.parse(pin.metadata.link);
-      const meta = JSON.parse(pin.metadata);
+      // const meta = pin.metadata);
       // console.log(link);
-      console.log(meta);
+      // console.log(meta);
       const newPin = {
         id: pin.id,
         image: pin.image.original.url,
-        name: meta.link.name,
-        //   description:
+        name: pin.metadata.link.name,
+        // description:
         //     pin.metadata.article.description ||
         //     pin.metadata.link.description,
         ogLink: pin.original_link
