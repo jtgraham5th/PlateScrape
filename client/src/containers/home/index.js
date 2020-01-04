@@ -301,14 +301,14 @@ class Home extends Component {
   displayPins = async  (event) => {
     event.preventDefault();
     let boardID = event.target.id;
-    let boarddata = [];
+    let boarddata = '';
     console.log(event.target.id);
     this.setState({ togglePins: true });
     const response = await axios
       .get(
         `https://api.pinterest.com/v1/boards/${boardID}/pins/?access_token=${this.state.accessToken}&fields=id%2Clink%2Cnote%2Curl%2Cattribution%2Cimage%2Cmetadata%2Coriginal_link`
       );
-    const boarddata = await response.data.data;
+    boarddata = await response.data.data;
     console.log(boarddata);
     if (this.state.activeTab !== event.target.key) {
       this.setState({ activeTab: event.target.key });
