@@ -313,12 +313,13 @@ class Home extends Component {
         function(response) {
           boarddata = response.data.data;
           console.log(response.data.data);
+          this.showPins(boarddata);
         }.bind(this)
       );
     if (this.state.activeTab !== event.target.key) {
       this.setState({ activeTab: event.target.key });
     }
-    this.showPins(boarddata);
+    
   };
   showPins = boarddata => {
     let boardPins = this.state.boardPins;
