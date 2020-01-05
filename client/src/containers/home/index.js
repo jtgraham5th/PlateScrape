@@ -328,22 +328,22 @@ class Home extends Component {
     console.log(boarddata[0].metadata.link.name);
     console.log(boarddata[0].metadata.link.description);
     console.log(boarddata[0].original_link);
-    boarddata.map((pin, index) => {
-      const newPin = {
-        id: pin.id,
-        image: pin.image.original.url,
-        name: pin.metadata.link.name,
-        description:
-          pin.metadata.article.description ||
-          pin.metadata.link.description,
-        ogLink: pin.original_link
-      };
-      boardPins.push(newPin);
-    });
-    this.setState({
-      boardPins
-    });
-    console.log(this.state.boardPins);
+    // boarddata.map((pin, index) => {
+    //   const newPin = {
+    //     id: pin.id,
+    //     image: pin.image.original.url,
+    //     name: pin.metadata.link.name,
+    //     description:
+    //       pin.metadata.article.description ||
+    //       pin.metadata.link.description,
+    //     ogLink: pin.original_link
+    //   };
+    //   boardPins.push(newPin);
+    // });
+    // this.setState({
+    //   boardPins
+    // });
+    // console.log(this.state.boardPins);
   };
   render() {
     return (
