@@ -322,12 +322,12 @@ class Home extends Component {
   };
   showPins = boarddata => {
     let boardPins = this.state.boardPins;
-    console.log(boarddata);
-    console.log(boarddata[0].id);
-    console.log(boarddata[0].image.original.url);
-    console.log(boarddata[0].metadata.link.name);
-    console.log(boarddata[0].metadata.link.description);
-    console.log(boarddata[0].original_link);
+    console.log(boardPins);
+    console.log(boardPins[0].id);
+    console.log(boardPins[0].image.original.url);
+    console.log(boardPins[0].metadata.link.name);
+    console.log(boardPins[0].metadata.link.description);
+    console.log(boardPins[0].original_link);
     // boarddata.map((pin, index) => {
     //   const newPin = {
     //     id: pin.id,
