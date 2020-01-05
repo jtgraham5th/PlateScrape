@@ -327,7 +327,7 @@ class Home extends Component {
     console.log(boarddata[0]);
     console.log(boarddata[0].image.original.url);
     console.log(boarddata[0].id);
-    console.log(boarddata[0].metadata.link.name);
+    console.log(boarddata[0].metadata.link.title);
     console.log(boarddata[0].metadata.link.description);
     console.log(boarddata[0].original_link);
     boarddata.map((pin, index) => {
@@ -336,16 +336,18 @@ class Home extends Component {
         image: pin.image.original.url,
         name: pin.metadata.link.title,
         description:
-          pin.metadata.article.description ||
           pin.metadata.link.description,
         ogLink: pin.original_link
       };
       boardPins.push(newPin);
     });
-    this.setState({
+    Promise.all(requests).then(() => {
+      this.setState({
       boardPins
     });
     console.log(this.state.boardPins);
+    })
+    
   };
   render() {
     return (
@@ -394,18 +396,18 @@ class Home extends Component {
                       <Row noGutters={true}>
                         <Col md="4">
                           <CardImg
-                            src={pins.image.original.url}
-                            // alt={meta.link.title}
+                            src={pins.image}
+                            alt={pins.name}
                             className="w-100"
                           />
                         </Col>
                         <Col md="8">
                           <CardBody>
-                            <CardTitle>{pins.metadata.link.title}</CardTitle>
-                            <CardText>{/* {meta.link.description} */}</CardText>
+                            <CardTitle>{pins.name}</CardTitle>
+                            <CardText>{pins.description}</CardText>
                             <Button
                               id={pins.id}
-                              data-url={pins.original_link}
+                              data-url={pins.ogLink}
                               onClick={this.addRecipe}
                               color="danger"
                             >
