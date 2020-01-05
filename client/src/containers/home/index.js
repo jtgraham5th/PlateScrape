@@ -330,7 +330,7 @@ class Home extends Component {
     console.log(boarddata[0].metadata.link.title);
     console.log(boarddata[0].metadata.link.description);
     console.log(boarddata[0].original_link);
-    boarddata.map((pin, index) => {
+    const requests = boarddata.map((pin, index) => {
       const newPin = {
         id: pin.id,
         image: pin.image.original.url,
