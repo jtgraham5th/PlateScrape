@@ -295,41 +295,47 @@ class Home extends Component {
       });
     }
   };
+  
   pinterestLogin = () => {
     axios.get("/api/pinterest").then(response => console.log(response));
   };
-  displayPins = async  (event) => {
+  displayPins = event => {
     event.preventDefault();
     let boardID = event.target.id;
-    let boarddata = '';
+    let boarddata = [];
     console.log(event.target.id);
     this.setState({ togglePins: true });
-    const response = await axios
+    axios
       .get(
         `https://api.pinterest.com/v1/boards/${boardID}/pins/?access_token=${this.state.accessToken}&fields=id%2Clink%2Cnote%2Curl%2Cattribution%2Cimage%2Cmetadata%2Coriginal_link`
+      )
+      .then(
+        function(response) {
+          boarddata = response.data.data;
+          console.log(response.data.data);
+        }.bind(this)
       );
-    boarddata = await response.data.data;
-    console.log(boarddata);
-    // if (this.state.activeTab !== event.target.key) {
-    //   this.setState({ activeTab: event.target.key });
-    // }
+    if (this.state.activeTab !== event.target.key) {
+      this.setState({ activeTab: event.target.key });
+    }
     this.showPins(boarddata);
   };
   showPins = boarddata => {
     let boardPins = this.state.boardPins;
     console.log(boarddata);
+    console.log(boarddata[0].id);
+    console.log(boarddata[0].image.original.url);
+    console.log(boarddata[0].metadata.link.name);
+    console.log(boarddata[0].metadata.link.description);
+    console.log(boarddata[0].original_link);
     boarddata.map((pin, index) => {
-      // const link = JSON.parse(pin.metadata.link);
-      // const meta = pin.metadata);
-      // console.log(link);
-      // console.log(meta);
       const newPin = {
         id: pin.id,
         image: pin.image.original.url,
         name: pin.metadata.link.name,
-        // description:
-        //     pin.metadata.article.description ||
-        //     pin.metadata.link.description,
+        description:
+          pin.metadata.article.description ||
+          pin.metadata.link.description,
         ogLink: pin.original_link
       };
       boardPins.push(newPin);
