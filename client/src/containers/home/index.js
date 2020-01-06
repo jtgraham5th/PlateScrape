@@ -346,6 +346,8 @@ class Home extends Component {
       boardPins
     });
     console.log(this.state.boardPins);
+    console.log(this.state.boardPins);
+
     })
     
   };
