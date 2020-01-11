@@ -334,9 +334,9 @@ class Home extends Component {
       const newPin = {
         id: pin.id,
         image: pin.image.original.url,
-        name: pin.metadata.link.title,
+        name: !pin.metadata.link.title ? "" : pin.metadata.link.title,
         description:
-          pin.metadata.link.description,
+          !pin.metadata.link.description ? "" : pin.metadata.link.description,
         ogLink: pin.original_link
       };
       boardPins.push(newPin);
@@ -346,8 +346,6 @@ class Home extends Component {
       boardPins
     });
     console.log(this.state.boardPins);
-    console.log(this.state.boardPins);
-
     })
     
   };
