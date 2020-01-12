@@ -83,7 +83,8 @@ class Home extends Component {
   };
   addRecipe = event => {
     const url = event.target.dataset.url;
-    this.setState({ recipelink: url }).then(this.handleFormSubmit());
+    this.setState({ recipelink: url });
+    this.handleFormSubmit();
     console.log(this.state.recipelink);
   };
   handleFormSubmit = event => {
