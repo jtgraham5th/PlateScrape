@@ -96,7 +96,7 @@ class Home extends Component {
   addRecipe = event => {
     const url = event.target.dataset.url
     this.setState({ recipelink: url });
-    console.log(this.states.recipelink)
+    console.log(this.state.recipelink)
     this.handleFormSubmit();
   };
   handleFormSubmit = event => {
