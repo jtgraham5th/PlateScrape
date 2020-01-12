@@ -83,9 +83,8 @@ class Home extends Component {
   };
   addRecipe = event => {
     const url = event.target.dataset.url;
-    this.setState({ recipelink: url });
+    this.setState({ recipelink: url }).then(this.handleFormSubmit());
     console.log(this.state.recipelink);
-    this.handleFormSubmit();
   };
   handleFormSubmit = event => {
     // event.preventDefault();
@@ -222,8 +221,10 @@ class Home extends Component {
   };
   toggleIngredients = event => {
     let e = event.target.dataset.event;
-      this.setState({ collapse: this.state.collapse === Number(e) ? 0 : Number(e) });
-  }
+    this.setState({
+      collapse: this.state.collapse === Number(e) ? 0 : Number(e)
+    });
+  };
   handleInput = event => {
     console.log(event.target);
     console.log(event);
@@ -357,7 +358,7 @@ class Home extends Component {
                     {
                       active: this.state.activeTab === `${i}`
                     },
-                    "bg-white"
+                    "bg-white border-dark"
                   )}
                 >
                   {board.name}
@@ -436,12 +437,16 @@ class Home extends Component {
                   <div class="card">
                     <div class="card-header" id="headingOne">
                       <h5 class="mb-0">
-                        <button class="btn btn-link" onClick={this.toggleIngredients} data-event={i}>
+                        <button
+                          class="btn btn-link small w-100"
+                          onClick={this.toggleIngredients}
+                          data-event={i}
+                        >
                           {recipe.URL}
                         </button>
                       </h5>
                     </div>
-                    <Collapse isOpen={this.state.collapse === i }>
+                    <Collapse isOpen={this.state.collapse === i}>
                       <div class="card-body">
                         {recipe.ingredients.map((ingredient, e) => (
                           <h6 key={e}>
