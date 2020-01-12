@@ -385,27 +385,28 @@ class Home extends Component {
         {this.state.togglePins ? (
           <TabContent activeTab={this.state.activeTab}>
             <TabPane tabId={this.state.activeTab}>
-              <Row className="row-display">
+              <Row className="row-display"
+                    style={{ height: '200px'}}>
                 {this.state.boardPins.map((pins, i) => (
-                  <Col md="4" className="text-wrap">
-                    <Card key={i}>
-                      <Row noGutters={true}>
-                        <Col md="3">
+                  <Col md="4" className="text-wrap h-100">
+                    <Card key={i} className="h-100">
+                      <Row noGutters={true} className="h-100">
+                        <Col md="3" className="h-100">
                           <CardImg
                             src={pins.image}
                             alt={pins.name}
                             className="h-100"
                           />
                         </Col>
-                        <Col md="9">
-                          <CardBody className="p2 d-flex flex-column">
+                        <Col md="9" className="h-100">
+                          <CardBody className="p-2 d-flex flex-column h-100">
                             <CardTitle className="h6">{pins.name}</CardTitle>
                             <small>{pins.description}</small>
                             <Button
                               id={pins.id}
                               data-url={pins.ogLink}
                               onClick={this.addRecipe}
-                              className="align-self-center mt-4"
+                              className="align-self-center mt-2"
                               color="danger"
                             >
                               Add Ingredients
