@@ -343,7 +343,7 @@ class Home extends Component {
     });
   };
   alphaSort = event => {
-    let alphaSort = this.state.groceryList.sort((a,b) => (a.name > b.name) ? 1 :((b.name > a.name) ? -1 : 0 ));
+    let alphaSort = this.state.groceryList.sort((a,b) => (a.toLowerCase().name > b.toLowerCase().name) ? 1 :((b.toLowerCase().name > a.toLowerCase().name) ? -1 : 0 ));
     console.log(alphaSort);
     this.setState({
       groceryList: alphaSort
@@ -475,12 +475,14 @@ class Home extends Component {
               ))}
             </div>
             <div className="col-md-4 border rounded ">
-              <h1>Shopping List</h1>
+              <Row className="align-items-center justify-content-between"><h1>Shopping List</h1>
               <FontAwesomeIcon
               icon={faSortAlphaUp}
               size="2x"
               color="black"
+              className="mr-3"
               onClick={this.alphaSort} />
+              </Row>
               {this.state.groceryList.map((ingredient, i) => (
                 <div className="border d-flex justify-content-between bg-white">
                   {ingredient.amount} {ingredient.unit} {ingredient.name}
