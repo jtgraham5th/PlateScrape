@@ -93,10 +93,10 @@ class Home extends Component {
       [name]: value
     });
   };
-  addRecipe = url => {
-    console.log(this.state);
-    console.log(this.state.boardPins);
+  addRecipe = event => {
+    const url = event.target.dataset.url
     this.setState({ recipelink: url });
+    console.log(this.states.recipelink)
     this.handleFormSubmit();
   };
   handleFormSubmit = event => {
@@ -320,6 +320,9 @@ class Home extends Component {
     }
   };
   showPins = boarddata => {
+    this.setState({
+      boardPins: []
+    });
     let boardPins = this.state.boardPins;
     const requests = boarddata.map((pin, index) => {
       const newPin = {
