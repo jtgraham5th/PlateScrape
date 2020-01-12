@@ -25,6 +25,11 @@ import {
   CardImg,
   CardTitle
 } from "reactstrap";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faSortAlphaUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+library.add(faSortAlphaUp);
+
 var axios = require("axios");
 
 class Home extends Component {
@@ -337,6 +342,14 @@ class Home extends Component {
       console.log(this.state.boardPins);
     });
   };
+  alphaSort = event => {
+    let alphaSort = this.state.groceryList.sort((a,b) => (a.name > b.name) ? 1 :((b.name > a.name) ? -1 : 0 ));
+    console.log(alphaSort);
+    this.setState({
+      groceryList: alphaSort
+    })
+    console.log(this.state.groceryList);
+  }
   render() {
     return (
       <div className="bg-secondary">
@@ -463,8 +476,13 @@ class Home extends Component {
             </div>
             <div className="col-md-4 border rounded ">
               <h1>Shopping List</h1>
+              <FontAwesomeIcon
+              icon={faSortAlphaUp}
+              size="2x"
+              color="black"
+              onClick={this.alphaSort} />
               {this.state.groceryList.map((ingredient, i) => (
-                <div className="border d-flex justify-content-between">
+                <div className="border d-flex justify-content-between bg-white">
                   {ingredient.amount} {ingredient.unit} {ingredient.name}
                   <button
                     className="btn-primary"
