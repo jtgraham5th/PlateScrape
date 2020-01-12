@@ -93,7 +93,7 @@ class Home extends Component {
     console.log(this.state.recipelink);
   };
   handleFormSubmit = event => {
-    event.preventDefault();
+    //event.preventDefault();
     const url = encodeURIComponent(this.state.recipelink);
     console.log(url);
     if (this.state.recipelink) {
