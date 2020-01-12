@@ -37,7 +37,9 @@ class Home extends Component {
     togglePins: false,
     boardPins: [],
     accessToken: "",
-    activeTab: 1
+    activeTab: 1,
+    collapse: 0,
+    cards: []
   };
 
   componentDidMount() {
@@ -72,21 +74,6 @@ class Home extends Component {
         );
     }
   }
-
-  // loadBooks = () => {
-  //   API.getBooks()
-  //     .then(res =>
-  //       this.setState({ books: res.data, title: "", author: "", synopsis: "" })
-  //     )
-  //     .catch(err => console.log(err));
-  // };
-
-  // deleteBook = id => {
-  //   API.deleteBook(id)
-  //     .then(res => this.loadBooks())
-  //     .catch(err => console.log(err));
-  // };
-
   handleInputChange = event => {
     const { name, value } = event.target;
     this.setState({
@@ -94,9 +81,9 @@ class Home extends Component {
     });
   };
   addRecipe = event => {
-    const url = event.target.dataset.url
+    const url = event.target.dataset.url;
     this.setState({ recipelink: url });
-    console.log(this.state.recipelink)
+    console.log(this.state.recipelink);
     this.handleFormSubmit();
   };
   handleFormSubmit = event => {
@@ -232,6 +219,10 @@ class Home extends Component {
     }));
     console.log(this.state.fridge);
   };
+  toggleIngredients = event => {
+    let e = event.target.dataset.event;
+      this.setState({ collapse: this.state.collapse === Number(e) ? 0 : Number(e) });
+  }
   handleInput = event => {
     console.log(event.target);
     console.log(event);
@@ -329,7 +320,9 @@ class Home extends Component {
         id: pin.id,
         image: pin.image.original.url,
         name: !pin.metadata.link ? "Untitled" : pin.metadata.link.title,
-        description: !pin.metadata.link ? "No Description" : pin.metadata.link.description,
+        description: !pin.metadata.link
+          ? "No Description"
+          : pin.metadata.link.description,
         ogLink: pin.original_link
       };
       boardPins.push(newPin);
@@ -343,7 +336,7 @@ class Home extends Component {
   };
   render() {
     return (
-      <div>
+      <div className="bg-secondary">
         <Row
           noGutters={true}
           style={{ backgroundColor: "#333", borderColor: "#333" }}
@@ -359,9 +352,12 @@ class Home extends Component {
                   key={i}
                   id={board.id}
                   onClick={this.displayPins}
-                  className={classnames({
-                    active: this.state.activeTab === `${i}`
-                  })}
+                  className={classnames(
+                    {
+                      active: this.state.activeTab === `${i}`
+                    },
+                    "bg-white"
+                  )}
                 >
                   {board.name}
                 </NavLink>
@@ -381,8 +377,7 @@ class Home extends Component {
         {this.state.togglePins ? (
           <TabContent activeTab={this.state.activeTab}>
             <TabPane tabId={this.state.activeTab}>
-              <Row className="row-display"
-                    style={{ height: '200px'}}>
+              <Row className="row-display bg-light" style={{ height: "200px" }}>
                 {this.state.boardPins.map((pins, i) => (
                   <Col md="3" className="text-wrap h-100">
                     <Card key={i} className="h-100">
@@ -434,15 +429,28 @@ class Home extends Component {
             <Button onClick={this.handleFormSubmit}>Submit</Button>
           </Form>
           <div className="row">
-            <div className="col-md-3">
+            <div className="col-md-3" id="accordion">
               {this.state.recipes.map((recipe, i) => (
                 <div key={i} className="rounded border">
-                  <small>{recipe.URL}</small>
-                  {recipe.ingredients.map((ingredient, e) => (
-                    <h6 key={e}>
-                      {ingredient.amount} {ingredient.unit} {ingredient.name}
-                    </h6>
-                  ))}
+                  <div class="card">
+                    <div class="card-header" id="headingOne">
+                      <h5 class="mb-0">
+                        <button class="btn btn-link" onClick={this.toggleIngredients} data-event={i}>
+                          {recipe.URL}
+                        </button>
+                      </h5>
+                    </div>
+                    <Collapse isOpen={this.state.collapse === i }>
+                      <div class="card-body">
+                        {recipe.ingredients.map((ingredient, e) => (
+                          <h6 key={e}>
+                            {ingredient.amount} {ingredient.unit}{" "}
+                            {ingredient.name}
+                          </h6>
+                        ))}
+                      </div>
+                    </Collapse>
+                  </div>
                 </div>
               ))}
             </div>
