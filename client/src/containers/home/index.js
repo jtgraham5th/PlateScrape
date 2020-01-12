@@ -321,19 +321,12 @@ class Home extends Component {
   };
   showPins = boarddata => {
     let boardPins = this.state.boardPins;
-    console.log(boarddata);
-    console.log(boarddata[0]);
-    console.log(boarddata[0].image.original.url);
-    console.log(boarddata[0].id);
-    console.log(boarddata[0].metadata.link.title);
-    console.log(boarddata[0].metadata.link.description);
-    console.log(boarddata[0].original_link);
     const requests = boarddata.map((pin, index) => {
       const newPin = {
         id: pin.id,
         image: pin.image.original.url,
-        name: !pin.metadata.link ? "" : pin.metadata.link.title,
-        description: !pin.metadata.link ? "" : pin.metadata.link.description,
+        name: !pin.metadata.link ? "Untitled" : pin.metadata.link.title,
+        description: !pin.metadata.link ? "No Description" : pin.metadata.link.description,
         ogLink: pin.original_link
       };
       boardPins.push(newPin);
@@ -388,17 +381,17 @@ class Home extends Component {
               <Row className="row-display"
                     style={{ height: '200px'}}>
                 {this.state.boardPins.map((pins, i) => (
-                  <Col md="4" className="text-wrap h-100">
+                  <Col md="3" className="text-wrap h-100">
                     <Card key={i} className="h-100">
                       <Row noGutters={true} className="h-100">
-                        <Col md="3" className="h-100">
+                        <Col md="4" className="h-100">
                           <CardImg
                             src={pins.image}
                             alt={pins.name}
                             className="h-100"
                           />
                         </Col>
-                        <Col md="9" className="h-100">
+                        <Col md="8" className="h-100">
                           <CardBody className="p-2 d-flex flex-column h-100">
                             <CardTitle className="h6">{pins.name}</CardTitle>
                             <small>{pins.description}</small>

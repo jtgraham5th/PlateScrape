@@ -4,3 +4,7 @@
   flex-wrap: nowrap;
   float: none;
 }
+
+.small, small {
+  font-size: 20%;
+}
