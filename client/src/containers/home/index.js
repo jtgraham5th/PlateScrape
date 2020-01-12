@@ -318,7 +318,6 @@ class Home extends Component {
     if (this.state.activeTab !== event.target.key) {
       this.setState({ activeTab: event.target.key });
     }
-    
   };
   showPins = boarddata => {
     let boardPins = this.state.boardPins;
@@ -334,19 +333,17 @@ class Home extends Component {
         id: pin.id,
         image: pin.image.original.url,
         name: !pin.metadata.link ? "" : pin.metadata.link.title,
-        description:
-          !pin.metadata.link ? "" : pin.metadata.link.description,
+        description: !pin.metadata.link ? "" : pin.metadata.link.description,
         ogLink: pin.original_link
       };
       boardPins.push(newPin);
     });
     Promise.all(requests).then(() => {
       this.setState({
-      boardPins
+        boardPins
+      });
+      console.log(this.state.boardPins);
     });
-    console.log(this.state.boardPins);
-    })
-    
   };
   render() {
     return (
@@ -390,24 +387,25 @@ class Home extends Component {
             <TabPane tabId={this.state.activeTab}>
               <Row className="row-display">
                 {this.state.boardPins.map((pins, i) => (
-                  <Col>
+                  <Col md="4" className="text-wrap">
                     <Card key={i}>
                       <Row noGutters={true}>
-                        <Col md="4">
+                        <Col md="3">
                           <CardImg
                             src={pins.image}
                             alt={pins.name}
-                            className="w-100"
+                            className="h-100"
                           />
                         </Col>
-                        <Col md="8">
-                          <CardBody>
-                            <CardTitle>{pins.name}</CardTitle>
-                            <CardText>{pins.description}</CardText>
+                        <Col md="9">
+                          <CardBody className="p2 d-flex flex-column">
+                            <CardTitle className="h6">{pins.name}</CardTitle>
+                            <small>{pins.description}</small>
                             <Button
                               id={pins.id}
                               data-url={pins.ogLink}
                               onClick={this.addRecipe}
+                              className="align-self-center mt-4"
                               color="danger"
                             >
                               Add Ingredients
