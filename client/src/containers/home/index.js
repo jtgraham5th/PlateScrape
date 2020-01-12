@@ -93,7 +93,7 @@ class Home extends Component {
     console.log(this.state.recipelink);
   };
   handleFormSubmit = event => {
-    // event.preventDefault();
+    event.preventDefault();
     const url = encodeURIComponent(this.state.recipelink);
     console.log(url);
     if (this.state.recipelink) {
@@ -343,7 +343,7 @@ class Home extends Component {
     });
   };
   alphaSort = event => {
-    let alphaSort = this.state.groceryList.sort((a,b) => (a.toLowerCase().name > b.toLowerCase().name) ? 1 :((b.toLowerCase().name > a.toLowerCase().name) ? -1 : 0 ));
+    let alphaSort = this.state.groceryList.sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 :((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0 ));
     console.log(alphaSort);
     this.setState({
       groceryList: alphaSort
