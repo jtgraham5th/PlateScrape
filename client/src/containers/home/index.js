@@ -572,13 +572,13 @@ class Home extends Component {
               </Row>
               {this.state.groceryList.map((ingredient, i) => (
                 <div
-                  className={
-                    this.state.fridge[i].name === ingredient.name
-                      ? this.state.fridge[i].amountStored >= ingredient.amount
+                  className={this.state.fridge.map((item, x) =>
+                    item.name === ingredient.name
+                      ? item.amountStored === ingredient.amount
                         ? "bg-secondary border d-flex"
                         : ""
                       : "border d-flex bg-white"
-                  }
+                  )}
                 >
                   {ingredient.name}
                   <em className="ml-auto pr-2 text-secondary">
