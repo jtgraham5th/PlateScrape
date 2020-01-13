@@ -574,9 +574,9 @@ class Home extends Component {
                 <div
                   className={this.state.fridge.map((item, x) =>
                     item.name === ingredient.name
-                      ? item.amountStored === ingredient.amount
-                        ? "bg-secondary border d-flex"
-                        : ""
+                      ? item.amountStored >= ingredient.amount
+                        ? "bg-light text-secondary border d-flex"
+                        : "border d-flex bg-white"
                       : "border d-flex bg-white"
                   )}
                 >
