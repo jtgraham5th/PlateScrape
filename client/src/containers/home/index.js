@@ -350,6 +350,22 @@ class Home extends Component {
       groceryList: alphaSort
     })
     console.log(this.state.groceryList);
+  };
+  increaseSort = event => {
+    let increaseSort = this.state.groceryList.sort((a,b) => (a.amount > b.amount) ? 1 :((b.amount > a.amount) ? -1 : 0 ));
+    console.log(increaseSort);
+    this.setState({
+      groceryList: increaseSort
+    })
+    console.log(this.state.groceryList);
+  };
+  decreaseSort = event => {
+    let decreaseSort = this.state.groceryList.sort((a,b) => (b.amount > a.amount) ? 1 :((a.amount > b.amount) ? -1 : 0 ));
+    console.log(decreaseSort);
+    this.setState({
+      groceryList: decreaseSort
+    })
+    console.log(this.state.groceryList);
   }
   render() {
     return (
@@ -481,8 +497,20 @@ class Home extends Component {
               icon={faSortAlphaUp}
               size="2x"
               color="black"
-              className="mr-3"
+              className="mr-1"
               onClick={this.alphaSort} />
+              <FontAwesomeIcon
+              icon={faSortAmountUp}
+              size="2x"
+              color="black"
+              className="mr-1"
+              onClick={this.decreaseSort} />
+              <FontAwesomeIcon
+              icon={faSortAmountDownAlt}
+              size="2x"
+              color="black"
+              className="mr-3"
+              onClick={this.increaseSort} />
               </Row>
               {this.state.groceryList.map((ingredient, i) => (
                 <div className="border d-flex justify-content-between bg-white">
