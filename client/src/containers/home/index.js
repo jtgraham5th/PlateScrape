@@ -26,7 +26,11 @@ import {
   CardTitle
 } from "reactstrap";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faSortAlphaUp } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSortAlphaUp,
+  faSortAmountUp,
+  faSortAmountDownAlt
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 library.add(faSortAlphaUp);
 
@@ -86,12 +90,12 @@ class Home extends Component {
       [name]: value
     });
   };
-  addRecipe = async (event) => {
+  addRecipe = async event => {
     const url = event.target.dataset.url;
     this.setState({ recipelink: url }, () => {
-    this.handleFormSubmit(event);
-    console.log(this.state.recipelink);});
-    
+      this.handleFormSubmit(event);
+      console.log(this.state.recipelink);
+    });
   };
   handleFormSubmit = event => {
     //event.preventDefault();
@@ -344,29 +348,39 @@ class Home extends Component {
     });
   };
   alphaSort = event => {
-    let alphaSort = this.state.groceryList.sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 :((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0 ));
+    let alphaSort = this.state.groceryList.sort((a, b) =>
+      a.name.toLowerCase() > b.name.toLowerCase()
+        ? 1
+        : b.name.toLowerCase() > a.name.toLowerCase()
+        ? -1
+        : 0
+    );
     console.log(alphaSort);
     this.setState({
       groceryList: alphaSort
-    })
+    });
     console.log(this.state.groceryList);
   };
   increaseSort = event => {
-    let increaseSort = this.state.groceryList.sort((a,b) => (a.amount > b.amount) ? 1 :((b.amount > a.amount) ? -1 : 0 ));
+    let increaseSort = this.state.groceryList.sort((a, b) =>
+      a.amount > b.amount ? 1 : b.amount > a.amount ? -1 : 0
+    );
     console.log(increaseSort);
     this.setState({
       groceryList: increaseSort
-    })
+    });
     console.log(this.state.groceryList);
   };
   decreaseSort = event => {
-    let decreaseSort = this.state.groceryList.sort((a,b) => (b.amount > a.amount) ? 1 :((a.amount > b.amount) ? -1 : 0 ));
+    let decreaseSort = this.state.groceryList.sort((a, b) =>
+      b.amount > a.amount ? 1 : a.amount > b.amount ? -1 : 0
+    );
     console.log(decreaseSort);
     this.setState({
       groceryList: decreaseSort
-    })
+    });
     console.log(this.state.groceryList);
-  }
+  };
   render() {
     return (
       <div className="bg-secondary">
@@ -492,25 +506,29 @@ class Home extends Component {
               ))}
             </div>
             <div className="col-md-4 border rounded ">
-              <Row className="align-items-center justify-content-between"><h1>Shopping List</h1>
-              <FontAwesomeIcon
-              icon={faSortAlphaUp}
-              size="2x"
-              color="black"
-              className="mr-1"
-              onClick={this.alphaSort} />
-              <FontAwesomeIcon
-              icon={faSortAmountUp}
-              size="2x"
-              color="black"
-              className="mr-1"
-              onClick={this.decreaseSort} />
-              <FontAwesomeIcon
-              icon={faSortAmountDownAlt}
-              size="2x"
-              color="black"
-              className="mr-3"
-              onClick={this.increaseSort} />
+              <Row className="align-items-center justify-content-between">
+                <h1>Shopping List</h1>
+                <FontAwesomeIcon
+                  icon={faSortAlphaUp}
+                  size="2x"
+                  color="black"
+                  className="mr-1"
+                  onClick={this.alphaSort}
+                />
+                <FontAwesomeIcon
+                  icon={faSortAmountUp}
+                  size="2x"
+                  color="black"
+                  className="mr-1"
+                  onClick={this.decreaseSort}
+                />
+                <FontAwesomeIcon
+                  icon={faSortAmountDownAlt}
+                  size="2x"
+                  color="black"
+                  className="mr-3"
+                  onClick={this.increaseSort}
+                />
               </Row>
               {this.state.groceryList.map((ingredient, i) => (
                 <div className="border d-flex justify-content-between bg-white">
