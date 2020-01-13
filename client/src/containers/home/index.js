@@ -571,16 +571,16 @@ class Home extends Component {
                 />
               </Row>
               {this.state.groceryList.map((ingredient, i) => (
-                <div className="border d-flex justify-content-between bg-white">
+                <div className="border d-flex bg-white">
                   {ingredient.amount} {ingredient.unit} {ingredient.name}
                   <button
-                    className="btn-success"
+                    className="btn-success ml-auto"
                     name={ingredient.name}
                     data-amount={ingredient.amount}
                     data-unit={ingredient.unit}
                     onClick={this.addToFridge}
                   >
-                    Fridge
+                    +
                   </button>
                   <button
                     className="btn-danger"
@@ -588,7 +588,7 @@ class Home extends Component {
                     data-index={i}
                     onClick={this.removeFrmList}
                   >
-                    Remove
+                    x
                   </button>
                 </div>
               ))}
