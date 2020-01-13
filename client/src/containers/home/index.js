@@ -388,6 +388,16 @@ class Home extends Component {
       modal: !this.state.modal
     });
   };
+  removeFrmList = event => {
+    const removeIndex = event.target.dataset.index;
+    let updatedList = this.state.groceryList
+    console.log(updatedList);
+    updatedList.splice(removeIndex,1);
+    console.log(updatedList);
+    this.setState({
+      groceryList: updatedList
+    })
+  }
   render() {
     return (
       <div className="bg-secondary">
@@ -564,13 +574,21 @@ class Home extends Component {
                 <div className="border d-flex justify-content-between bg-white">
                   {ingredient.amount} {ingredient.unit} {ingredient.name}
                   <button
-                    className="btn-primary"
+                    className="btn-success"
                     name={ingredient.name}
                     data-amount={ingredient.amount}
                     data-unit={ingredient.unit}
                     onClick={this.addToFridge}
                   >
-                    Add
+                    Fridge
+                  </button>
+                  <button
+                    className="btn-danger"
+                    name={ingredient.name}
+                    data-index={i}
+                    onClick={this.removeFrmList}
+                  >
+                    Remove
                   </button>
                 </div>
               ))}
