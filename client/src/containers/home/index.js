@@ -86,11 +86,12 @@ class Home extends Component {
       [name]: value
     });
   };
-  addRecipe = event => {
+  addRecipe = async (event) => {
     const url = event.target.dataset.url;
-    this.setState({ recipelink: url });
-    this.handleFormSubmit();
-    console.log(this.state.recipelink);
+    this.setState({ recipelink: url }, () => {
+    this.handleFormSubmit(event);
+    console.log(this.state.recipelink);});
+    
   };
   handleFormSubmit = event => {
     //event.preventDefault();
