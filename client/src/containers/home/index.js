@@ -576,8 +576,8 @@ class Home extends Component {
                     (item.name === ingredient.name
                       ? item.amountStored >= ingredient.amount
                         ? "bg-info text-dark border-info d-flex"
-                        : ""
                       : "border d-flex bg-white"
+                      : ""
                   ))}
                 >
                   {ingredient.name}
