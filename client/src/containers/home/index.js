@@ -390,14 +390,14 @@ class Home extends Component {
   };
   removeFrmList = event => {
     const removeIndex = event.target.dataset.index;
-    let updatedList = this.state.groceryList
+    let updatedList = this.state.groceryList;
     console.log(updatedList);
-    updatedList.splice(removeIndex,1);
+    updatedList.splice(removeIndex, 1);
     console.log(updatedList);
     this.setState({
       groceryList: updatedList
-    })
-  }
+    });
+  };
   render() {
     return (
       <div className="bg-secondary">
@@ -571,9 +571,19 @@ class Home extends Component {
                 />
               </Row>
               {this.state.groceryList.map((ingredient, i) => (
-                <div className="border d-flex bg-white">
+                <div
+                  className={
+                    this.state.fridge[i].name === ingredient.name
+                      ? this.state.fridge[i].amountStored >= ingredient.amount
+                        ? "bg-secondary border d-flex"
+                        : ""
+                      : "border d-flex bg-white"
+                  }
+                >
                   {ingredient.name}
-                  <em className="ml-auto pr-2 text-secondary">{ingredient.amount} {ingredient.unit} </em>
+                  <em className="ml-auto pr-2 text-secondary">
+                    {ingredient.amount} {ingredient.unit}{" "}
+                  </em>
                   <button
                     className="btn-success"
                     name={ingredient.name}
