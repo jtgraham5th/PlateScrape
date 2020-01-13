@@ -109,7 +109,7 @@ class Home extends Component {
     if (this.state.recipelink) {
       axios.get(`/api/recipes/${url}`).then(
         function(response) {
-          if (response.length < 1) {
+          if (response.data.length < 1) {
             this.toggleModal();
           } else {
             console.log(response.data);
