@@ -572,9 +572,10 @@ class Home extends Component {
               </Row>
               {this.state.groceryList.map((ingredient, i) => (
                 <div className="border d-flex bg-white">
-                  {ingredient.amount} {ingredient.unit} {ingredient.name}
+                  {ingredient.name}
+                  <em className="ml-auto pr-2 text-secondary">{ingredient.amount} {ingredient.unit} </em>
                   <button
-                    className="btn-success ml-auto"
+                    className="btn-success"
                     name={ingredient.name}
                     data-amount={ingredient.amount}
                     data-unit={ingredient.unit}
