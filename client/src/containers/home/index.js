@@ -23,7 +23,11 @@ import {
   TabContent,
   TabPane,
   CardImg,
-  CardTitle
+  CardTitle,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  ModalFooter
 } from "reactstrap";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -536,21 +540,21 @@ class Home extends Component {
                 <h1>Shopping List</h1>
                 <FontAwesomeIcon
                   icon={faSortAlphaUp}
-                  size="2x"
+                  size="1x"
                   color="black"
                   className="mr-1"
                   onClick={this.alphaSort}
                 />
                 <FontAwesomeIcon
                   icon={faSortAmountUp}
-                  size="2x"
+                  size="1x"
                   color="black"
                   className="mr-1"
                   onClick={this.decreaseSort}
                 />
                 <FontAwesomeIcon
                   icon={faSortAmountDownAlt}
-                  size="2x"
+                  size="1x"
                   color="black"
                   className="mr-3"
                   onClick={this.increaseSort}
