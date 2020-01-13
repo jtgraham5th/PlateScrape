@@ -49,7 +49,8 @@ class Home extends Component {
     accessToken: "",
     activeTab: 1,
     collapse: 0,
-    cards: []
+    cards: [],
+    modal: false
   };
 
   componentDidMount() {
@@ -104,26 +105,23 @@ class Home extends Component {
     if (this.state.recipelink) {
       axios.get(`/api/recipes/${url}`).then(
         function(response) {
-          console.log(response.data);
-          let recipes = this.state.recipes;
-          console.log("NEW!");
-          let newRecipe = {
-            URL: this.state.recipelink,
-            ingredients: response.data
-          };
-          recipes.push(newRecipe);
-          this.setState({
-            recipes
-          });
-          console.log(this.state.recipes);
-          this.addToList(response.data);
-          //   console.log(recipeData);
-          //   this.setState({
-          //     ingredients: recipeData
-          // const ingredients = [...state.ingredients, recipeData];
-          // console.log(ingredients);
-          // return ingredients;
-          //   });
+          if (response.length < 1) {
+            this.toggleModal();
+          } else {
+            console.log(response.data);
+            let recipes = this.state.recipes;
+            console.log("NEW!");
+            let newRecipe = {
+              URL: this.state.recipelink,
+              ingredients: response.data
+            };
+            recipes.push(newRecipe);
+            this.setState({
+              recipes
+            });
+            console.log(this.state.recipes);
+            this.addToList(response.data);
+          }
         }.bind(this)
       );
     }
@@ -381,6 +379,11 @@ class Home extends Component {
     });
     console.log(this.state.groceryList);
   };
+  toggleModal = event => {
+    this.setState({
+      modal: !this.state.modal
+    });
+  };
   render() {
     return (
       <div className="bg-secondary">
@@ -449,6 +452,29 @@ class Home extends Component {
                             >
                               Add Ingredients
                             </Button>
+                            <Modal
+                              isOpen={this.state.modal}
+                              toggle={this.toggleModal}
+                            >
+                              <ModalHeader
+                                toggle={this.toggleModal}
+                                className="bg-secondary"
+                              >
+                                Uh...
+                              </ModalHeader>
+                              <ModalBody>
+                                We are currently unable to scrape this recipe.
+                                Try another!
+                              </ModalBody>
+                              <ModalFooter>
+                                <Button
+                                  color="secondary"
+                                  onClick={this.toggleModal}
+                                >
+                                  close
+                                </Button>
+                              </ModalFooter>
+                            </Modal>
                           </CardBody>
                         </Col>
                       </Row>
