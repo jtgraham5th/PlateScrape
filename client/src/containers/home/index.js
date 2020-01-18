@@ -112,7 +112,7 @@ class Home extends Component {
       axios.get(`/api/recipes/${url}`).then(
         function(response) {
           if (response.data.length < 1) {
-            this.toggleModal();
+            this.toggleModal(1);
           } else {
             console.log(response.data);
             let recipes = this.state.recipes;
@@ -140,7 +140,7 @@ class Home extends Component {
         console.log("included");
         let groceryList = this.state.groceryList;
         let newIngredient = {
-          name: ingredient.name,
+          name: ingredient.name.toLowerCase(),
           amount: this.convertToDecimal(ingredient.amount, ingredient.unit),
           unit: "oz",
           className: "border d-flex bg-white"
@@ -155,7 +155,7 @@ class Home extends Component {
         this.setState(prevState => ({
           groceryList: prevState.groceryList.map(el =>
             el.name === key
-              ? { ...el, amount: el.amount + parseFloat(ingredient.amount) }
+              ? { ...el, amount: (el.amount) + (parseFloat(ingredient.amount)) }
               : el
           )
         }));
