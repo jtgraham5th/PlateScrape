@@ -259,16 +259,19 @@ class Home extends Component {
         )
       }));
     }
+    this.getClasses(ingredientName,newValue)
   };
   handleSubmit = event => {
     event.preventDefault();
     let ingredientName = event.target.name;
+    let ingredientName = 
     console.log(ingredientName);
     this.setState(prevState => ({
       fridge: prevState.fridge.map(el =>
         el.name === ingredientName ? { ...el, edit: !el.edit } : el
       )
     }));
+
   };
   handleNewFridgeItem = event => {
     console.log(event.target);
@@ -442,7 +445,7 @@ class Home extends Component {
                 el.name === ingredient
                   ? {
                       ...el,
-                      className: "bg-info text-dark border-primary d-flex"
+                      className: "bg-info font-italic text-secondary border-primary d-flex"
                     }
                   : el
               )
