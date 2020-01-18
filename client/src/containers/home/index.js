@@ -406,6 +406,9 @@ class Home extends Component {
     this.setState({
       groceryList: updatedList
     });
+    if (this.state.modal2) {
+      this.toggleModal(2)
+    }
   };
   render() {
     return (
