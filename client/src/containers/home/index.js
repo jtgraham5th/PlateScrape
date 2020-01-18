@@ -415,18 +415,18 @@ class Home extends Component {
     let fridge = this.state.fridge;
     console.log(fridge.length, fridge);
     console.log(ingredient, amount);
-    if (fridge.length < 1) {
-      return "border d-flex bg-white";
-    } else {
+    if (fridge.length > 0) {
       let classes = fridge.map((item, x) =>
         item.name === ingredient
-          ? item.amountStored >= amount
+          ? (item.amountStored >= amount
             ? "bg-dark text-dark border-info d-flex"
-            : "border d-flex bg-white"
+            : "border d-flex bg-white")
           : "border d-flex bg-white"
       );
+      console.log("end of getclasses");
       return classes;
-      console.log("getclasses");
+    } else {
+      return "border d-flex bg-white";
     }
   };
   render() {
