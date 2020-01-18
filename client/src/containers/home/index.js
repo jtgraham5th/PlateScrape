@@ -389,11 +389,11 @@ class Home extends Component {
     console.log(num,"NUM")
     if(num === 1){
     this.setState({
-      modal: !this.state.modal1
+      modal1: !this.state.modal1
     });
   } else if(num === 2) {
     this.setState({
-      modal: !this.state.modal2
+      modal2: !this.state.modal2
     });
   }
   };
