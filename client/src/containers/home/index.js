@@ -426,7 +426,7 @@ class Home extends Component {
       console.log("end of getclasses");
       return classes;
     } else {
-      return "border d-flex bg-white";
+      return "border d-flex bg-dark";
     }
   };
   render() {
@@ -607,8 +607,8 @@ class Home extends Component {
                   data-amount={ingredient.amount}
                   id={i}
                   className={this.getClasses(
-                    [ingredient.name],
-                    [ingredient.amount]
+                    ingredient.name,
+                    ingredient.amount
                   )}
                 >
                   {ingredient.name}
