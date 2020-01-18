@@ -221,7 +221,7 @@ class Home extends Component {
       }));
     }
     console.log(this.state.fridge);
-    this.toggleModal(2)
+    this.toggleModal(2);
     //   });
   };
   toggleFridgeEdit = event => {
@@ -386,16 +386,16 @@ class Home extends Component {
     console.log(this.state.groceryList);
   };
   toggleModal = num => {
-    console.log(num,"NUM")
-    if(num === 1){
-    this.setState({
-      modal1: !this.state.modal1
-    });
-  } else if(num === 2) {
-    this.setState({
-      modal2: !this.state.modal2
-    });
-  }
+    console.log(num, "NUM");
+    if (num === 1) {
+      this.setState({
+        modal1: !this.state.modal1
+      });
+    } else if (num === 2) {
+      this.setState({
+        modal2: !this.state.modal2
+      });
+    }
   };
   removeFrmList = event => {
     const removeIndex = event.target.dataset.index;
@@ -407,22 +407,28 @@ class Home extends Component {
       groceryList: updatedList
     });
     if (this.state.modal2) {
-      this.toggleModal(2)
+      this.toggleModal(2);
     }
   };
   getClasses = event => {
-    let ingredient = event.target.dataset.name
-    let amount = event.target.dataset.amount
-    let classes = this.state.fridge.map((item, x) =>
-                    (item.name === ingredient
-                      ? (item.amountStored >= amount
-                        ? 'bg-dark text-dark border-info d-flex'
-                      : 'border d-flex bg-white')
-                      : 'border d-flex bg-white'
-                  ));
-                  console.log("getclasses")
-    return classes
-  }
+    console.log("getclasses");
+    let ingredient = event.target.dataset.name;
+    let amount = event.target.dataset.amount;
+    let fridge = this.state.fridge;
+    if (fridge.length < 1) {
+      return "border d-flex bg-white";
+    } else {
+      let classes = fridge.map((item, x) =>
+        item.name === ingredient
+          ? item.amountStored >= amount
+            ? "bg-dark text-dark border-info d-flex"
+            : "border d-flex bg-white"
+          : "border d-flex bg-white"
+      );
+      console.log("getclasses");
+    }
+    return classes;
+  };
   render() {
     return (
       <div className="bg-secondary">
@@ -514,7 +520,6 @@ class Home extends Component {
                                 </Button>
                               </ModalFooter>
                             </Modal>
-                            
                           </CardBody>
                         </Col>
                       </Row>
@@ -625,34 +630,35 @@ class Home extends Component {
                     x
                   </button>
                   <Modal
-                              isOpen={this.state.modal2}
-                              toggle={() => this.toggleModal(2)}
-                            >
-                              <ModalHeader
-                                toggle={() => this.toggleModal(2)}
-                                className="bg-secondary"
-                              >
-                                Item added to Fridge
-                              </ModalHeader>
-                              <ModalBody>
-                                Would you also like to remove this item from your shopping list?
-                              </ModalBody>
-                              <ModalFooter>
-                                <Button
-                                  color="secondary"
-                                  onClick={this.removeFrmList}
-                                  id={i}
-                                >
-                                  Yes
-                                </Button>
-                                <Button
-                                  color="secondary"
-                                  onClick={() => this.toggleModal(2)}                                  
-                                >
-                                  No
-                                </Button>
-                              </ModalFooter>
-                            </Modal>
+                    isOpen={this.state.modal2}
+                    toggle={() => this.toggleModal(2)}
+                  >
+                    <ModalHeader
+                      toggle={() => this.toggleModal(2)}
+                      className="bg-secondary"
+                    >
+                      Item added to Fridge
+                    </ModalHeader>
+                    <ModalBody>
+                      Would you also like to remove this item from your shopping
+                      list?
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button
+                        color="secondary"
+                        onClick={this.removeFrmList}
+                        id={i}
+                      >
+                        Yes
+                      </Button>
+                      <Button
+                        color="secondary"
+                        onClick={() => this.toggleModal(2)}
+                      >
+                        No
+                      </Button>
+                    </ModalFooter>
+                  </Modal>
                 </div>
               ))}
             </div>
