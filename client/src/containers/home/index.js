@@ -46,6 +46,7 @@ class Home extends Component {
     groceryList: [],
     fridge: [],
     newItem: "",
+    newAmount: "",
     recipelink: "",
     userBoards: [],
     togglePins: false,
@@ -278,10 +279,23 @@ class Home extends Component {
       newItem: newValue
     });
   };
+  handleNewFridgeAmount = event => {
+    console.log(event.target);
+    console.log(event);
+    let newValue = event.target.value;
+    if (isNaN(newValue)) {
+      alert("Please enter a numeric value");
+      newValue = "";
+    } else {
+    this.setState({
+      newAmount: newValue
+    });
+  }
+  };
   addNewFridgeItem = event => {
     event.preventDefault();
     let newIngredientName = this.state.newItem;
-    let newIngredientAmount = 0;
+    let newIngredientAmount = this.state.newAmount;
     let newIngredientUnit = 0;
     console.log(newIngredientUnit);
     /* check to see if ingredient already exisit in the Fridge*/
@@ -428,7 +442,7 @@ class Home extends Component {
                 el.name === ingredient
                   ? {
                       ...el,
-                      className: "bg-dark text-dark border-info d-flex"
+                      className: "bg-info text-dark border-primary d-flex"
                     }
                   : el
               )
@@ -690,9 +704,16 @@ class Home extends Component {
                 <input
                   label="Add new item"
                   type="text"
-                  className="w-100"
+                  className="w-75"
                   placeholder="What do you already have?"
                   onChange={this.handleNewFridgeItem}
+                ></input>
+                <input
+                  label="Add new item value"
+                  type="text"
+                  className="w-25"
+                  placeholder="Amount"
+                  onChange={this.handleNewFridgeAmount}
                 ></input>
                 <button type="submit" className="btn-success">
                   Add
