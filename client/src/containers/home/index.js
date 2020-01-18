@@ -605,7 +605,7 @@ class Home extends Component {
                   data-name={ingredient.name}
                   data-amount={ingredient.amount}
                   id={i}
-                  className={this.getClasses}
+                  className={this.getClasses()}
                 >
                   {ingredient.name}
                   <em className="ml-auto pr-2 text-secondary">
