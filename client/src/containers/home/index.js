@@ -410,7 +410,7 @@ class Home extends Component {
       this.toggleModal(2);
     }
   };
-  getClasses = event => {
+  getClasses = (ingredient,amount) => {
     console.log("getclasses");
     let ingredient = event.target.dataset.name;
     let amount = event.target.dataset.amount;
@@ -605,7 +605,7 @@ class Home extends Component {
                   data-name={ingredient.name}
                   data-amount={ingredient.amount}
                   id={i}
-                  className={this.getClasses()}
+                  className={this.getClasses([ingredient.name],[ingredient.amount])}
                 >
                   {ingredient.name}
                   <em className="ml-auto pr-2 text-secondary">
