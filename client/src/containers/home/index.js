@@ -422,7 +422,7 @@ class Home extends Component {
     if (fridge.length > 0) {
       let classes = fridge.map((item, x) =>
         item.name === ingredient
-          ? (item.amountStored >= amount
+          ? item.amountStored >= amount
             ? this.setState(prevState => ({
               groceryList: prevState.groceryList.map(el =>
                 el.name === ingredient
@@ -442,7 +442,7 @@ class Home extends Component {
                     }
                   : el
               )
-            })))
+            }))
           : ""
       );
       console.log("end of getclasses");
