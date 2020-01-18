@@ -222,7 +222,7 @@ class Home extends Component {
         )
       }));
     }
-    this.getClasses(newIngredientName, )
+    this.getClasses(newIngredientName,newIngredientAmount )
     console.log(this.state.fridge);
     this.toggleModal(2);
     //   });
@@ -305,6 +305,7 @@ class Home extends Component {
         newItem: ""
       });
     }
+    this.getClasses(newIngredientName,newIngredientAmount)
   };
   pinterestLogin = () => {
     axios.get("/api/pinterest").then(response => console.log(response));
