@@ -386,6 +386,7 @@ class Home extends Component {
     console.log(this.state.groceryList);
   };
   toggleModal = num => {
+    console.log(num,"NUM")
     if(num === 1){
     this.setState({
       modal: !this.state.modal1
