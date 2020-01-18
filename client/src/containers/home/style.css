@@ -8,3 +8,7 @@
 .small, small {
   font-size: 20%;
 }
+
+.modal-backdrop.show {
+  opacity: .10;
+}

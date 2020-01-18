@@ -54,7 +54,8 @@ class Home extends Component {
     activeTab: 1,
     collapse: 0,
     cards: [],
-    modal: false
+    modal1: false,
+    modal2: false
   };
 
   componentDidMount() {
@@ -384,9 +385,15 @@ class Home extends Component {
     console.log(this.state.groceryList);
   };
   toggleModal = event => {
+    if(event.target.id === "1"){
     this.setState({
-      modal: !this.state.modal
+      modal: !this.state.modal1
     });
+  } else if(event.target.id === "2") {
+    this.setState({
+      modal: !this.state.modal2
+    });
+  }
   };
   removeFrmList = event => {
     const removeIndex = event.target.dataset.index;
@@ -467,8 +474,9 @@ class Home extends Component {
                               Add Ingredients
                             </Button>
                             <Modal
-                              isOpen={this.state.modal}
+                              isOpen={this.state.modal1}
                               toggle={this.toggleModal}
+                              id="1"
                             >
                               <ModalHeader
                                 toggle={this.toggleModal}
@@ -489,6 +497,7 @@ class Home extends Component {
                                 </Button>
                               </ModalFooter>
                             </Modal>
+                            
                           </CardBody>
                         </Col>
                       </Row>
@@ -545,7 +554,7 @@ class Home extends Component {
                 </div>
               ))}
             </div>
-            <div className="col-md-4 border rounded ">
+            <div className="col-md-4 border rounded bg-light">
               <Row className="align-items-center justify-content-between">
                 <h1>Shopping List</h1>
                 <FontAwesomeIcon
@@ -601,10 +610,43 @@ class Home extends Component {
                   >
                     x
                   </button>
+                  <Modal
+                              isOpen={this.state.modal2}
+                              toggle={this.toggleModal}
+                              id="2"
+                            >
+                              <ModalHeader
+                                toggle={this.toggleModal}
+                                id="2"
+                                className="bg-secondary"
+                              >
+                                Item added to Fridge
+                              </ModalHeader>
+                              <ModalBody>
+                                Would you also like to remove this item from your shopping list?
+                              </ModalBody>
+                              <ModalFooter>
+                                <Button
+                                  color="secondary"
+                                  onClick={this.removeFrmList}
+                                  id={i}
+                                >
+                                  Yes
+                                </Button>
+                                <Button
+                                  color="secondary"
+                                  onClick={this.toggleModal}
+                                  id="2"
+                                  
+                                >
+                                  No
+                                </Button>
+                              </ModalFooter>
+                            </Modal>
                 </div>
               ))}
             </div>
-            <div className="col-md-4 border rounded">
+            <div className="col-md-4 border rounded bg-light">
               <h1>Fridge</h1>
               <form onSubmit={this.addNewFridgeItem} className="d-flex mb-2">
                 <input
