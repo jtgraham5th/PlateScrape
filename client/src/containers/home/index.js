@@ -412,8 +412,6 @@ class Home extends Component {
   };
   getClasses = (ingredient,amount) => {
     console.log("getclasses");
-    let ingredient = event.target.dataset.name;
-    let amount = event.target.dataset.amount;
     let fridge = this.state.fridge;
     if (fridge.length < 1) {
       return "border d-flex bg-white";
