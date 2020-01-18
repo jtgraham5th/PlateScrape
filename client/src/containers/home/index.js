@@ -280,8 +280,7 @@ class Home extends Component {
   handleNewFridgeItem = event => {
     console.log(event.target);
     console.log(event);
-    let newValue = parseFloat(event.target.value);
-    // let ingredientName = event.target.name;
+    let newValue = event.target.value;
     this.setState({
       newItem: newValue
     });
@@ -311,7 +310,7 @@ class Home extends Component {
       let fridge = this.state.fridge;
       let newIngredient = {
         name: newIngredientName,
-        amountNeeded: parseFloat(newIngredientAmount),
+        amountNeeded: 0,
         amountStored: parseFloat(newIngredientAmount),
         unit: "oz",
         edit: false
