@@ -418,7 +418,7 @@ class Home extends Component {
     if (fridge.length < 1) {
       return "border d-flex bg-white";
     } else {
-      let classes = fridge.map((item, x) =>
+      return fridge.map((item, x) =>
         item.name === ingredient
           ? item.amountStored >= amount
             ? "bg-dark text-dark border-info d-flex"
@@ -427,7 +427,6 @@ class Home extends Component {
       );
       console.log("getclasses");
     }
-    return classes;
   };
   render() {
     return (
