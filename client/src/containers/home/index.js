@@ -413,6 +413,7 @@ class Home extends Component {
   getClasses = (ingredient,amount) => {
     console.log("getclasses");
     let fridge = this.state.fridge;
+    console.log(fridge.length,fridge)
     if (fridge.length < 1) {
       return "border d-flex bg-white";
     } else {
