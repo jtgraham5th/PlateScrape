@@ -136,7 +136,7 @@ class Home extends Component {
     data.map((ingredient, i) => {
       console.log(ingredient);
       /* check to see if ingredient already exisit in the groceryList*/
-      if (!this.state.groceryList.some(e => e.name === ingredient.name)) {
+      if (!this.state.groceryList.some(e => e.name === ingredient.name.toLowerCase())) {
         console.log("included");
         let groceryList = this.state.groceryList;
         let newIngredient = {
@@ -155,7 +155,7 @@ class Home extends Component {
         this.setState(prevState => ({
           groceryList: prevState.groceryList.map(el =>
             el.name === key
-              ? { ...el, amount: (el.amount) + (parseFloat(ingredient.amount)) }
+              ? { ...el, amount: ((el.amount) + (parseFloat(ingredient.amount))) }
               : el
           )
         }));
