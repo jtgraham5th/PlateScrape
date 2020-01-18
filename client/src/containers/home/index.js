@@ -446,7 +446,7 @@ class Home extends Component {
                 el.name === ingredient
                   ? {
                       ...el,
-                      className: "bg-secondary font-italic text-white border-primary d-flex"
+                      className: "bg-info font-italic text-secondary border border-dark d-flex"
                     }
                   : el
               )
