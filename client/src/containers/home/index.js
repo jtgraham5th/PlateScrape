@@ -221,6 +221,7 @@ class Home extends Component {
       }));
     }
     console.log(this.state.fridge);
+    this.toggleModal(2)
     //   });
   };
   toggleFridgeEdit = event => {
@@ -384,12 +385,12 @@ class Home extends Component {
     });
     console.log(this.state.groceryList);
   };
-  toggleModal = event => {
-    if(event.target.id === "1"){
+  toggleModal = num => {
+    if(num === 1){
     this.setState({
       modal: !this.state.modal1
     });
-  } else if(event.target.id === "2") {
+  } else if(num === 2) {
     this.setState({
       modal: !this.state.modal2
     });
@@ -475,11 +476,10 @@ class Home extends Component {
                             </Button>
                             <Modal
                               isOpen={this.state.modal1}
-                              toggle={this.toggleModal}
-                              id="1"
+                              toggle={() => this.toggleModal(1)}
                             >
                               <ModalHeader
-                                toggle={this.toggleModal}
+                                toggle={() => this.toggleModal(1)}
                                 className="bg-secondary"
                               >
                                 Uh...
@@ -491,7 +491,7 @@ class Home extends Component {
                               <ModalFooter>
                                 <Button
                                   color="secondary"
-                                  onClick={this.toggleModal}
+                                  onClick={() => this.toggleModal(1)}
                                 >
                                   close
                                 </Button>
@@ -612,12 +612,10 @@ class Home extends Component {
                   </button>
                   <Modal
                               isOpen={this.state.modal2}
-                              toggle={this.toggleModal}
-                              id="2"
+                              toggle={() => this.toggleModal(2)}
                             >
                               <ModalHeader
-                                toggle={this.toggleModal}
-                                id="2"
+                                toggle={() => this.toggleModal(2)}
                                 className="bg-secondary"
                               >
                                 Item added to Fridge
@@ -635,9 +633,7 @@ class Home extends Component {
                                 </Button>
                                 <Button
                                   color="secondary"
-                                  onClick={this.toggleModal}
-                                  id="2"
-                                  
+                                  onClick={() => this.toggleModal(2)}                                  
                                 >
                                   No
                                 </Button>
