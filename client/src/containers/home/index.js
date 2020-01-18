@@ -410,6 +410,19 @@ class Home extends Component {
       this.toggleModal(2)
     }
   };
+  getClasses = event => {
+    let ingredient = event.target.dataset.name
+    let amount = event.target.dataset.amount
+    let classes = this.state.fridge.map((item, x) =>
+                    (item.name === ingredient
+                      ? (item.amountStored >= amount
+                        ? 'bg-dark text-dark border-info d-flex'
+                      : 'border d-flex bg-white')
+                      : 'border d-flex bg-white'
+                  ));
+                  console.log("getclasses")
+    return classes
+  }
   render() {
     return (
       <div className="bg-secondary">
@@ -585,13 +598,10 @@ class Home extends Component {
               </Row>
               {this.state.groceryList.map((ingredient, i) => (
                 <div
-                  className={this.state.fridge.map((item, x) =>
-                    (item.name === ingredient.name
-                      ? (item.amountStored >= ingredient.amount
-                        ? 'bg-info text-dark border-info d-flex'
-                      : 'border d-flex bg-white')
-                      : 'border d-flex bg-white'
-                  ))}
+                  data-name={ingredient.name}
+                  data-amount={ingredient.amount}
+                  id={i}
+                  className={this.getClasses}
                 >
                   {ingredient.name}
                   <em className="ml-auto pr-2 text-secondary">
