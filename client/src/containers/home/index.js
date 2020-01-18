@@ -141,7 +141,8 @@ class Home extends Component {
         let newIngredient = {
           name: ingredient.name,
           amount: this.convertToDecimal(ingredient.amount, ingredient.unit),
-          unit: "oz"
+          unit: "oz",
+          className: "border d-flex bg-white"
         };
         groceryList.push(newIngredient);
         this.setState({
@@ -158,6 +159,7 @@ class Home extends Component {
           )
         }));
       }
+      this.getClasses(ingredient.name, ingredient.amount)
       console.log(this.state.groceryList);
     });
   };
@@ -220,6 +222,7 @@ class Home extends Component {
         )
       }));
     }
+    this.getClasses(newIngredientName, )
     console.log(this.state.fridge);
     this.toggleModal(2);
     //   });
@@ -419,9 +422,27 @@ class Home extends Component {
       let classes = fridge.map((item, x) =>
         item.name === ingredient
           ? (item.amountStored >= amount
-            ? "bg-dark text-dark border-info d-flex"
-            : "border d-flex bg-white")
-          : "border d-flex bg-white"
+            ? this.setState(prevState => ({
+              groceryList: prevState.groceryList.map(el =>
+                el.name === ingredient
+                  ? {
+                      ...el,
+                      className: "bg-dark text-dark border-info d-flex"
+                    }
+                  : el
+              )
+            }))
+            : this.setState(prevState => ({
+              groceryList: prevState.groceryList.map(el =>
+                el.name === ingredient
+                  ? {
+                      ...el,
+                      className: "border d-flex bg-white"
+                    }
+                  : el
+              )
+            })))
+          : ""
       );
       console.log("end of getclasses");
       return classes;
@@ -606,10 +627,7 @@ class Home extends Component {
                   data-name={ingredient.name}
                   data-amount={ingredient.amount}
                   id={i}
-                  className={this.getClasses(
-                    ingredient.name,
-                    ingredient.amount
-                  )}
+                  className={ingredient.className}
                 >
                   {ingredient.name}
                   <em className="ml-auto pr-2 text-secondary">
