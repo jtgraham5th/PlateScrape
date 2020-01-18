@@ -264,14 +264,12 @@ class Home extends Component {
   handleSubmit = event => {
     event.preventDefault();
     let ingredientName = event.target.name;
-    let ingredientName = 
     console.log(ingredientName);
     this.setState(prevState => ({
       fridge: prevState.fridge.map(el =>
         el.name === ingredientName ? { ...el, edit: !el.edit } : el
       )
     }));
-
   };
   handleNewFridgeItem = event => {
     console.log(event.target);
