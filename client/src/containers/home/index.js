@@ -410,20 +410,22 @@ class Home extends Component {
       this.toggleModal(2);
     }
   };
-  getClasses = (ingredient,amount) => {
+  getClasses = (ingredient, amount) => {
     console.log("getclasses");
     let fridge = this.state.fridge;
-    console.log(fridge.length,fridge)
+    console.log(fridge.length, fridge);
+    console.log(ingredient, amount);
     if (fridge.length < 1) {
       return "border d-flex bg-white";
     } else {
-      return fridge.map((item, x) =>
+      let classes = fridge.map((item, x) =>
         item.name === ingredient
           ? item.amountStored >= amount
             ? "bg-dark text-dark border-info d-flex"
             : "border d-flex bg-white"
           : "border d-flex bg-white"
       );
+      return classes;
       console.log("getclasses");
     }
   };
@@ -604,7 +606,10 @@ class Home extends Component {
                   data-name={ingredient.name}
                   data-amount={ingredient.amount}
                   id={i}
-                  className={this.getClasses([ingredient.name],[ingredient.amount])}
+                  className={this.getClasses(
+                    [ingredient.name],
+                    [ingredient.amount]
+                  )}
                 >
                   {ingredient.name}
                   <em className="ml-auto pr-2 text-secondary">
