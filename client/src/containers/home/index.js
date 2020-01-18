@@ -46,7 +46,7 @@ class Home extends Component {
     groceryList: [],
     fridge: [],
     newItem: "",
-    newAmount: "",
+    newAmount: 0,
     recipelink: "",
     userBoards: [],
     togglePins: false,
@@ -245,8 +245,6 @@ class Home extends Component {
     });
   };
   handleInput = event => {
-    console.log(event.target);
-    console.log(event);
     let newValue = event.target.value;
     let ingredientName = event.target.name;
     if (isNaN(newValue)) {
@@ -259,7 +257,7 @@ class Home extends Component {
         )
       }));
     }
-    this.getClasses(ingredientName,newValue)
+    // this.getClasses(ingredientName,newValue)
   };
   handleSubmit = event => {
     event.preventDefault();
@@ -271,8 +269,8 @@ class Home extends Component {
       )
     }));
     let ingredientAmount = 0;
-    this.state.fridge.map(el =>
-      el.name === ingredientName ? ingredientAmount = el.amountStored : el
+    this.state.groceryList.map(el =>
+      el.name === ingredientName ? ingredientAmount = el.amount : el
     )
     console.log(ingredientAmount);
     this.getClasses(ingredientName,ingredientAmount)
@@ -435,7 +433,7 @@ class Home extends Component {
     }
   };
   getClasses = (ingredient, amount) => {
-    console.log("getclasses");
+    console.log("---getclasses---");
     let fridge = this.state.fridge;
     console.log(fridge.length, fridge);
     console.log(ingredient, amount);
@@ -448,7 +446,7 @@ class Home extends Component {
                 el.name === ingredient
                   ? {
                       ...el,
-                      className: "bg-info font-italic text-secondary border-primary d-flex"
+                      className: "bg-secondary font-italic text-white border-primary d-flex"
                     }
                   : el
               )
@@ -465,7 +463,7 @@ class Home extends Component {
             }))
           : ""
       );
-      console.log("end of getclasses");
+      console.log("---end of getclasses---");
       return classes;
     } else {
       return "border d-flex bg-dark";
