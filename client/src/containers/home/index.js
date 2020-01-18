@@ -270,6 +270,12 @@ class Home extends Component {
         el.name === ingredientName ? { ...el, edit: !el.edit } : el
       )
     }));
+    let ingredientAmount = 0;
+    this.state.fridge.map(el =>
+      el.name === ingredientName ? ingredientAmount = el.amountStored : el
+    )
+    console.log(ingredientAmount);
+    this.getClasses(ingredientName,ingredientAmount)
   };
   handleNewFridgeItem = event => {
     console.log(event.target);
