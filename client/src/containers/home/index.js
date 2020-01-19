@@ -180,17 +180,22 @@ class Home extends Component {
     } else if (unit === "tsp" || unit === "teaspoons") {
       result = +parseFloat(result / 3 / 2).toFixed(2);
       console.log(result, "tsp to oz");
-      //Convertst TABLESPOONS to OUNCES
+      //Converts TABLESPOONS to OUNCES
     } else if (unit === "tbsp" || unit === "tablespoons") {
       result = +parseFloat(result / 2).toFixed(2);
       console.log(result, "tbsp to oz");
+    } else if (!unit) {
+      result = parseFloat(amount)
+    } else if (!amount) {
+      result = 0
     }
+    console.log(result)
     return result;
   };
   addToFridge = event => {
     console.log(this.props);
     let newIngredientName = event.target.name;
-    let newIngredientAmount = parseFloat(event.target.dataset.amount);
+    let newIngredientAmount = parseFloat(event.target.dataset.amount) || 0;
     let newIngredientUnit = event.target.dataset.unit;
     console.log(newIngredientUnit);
     // this.state.fridge.map((ingredient, i) => {
