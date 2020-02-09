@@ -5,15 +5,17 @@ import { Button } from "reactstrap";
 
 var axios = require("axios");
 
-class Navbar extends Component {
-  pinterestLogin = () => {
+const PinterestBtn = () => {
+  function pinterestLogin(){
+    console.log("hit!!")
     axios.get("/api/pinterest").then(response => console.log(response));
   };
-  render() {
-    
-    return (
-      <div></div>
-    );
-  }
-}
-export default Navbar;
+
+  return (
+    <Button onClick={pinterestLogin} className="mr-2" color="danger">
+      <FontAwesomeIcon icon={["fab", "pinterest"]} size="lg" className="" />
+    </Button>
+  );
+};
+
+export default PinterestBtn;

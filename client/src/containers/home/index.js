@@ -366,7 +366,9 @@ class Home extends Component {
     this.getClasses(newIngredientName, newIngredientAmount);
   };
   pinterestLogin = () => {
+    console.log("hit!!")
     axios.get("/api/pinterest").then(response => console.log(response));
+    
   };
   displayPins = event => {
     event.preventDefault();
@@ -653,21 +655,21 @@ class Home extends Component {
               <Row className="d-flex align-items-center border-bottom border-dark pb-2 pt-2">
                 <FontAwesomeIcon
                   icon={faSortAlphaUp}
-                  size="1.5x"
+                  size="sm"
                   color="black"
                   className="col-md-4"
                   onClick={this.alphaSort}
                 />
                 <FontAwesomeIcon
                   icon={faSortAmountUp}
-                  size="1.5x"
+                  size="sm"
                   color="black"
                   className="col-md-4"
                   onClick={this.decreaseSort}
                 />
                 <FontAwesomeIcon
                   icon={faSortAmountDownAlt}
-                  size="1.5x"
+                  size="sm"
                   color="black"
                   className="col-md-4"
                   onClick={this.increaseSort}
@@ -765,7 +767,7 @@ class Home extends Component {
                 <div className="col-md-3 border h6 p-0">Have</div>
               </div>
               {this.state.fridge.map((ingredient, i) => (
-                <div className="row">
+                <div key={i} className="row">
                   <div className="col-md-6 border">{ingredient.name}</div>
                   <small className="col-md-3 border p-0">
                     {ingredient.amountNeeded} {ingredient.unit}

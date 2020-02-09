@@ -40,11 +40,12 @@ function App() {
   return (
     <Provider store={store}>
       <Router>
-        <div classname="App">
+        <div className="App">
           <Navbar />
           <Route exact path="/" component={Home} />
           <Route exact path="/register" component={Register} />
           <Route exact path="/login" component={Login} />
+          <Route exact path="/api/pinterest" />
           {/* <Route exact path="/home" component={Home} /> */}
           <Switch>
             <PrivateRoute exact path="/home" component={Home} />  
