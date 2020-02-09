@@ -4,11 +4,16 @@
   flex-wrap: nowrap;
   float: none;
 }
-
-.small, small {
-  font-size: 20%;
+.row {
+  margin-bottom: 0px;
 }
-
 .modal-backdrop.show {
-  opacity: .01;
+  opacity: 0.01;
+}
+.exists {
+  color: red;
+  text-decoration: line-through;
+  font-style: italic;
+  border-color: #007bff;
+  background-color: transparent;
 }

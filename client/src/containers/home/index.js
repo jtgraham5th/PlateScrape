@@ -8,6 +8,7 @@ import {
   FormGroup,
   Label,
   Input,
+  InputGroupAddon,
   Card,
   CardHeader,
   CardBody,
@@ -27,7 +28,9 @@ import {
   Modal,
   ModalBody,
   ModalHeader,
-  ModalFooter
+  ModalFooter,
+  InputGroup,
+  UncontrolledCollapse
 } from "reactstrap";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -36,6 +39,10 @@ import {
   faSortAmountDownAlt
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { logoutUser } from "../../actions/authActions";
+
 library.add(faSortAlphaUp);
 
 var axios = require("axios");
@@ -85,11 +92,17 @@ class Home extends Component {
           function(response) {
             this.setState({
               userBoards: response.data.data
-            });
-            console.log(this.state.userBoards).catch(err => console.log(err));
-          }.bind(this)
+            }).bind(this);
+          },
+          err => console.log(err)
         );
     }
+    axios.get("/api/getFridge").then(response => {
+      console.log(response);
+      this.setState({
+        fridge: response.data.data
+      });
+    });
   }
   handleInputChange = event => {
     const { name, value } = event.target;
@@ -136,14 +149,18 @@ class Home extends Component {
     data.map((ingredient, i) => {
       console.log(ingredient);
       /* check to see if ingredient already exisit in the groceryList*/
-      if (!this.state.groceryList.some(e => e.name === ingredient.name.toLowerCase())) {
+      if (
+        !this.state.groceryList.some(
+          e => e.name === ingredient.name.toLowerCase()
+        )
+      ) {
         console.log("included");
         let groceryList = this.state.groceryList;
         let newIngredient = {
           name: ingredient.name.toLowerCase(),
           amount: this.convertToDecimal(ingredient.amount, ingredient.unit),
           unit: "oz",
-          className: "border d-flex bg-white"
+          className: "row border-bottom border-primary d-flex bg-transparent pl-3 font-italic"
         };
         groceryList.push(newIngredient);
         this.setState({
@@ -155,12 +172,12 @@ class Home extends Component {
         this.setState(prevState => ({
           groceryList: prevState.groceryList.map(el =>
             el.name === key
-              ? { ...el, amount: ((el.amount) + (parseFloat(ingredient.amount))) }
+              ? { ...el, amount: el.amount + parseFloat(ingredient.amount) }
               : el
           )
         }));
       }
-      this.getClasses(ingredient.name, ingredient.amount)
+      this.getClasses(ingredient.name, ingredient.amount);
       console.log(this.state.groceryList);
     });
   };
@@ -185,11 +202,11 @@ class Home extends Component {
       result = +parseFloat(result / 2).toFixed(2);
       console.log(result, "tbsp to oz");
     } else if (!unit) {
-      result = parseFloat(amount)
+      result = parseFloat(amount);
     } else if (!amount) {
-      result = 0
+      result = 0;
     }
-    console.log(result)
+    console.log(result);
     return result;
   };
   addToFridge = event => {
@@ -215,6 +232,15 @@ class Home extends Component {
       this.setState({
         fridge
       });
+      axios
+        .post("/api/fridgeItem", newIngredient)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(err => {
+          console.log(err);
+          alert("Failed to create: " + err.message);
+        });
     } else {
       let fridge = this.state.fridge;
       this.setState(prevState => ({
@@ -228,7 +254,7 @@ class Home extends Component {
         )
       }));
     }
-    this.getClasses(newIngredientName,newIngredientAmount )
+    this.getClasses(newIngredientName, newIngredientAmount);
     console.log(this.state.fridge);
     this.toggleModal(2);
     //   });
@@ -275,10 +301,10 @@ class Home extends Component {
     }));
     let ingredientAmount = 0;
     this.state.groceryList.map(el =>
-      el.name === ingredientName ? ingredientAmount = el.amount : el
-    )
+      el.name === ingredientName ? (ingredientAmount = el.amount) : el
+    );
     console.log(ingredientAmount);
-    this.getClasses(ingredientName,ingredientAmount)
+    this.getClasses(ingredientName, ingredientAmount);
   };
   handleNewFridgeItem = event => {
     console.log(event.target);
@@ -296,10 +322,10 @@ class Home extends Component {
       alert("Please enter a numeric value");
       newValue = "";
     } else {
-    this.setState({
-      newAmount: newValue
-    });
-  }
+      this.setState({
+        newAmount: newValue
+      });
+    }
   };
   addNewFridgeItem = event => {
     event.preventDefault();
@@ -322,13 +348,22 @@ class Home extends Component {
       this.setState({
         fridge
       });
+      axios
+        .post("/api/fridgeItem", newIngredient)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(err => {
+          console.log(err);
+          alert("Failed to create: " + err.message);
+        });
     } else {
       alert("This item already exist in your fridge");
       this.setState({
         newItem: ""
       });
     }
-    this.getClasses(newIngredientName,newIngredientAmount)
+    this.getClasses(newIngredientName, newIngredientAmount);
   };
   pinterestLogin = () => {
     axios.get("/api/pinterest").then(response => console.log(response));
@@ -447,25 +482,26 @@ class Home extends Component {
         item.name === ingredient
           ? item.amountStored >= amount
             ? this.setState(prevState => ({
-              groceryList: prevState.groceryList.map(el =>
-                el.name === ingredient
-                  ? {
-                      ...el,
-                      className: "bg-info font-italic text-secondary border border-dark d-flex"
-                    }
-                  : el
-              )
-            }))
+                groceryList: prevState.groceryList.map(el =>
+                  el.name === ingredient
+                    ? {
+                        ...el,
+                        className:
+                          "bg-info font-italic text-secondary border border-dark d-flex"
+                      }
+                    : el
+                )
+              }))
             : this.setState(prevState => ({
-              groceryList: prevState.groceryList.map(el =>
-                el.name === ingredient
-                  ? {
-                      ...el,
-                      className: "border d-flex bg-white"
-                    }
-                  : el
-              )
-            }))
+                groceryList: prevState.groceryList.map(el =>
+                  el.name === ingredient
+                    ? {
+                        ...el,
+                        className: "d-flex pl-3 row exists border-bottom border-primary"
+                      }
+                    : el
+                )
+              }))
           : ""
       );
       console.log("---end of getclasses---");
@@ -474,16 +510,14 @@ class Home extends Component {
       return "border d-flex bg-dark";
     }
   };
+  onLogoutClick = e => {
+    e.preventDefault();
+    this.props.logoutUser();
+  };
   render() {
+    const { user } = this.props.auth;
     return (
       <div className="bg-secondary">
-        <Row
-          noGutters={true}
-          style={{ backgroundColor: "#333", borderColor: "#333" }}
-          className="text-white"
-        >
-          <h3>Your Boards</h3>
-        </Row>
         {this.state.userBoards.length > 1 ? (
           <Nav tabs className="mt-3">
             {this.state.userBoards.map((board, i) => (
@@ -504,15 +538,7 @@ class Home extends Component {
               </NavItem>
             ))}
           </Nav>
-        ) : (
-          <div className="mx-auto">
-            <a
-              className="btn btn-danger mx-auto"
-              href="https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://serene-plateau-07976.herokuapp.com/&client_id=5073939286663940267&scope=read_public,write_public&state=8675309"
-            >
-              Login to Pinterest
-            </a>
-          </div>
+        ) : (<div></div>
         )}
         {this.state.togglePins ? (
           <TabContent activeTab={this.state.activeTab}>
@@ -576,73 +602,74 @@ class Home extends Component {
           </TabContent>
         ) : (
           ""
-        )}
-
-        <Container>
+        )}        <Container>
           <Form>
             <FormGroup>
               <Label for="exampleText">Enter link to Recipe article</Label>
-              <Input
-                type="textarea"
-                name="recipelink"
-                id="exampleText"
-                onChange={this.handleInputChange}
-              />
+              <InputGroup>
+                <InputGroupAddon addonType="prepend">
+                  <Button onClick={this.handleFormSubmit}>Submit</Button>
+                </InputGroupAddon>
+                <Input
+                  type="input"
+                  name="recipelink"
+                  id="exampleText"
+                  onChange={this.handleInputChange}
+                />{" "}
+              </InputGroup>
             </FormGroup>
-            <Button onClick={this.handleFormSubmit}>Submit</Button>
           </Form>
-          <div className="row">
+          <div className="row mb-0">
             <div className="col-md-3" id="accordion">
               {this.state.recipes.map((recipe, i) => (
-                <div key={i} className="rounded border">
-                  <div class="card">
-                    <div class="card-header" id="headingOne">
-                      <h5 class="mb-0">
-                        <button
-                          class="btn btn-link small w-100"
-                          onClick={this.toggleIngredients}
-                          data-event={i}
-                        >
-                          {recipe.URL}
-                        </button>
-                      </h5>
+                <div key={i} className="">
+                  <button
+                    class="small teal lighten-5 rounded w-100"
+                    id={`toggler${i}`}
+                  >
+                    {recipe.URL}
+                  </button>
+                  <UncontrolledCollapse toggler={`#toggler${i}`}>
+                    <div class="card-body white">
+                      {recipe.ingredients.map((ingredient, e) => (
+                        <h6 key={e}>
+                          {ingredient.amount} {ingredient.unit}{" "}
+                          {ingredient.name}
+                        </h6>
+                      ))}
                     </div>
-                    <Collapse isOpen={this.state.collapse === i}>
-                      <div class="card-body">
-                        {recipe.ingredients.map((ingredient, e) => (
-                          <h6 key={e}>
-                            {ingredient.amount} {ingredient.unit}{" "}
-                            {ingredient.name}
-                          </h6>
-                        ))}
-                      </div>
-                    </Collapse>
-                  </div>
+                  </UncontrolledCollapse>
                 </div>
               ))}
             </div>
-            <div className="col-md-4 border rounded bg-light">
-              <Row className="align-items-center justify-content-between">
-                <h1>Shopping List</h1>
+            <div className="col-md-4 rounded bg-light yellow lighten-4 mr-4">
+              <Row className="text-center brown border border-bottom border-dark">
+                <h1
+                className="w-100"
+                style={{
+                  fontFamily: "monospace"
+                }}>Shopping List</h1>
+              </Row>
+              <Row className="d-flex align-items-center border-bottom border-dark pb-2 pt-2">
                 <FontAwesomeIcon
                   icon={faSortAlphaUp}
-                  size="1x"
+                  size="1.5x"
                   color="black"
-                  className="mr-1"
+                  className="col-md-4"
                   onClick={this.alphaSort}
                 />
                 <FontAwesomeIcon
                   icon={faSortAmountUp}
-                  size="1x"
+                  size="1.5x"
                   color="black"
-                  className="mr-1"
+                  className="col-md-4"
                   onClick={this.decreaseSort}
                 />
                 <FontAwesomeIcon
                   icon={faSortAmountDownAlt}
-                  size="1x"
+                  size="1.5x"
                   color="black"
-                  className="mr-3"
+                  className="col-md-4"
                   onClick={this.increaseSort}
                 />
               </Row>
@@ -654,25 +681,26 @@ class Home extends Component {
                   className={ingredient.className}
                 >
                   {ingredient.name}
-                  <em className="ml-auto pr-2 text-secondary">
+                  <em className="ml-auto pr-2 ">
                     {ingredient.amount} {ingredient.unit}{" "}
                   </em>
+
                   <button
-                    className="btn-success"
+                    className="tiny material-icons bg-transparent border-0"
                     name={ingredient.name}
                     data-amount={ingredient.amount}
                     data-unit={ingredient.unit}
                     onClick={this.addToFridge}
                   >
-                    +
+                    add
                   </button>
                   <button
-                    className="btn-danger"
+                    className="tiny material-icons bg-transparent border-0"
                     name={ingredient.name}
                     data-index={i}
                     onClick={this.removeFrmList}
                   >
-                    x
+                    close
                   </button>
                   <Modal
                     isOpen={this.state.modal2}
@@ -708,7 +736,10 @@ class Home extends Component {
               ))}
             </div>
             <div className="col-md-4 border rounded bg-light">
-              <h1>Fridge</h1>
+              <h1
+              style={{
+                fontFamily: "monospace"
+              }}>Fridge</h1>
               <form onSubmit={this.addNewFridgeItem} className="d-flex mb-2">
                 <input
                   label="Add new item"
@@ -772,5 +803,11 @@ class Home extends Component {
     );
   }
 }
-
-export default Home;
+Home.propTypes = {
+  logoutUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired
+};
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+export default connect(mapStateToProps, { logoutUser })(Home);
