@@ -22,7 +22,7 @@ require("./config/passport")(passport);
 mongoose.set("useCreateIndex", true);
 
 var db = process.env.MONGODB_URI;
-mongoose.connect(db, { useNewUrlParser: true });
+mongoose.connect(config.db, { useNewUrlParser: true });
 const connection = mongoose.connection;
 
 connection.on("connected", () => {
