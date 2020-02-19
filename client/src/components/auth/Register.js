@@ -3,32 +3,63 @@ import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { registerUser } from "../../actions/authActions";
+import { clearErrors } from "../../actions/errorActions";
 import classnames from "classnames";
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Alert
+} from "reactstrap";
 
 class Register extends Component {
-  constructor() {
-    super();
-    this.state = {
-      name: "",
-      email: "",
-      password: "",
-      password2: "",
-      errors: {}
-    };
+  state = {
+    name: "",
+    email: "",
+    password: "",
+    password2: "",
+    errors: {},
+    msg: null
   };
-  componentDidMount() {
-    // If logged in and user navigates to Register page, should redirect them to dashboard
-    if (this.props.auth.isAuthenticated) {
-      this.props.history.push("/Home");
+
+  // componentDidMount() {
+  //   // If logged in and user navigates to Register page, should redirect them to dashboard
+  //   if (this.props.auth.isAuthenticated) {
+  //     this.props.history.push("/Home");
+  //   }
+  // };
+  componentDidUpdate(prevProps) {
+    const { error, isAuthenticated } = this.props;
+
+    if (error !== prevProps.error) {
+      // Check for register error
+      if (error.id === "REGISTER_FAIL") {
+        this.setState({ msg: error.msg.msg });
+      } else {
+        this.setState({ msg: null });
+      }
     }
-  };
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.errors) {
-      this.setState({
-        errors: nextProps.errors
-      });
+
+    // If authenticated, close modal
+    if (this.state.modal) {
+      if (isAuthenticated) {
+        this.toggle();
+      }
     }
   }
+  toggle = () => {
+    // Clear errors
+    this.props.clearErrors();
+    this.setState({
+      modal: !this.state.modal
+    });
+  };
+
   onChange = e => {
     this.setState({ [e.target.id]: e.target.value });
   };
@@ -40,29 +71,33 @@ class Register extends Component {
       password: this.state.password,
       password2: this.state.password2
     };
-    this.props.registerUser(newUser, this.props.history);
+    this.props.registerUser(newUser);
   };
   render() {
     const { errors } = this.state;
     return (
-      <div className="container">
-        <div className="row">
-          <div className="col s8 offset-s2">
+      <div  className="pr-2">
+        <Button onClick={this.toggle}>Register</Button>
+        <Modal isOpen={this.state.modal} toggle={this.toggle}>
+          <ModalHeader toggle={this.toggle}>Register</ModalHeader>
+          <ModalBody>
+            {this.state.msg ? (
+              <Alert color="danger">{this.state.msg}</Alert>
+            ) : null}
             <Link to="/" className="btn-flat waves-effect">
               <i className="material-icons left">keyboard_backspace</i> Back to
               home
             </Link>
-            <div className="col s12" style={{ paddingLeft: "11.250px" }}>
-              <h4>
-                <b>Register</b> below
-              </h4>
-              <p className="grey-text text-darken-1">
-                Already have an account? <Link to="/login">Log in</Link>
-              </p>
-            </div>
-            <form noValidate onSubmit={this.onSubmit}>
-              <div className="input-field col s12">
-                <input
+            <h4>
+              <b>Register</b> below
+            </h4>
+            <p className="grey-text text-darken-1">
+              Already have an account? <Link to="/login">Log in</Link>
+            </p>
+            <Form noValidate onSubmit={this.onSubmit}>
+              <FormGroup>
+                <Label for="name">Name</Label>
+                <Input
                   onChange={this.onChange}
                   value={this.state.name}
                   error={errors.name}
@@ -72,11 +107,9 @@ class Register extends Component {
                     invalid: errors.name
                   })}
                 />
-                <label htmlFor="name">Name</label>
                 <span className="red-text">{errors.name}</span>
-              </div>
-              <div className="input-field col s12">
-                <input
+                <Label for="email">Email</Label>
+                <Input
                   onChange={this.onChange}
                   value={this.state.email}
                   error={errors.email}
@@ -86,11 +119,9 @@ class Register extends Component {
                     invalid: errors.email
                   })}
                 />
-                <label htmlFor="email">Email</label>
                 <span className="red-text">{errors.email}</span>
-              </div>
-              <div className="input-field col s12">
-                <input
+                <Label for="password">Password</Label>
+                <Input
                   onChange={this.onChange}
                   value={this.state.password}
                   error={errors.password}
@@ -100,11 +131,9 @@ class Register extends Component {
                     invalid: errors.password
                   })}
                 />
-                <label htmlFor="password">Password</label>
                 <span className="red-text">{errors.password}</span>
-              </div>
-              <div className="input-field col s12">
-                <input
+                <Label for="password2">Confirm Password</Label>
+                <Input
                   onChange={this.onChange}
                   value={this.state.password2}
                   error={errors.password2}
@@ -114,37 +143,38 @@ class Register extends Component {
                     invalid: errors.password2
                   })}
                 />
-                <label htmlFor="password2">Confirm Password</label>
                 <span className="red-text">{errors.password2}</span>
-              </div>
-              <div className="col s12" style={{ paddingLeft: "11.250px" }}>
-                <button
-                  style={{
-                    width: "150px",
-                    borderRadius: "3px",
-                    letterSpacing: "1.5px",
-                    marginTop: "1rem"
-                  }}
-                  type="submit"
-                  className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-                >
-                  Sign up
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+                <div className="col s12" style={{ paddingLeft: "11.250px" }}>
+                  <Button
+                    style={{
+                      width: "150px",
+                      borderRadius: "3px",
+                      letterSpacing: "1.5px",
+                      marginTop: "1rem"
+                    }}
+                    type="submit"
+                    className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+                  >
+                    Sign up
+                  </Button>
+                </div>
+              </FormGroup>
+            </Form>
+          </ModalBody>
+        </Modal>
       </div>
     );
   }
 }
 Register.propTypes = {
+  isAuthenticated: PropTypes.bool,
   registerUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
+  errors: PropTypes.object.isRequired,
+  clearErrors: PropTypes.func.isRequired
 };
 const mapStateToProps = state => ({
   auth: state.auth,
   errors: state.errors
 });
-export default connect(mapStateToProps, { registerUser })(withRouter(Register));
+export default connect(mapStateToProps, { registerUser, clearErrors })(withRouter(Register));

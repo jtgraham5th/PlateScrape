@@ -14,13 +14,13 @@ const db = require("../models");
 // API Routes
 // router.use("/api", apiRoutes);
 router.get("/pinterest", (req, res) => {
+  console.log("im here");
   axios
     .get(
       "https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://serene-plateau-07976.herokuapp.com/&client_id=5073939286663940267&scope=read_public,write_public&state=8675309"
     )
     .then(response => {
-      //   console.log(response)
-      res.redirect(response);
+      res.json(response);
     });
 });
 // If no API routes are hit, send the React app
@@ -51,9 +51,36 @@ router.get("/recipes/:id", (req, res) => {
     res.json(ingredientData);
   });
 });
-router.post("/fridgeItem", function(req, res) {
+router.post("/shoppingListItem", function(req, res) {
+  const { newIngredient, userId} = req.body;
   console.log("You hit the api new route");
-  db.Fridge.create(req.body)
+  console.log(req.body)
+  console.log(newIngredient)
+  console.log(userId)
+  db.User.updateOne({ _id: userId }, { $push: { shoppingList: newIngredient } })
+    .then(newItem => {
+      console.log("New Shopping List Item", newItem);
+      res.json({
+        message: "Successfully created",
+        error: false,
+        data: newItem
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.json({
+        message: err.message,
+        error: true
+      });
+    });
+});
+router.post("/fridgeItem", function(req, res) {
+  const { newIngredient, userId} = req.body;
+  console.log("You hit the api new route");
+  console.log(req.body)
+  console.log(newIngredient)
+  console.log(userId)
+  db.User.updateOne({ _id: userId }, { $push: { fridge: newIngredient } })
     .then(newItem => {
       console.log("New Fridge Item", newItem);
       res.json({
@@ -70,8 +97,13 @@ router.post("/fridgeItem", function(req, res) {
       });
     });
 });
-router.get("/getFridge", (req, res) => {
-  db.Fridge.find({})
+
+router.get("/getFridge/:id", (req, res) => {
+  console.log("hit me");
+  const userID = req.params.id;
+  console.log(req.params);
+  console.log(userID);
+  db.User.findById(userID, "fridge")
     .then(allItems => {
       res.json({
         message: "Requested all Fridge Items",
@@ -87,7 +119,29 @@ router.get("/getFridge", (req, res) => {
       });
     });
 });
+router.get("/getShoppingList/:id", (req, res) => {
+  console.log("hit me");
+  const userID = req.params.id;
+  console.log(req.params);
+  console.log(userID);
+  db.User.findById(userID, "shoppingList")
+    .then(allItems => {
+      res.json({
+        message: "Requested Shopping List",
+        error: false,
+        data: allItems
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.json({
+        message: err.message,
+        error: true
+      });
+    });
+});
 router.post("/register", (req, res) => {
+  console.log("im here");
   // Form validation
   const { errors, isValid } = validateRegisterInput(req.body);
   // Check validation
@@ -96,12 +150,17 @@ router.post("/register", (req, res) => {
   }
   db.User.findOne({ email: req.body.email }).then(user => {
     if (user) {
+      console.log("user exist");
       return res.status(400).json({ email: "Email already exists" });
     } else {
+      console.log("user does not exist");
+
       const newUser = new User({
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
+        fridge: [],
+        shoppingList: []
       });
       // Hash password before saving in database
       bcrypt.genSalt(10, (err, salt) => {
@@ -119,20 +178,20 @@ router.post("/register", (req, res) => {
 });
 router.post("/login", (req, res) => {
   // Form validation
-const { errors, isValid } = validateLoginInput(req.body);
-// Check validation
+  const { errors, isValid } = validateLoginInput(req.body);
+  // Check validation
   if (!isValid) {
     return res.status(400).json(errors);
   }
-const email = req.body.email;
+  const email = req.body.email;
   const password = req.body.password;
-// Find user by email
+  // Find user by email
   db.User.findOne({ email }).then(user => {
     // Check if user exists
     if (!user) {
       return res.status(404).json({ emailnotfound: "Email not found" });
     }
-// Check password
+    // Check password
     bcrypt.compare(password, user.password).then(isMatch => {
       if (isMatch) {
         // User matched
@@ -141,7 +200,7 @@ const email = req.body.email;
           id: user.id,
           name: user.name
         };
-// Sign token
+        // Sign token
         jwt.sign(
           payload,
           keys.secretOrKey,

@@ -7,6 +7,10 @@
 .row {
   margin-bottom: 0px;
 }
+.modal {
+  background-color: transparent;
+  max-height: 100%;
+}
 .modal-backdrop.show {
   opacity: 0.01;
 }

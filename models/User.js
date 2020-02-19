@@ -1,4 +1,7 @@
 const mongoose = require("mongoose");
+const FridgeSchema = require("./Fridge");
+const shoppingListSchema = require("./ShoppingList")
+
 const Schema = mongoose.Schema;
 // Create Schema
 const UserSchema = new Schema({
@@ -17,6 +20,9 @@ const UserSchema = new Schema({
   date: {
     type: Date,
     default: Date.now
-  }
+  },
+  fridge: [{ type: Schema.Types.Mixed, ref: FridgeSchema }],
+  shoppingList: [{ type: Schema.Types.Mixed, ref: shoppingListSchema }]
+
 });
 module.exports = User = mongoose.model("user", UserSchema);
