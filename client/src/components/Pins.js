@@ -60,11 +60,11 @@ class Pins extends Component {
       })
       .catch(err => {
         console.log("ERROR:", err);
-        const accessToken =
-          "Aj5cBG-EFZy8RRy1skpJ0zVYY_QkFeSnWQ45H_lGakDl-YDIqwJUgDAAAAMgRmtif9EgrmUAAAAA";
-        this.setState({ accessToken: accessToken });
-        console.log("TEMPORARY TOKEN", accessToken);
-        this.pinterestAPIBoardRequest();
+        // const accessToken =
+        //   "Aj5cBG-EFZy8RRy1skpJ0zVYY_QkFeSnWQ45H_lGakDl-YDIqwJUgDAAAAMgRmtif9EgrmUAAAAA";
+        // this.setState({ accessToken: accessToken });
+        // console.log("TEMPORARY TOKEN", accessToken);
+        // this.pinterestAPIBoardRequest();
       });
   }
   pinterestAPIBoardRequest() {

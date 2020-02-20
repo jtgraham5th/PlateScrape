@@ -14,6 +14,9 @@
 .modal-backdrop.show {
   opacity: 0.01;
 }
+.modal .modal-content {
+  padding: 0px;
+}
 .exists {
   color: red;
   text-decoration: line-through;

@@ -53,7 +53,7 @@ router.get("/recipes/:id", (req, res) => {
 });
 router.post("/shoppingListItem", function(req, res) {
   const { newIngredient, userId} = req.body;
-  console.log("You hit the api new route");
+  console.log("Adding Item to Shopping List");
   console.log(req.body)
   console.log(newIngredient)
   console.log(userId)
@@ -76,7 +76,7 @@ router.post("/shoppingListItem", function(req, res) {
 });
 router.post("/fridgeItem", function(req, res) {
   const { newIngredient, userId} = req.body;
-  console.log("You hit the api new route");
+  console.log("Adding Item to Fridge");
   console.log(req.body)
   console.log(newIngredient)
   console.log(userId)
@@ -97,9 +97,30 @@ router.post("/fridgeItem", function(req, res) {
       });
     });
 });
+router.put("/fridgeItem", function(req, res) {
+  const { itemName, userId} = req.body;
+  console.log(req.body)
+  db.User.update({ _id: userId }, { $pull: { fridge: { name: itemName } }})
+    .then(removedItem => {
+      console.log("Removed Fridge Item", removedItem);
+      res.json({
+        message: "Successfully removed",
+        error: false,
+        data: removedItem
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.json({
+        message: err.message,
+        error: true
+      });
+    });
+});
+
 
 router.get("/getFridge/:id", (req, res) => {
-  console.log("hit me");
+  console.log("Retrieving Fridge Data...");
   const userID = req.params.id;
   console.log(req.params);
   console.log(userID);
@@ -120,7 +141,7 @@ router.get("/getFridge/:id", (req, res) => {
     });
 });
 router.get("/getShoppingList/:id", (req, res) => {
-  console.log("hit me");
+  console.log("Retriving Shopping List Data...");
   const userID = req.params.id;
   console.log(req.params);
   console.log(userID);

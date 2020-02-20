@@ -123,9 +123,12 @@ class ShoppingList extends Component {
         edit: false
       };
       fridge.push(newIngredient);
-      if (this.props.auth.user.isAuthenticated) {
+      if (this.props.auth.isAuthenticated) {
         axios
-          .post("/api/fridgeItem", newIngredient)
+        .post("/api/fridgeItem", {
+          newIngredient: newIngredient,
+          userId: this.props.auth.user.id
+        })
           .then(response => {
             console.log(response);
           })
@@ -280,15 +283,16 @@ class ShoppingList extends Component {
             >
               <ModalHeader
                 toggle={() => this.toggleModal(2)}
-                className="bg-secondary"
+                className="teal darken-4 white-text"
+                style={{fontFamily: "monospace"}}
               >
                 Item added to Fridge
               </ModalHeader>
               <ModalBody>
                 Would you also like to remove this item from your shopping list?
               </ModalBody>
-              <ModalFooter>
-                <Button color="secondary" onClick={this.removeFrmList} id={i}>
+              <ModalFooter className="d-flex justify-content-center">
+                <Button color="secondary" onClick={this.removeFrmList} id={i} className="mr-4">
                   Yes
                 </Button>
                 <Button color="secondary" onClick={() => this.toggleModal(2)}>

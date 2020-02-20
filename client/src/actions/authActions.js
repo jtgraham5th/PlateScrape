@@ -2,7 +2,7 @@ import axios from "axios";
 import setAuthToken from "../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
 import { returnErrors } from "./errorActions";
-import { batch } from 'react-redux'
+import { batch } from "react-redux";
 import {
   GET_ERRORS,
   SET_CURRENT_USER,
@@ -25,6 +25,18 @@ export const registerUser = (userData, history) => dispatch => {
       })
     );
 };
+export const removeFridgeItem = (itemName, userId) => dispatch => {
+  axios
+    .put("/api/fridgeItem", { itemName: itemName, userId: userId })
+    .then(res => {
+      console.log("Fridge Item Removed:", res);
+      dispatch(getUserFridgeData(userId));
+    })
+    .catch(err => {
+      console.log(err);
+      alert("Failed to remove: " + err.message);
+    });
+};
 
 export const loginUser = userData => dispatch => {
   axios
@@ -41,9 +53,9 @@ export const loginUser = userData => dispatch => {
       console.log(decoded);
       // Set current user
       batch(() => {
-        dispatch(setCurrentUser(decoded))
-        dispatch(getUserFridgeData(decoded))
-        dispatch(getUserShoppingList(decoded))
+        dispatch(setCurrentUser(decoded));
+        dispatch(getUserFridgeData(decoded.id));
+        dispatch(getUserShoppingList(decoded));
       });
     })
     .catch(err =>
@@ -56,7 +68,7 @@ export const loginUser = userData => dispatch => {
 
 export const getUserFridgeData = userId => dispatch => {
   axios
-    .get(`/api/getFridge/${userId.id}`)
+    .get(`/api/getFridge/${userId}`)
     .then(response => {
       console.log(response);
       dispatch(setFridgeData(response.data.data.fridge));
@@ -127,9 +139,9 @@ export const logoutUser = () => dispatch => {
   setAuthToken(false);
   // Set current user to empty object {} which will set isAuthenticated to false
   batch(() => {
-    dispatch(setCurrentUser({}))
-    dispatch(setFridgeData([]))
-    dispatch(setShoppingList([]))
+    dispatch(setCurrentUser({}));
+    dispatch(setFridgeData([]));
+    dispatch(setShoppingList([]));
   });
 };
 //Check token & load user

@@ -4,7 +4,7 @@ import React, { Component } from "react";
 import { Button } from "reactstrap";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getUserFridgeData, setFridgeData } from "../actions/authActions";
+import { getUserFridgeData, setFridgeData, removeFridgeItem } from "../actions/authActions";
 
 var axios = require("axios");
 
@@ -126,7 +126,7 @@ class Fridge extends Component {
     this.getClasses(newIngredientName, newIngredientAmount);
   };
   saveNewFridgeItem = newIngredient => {
-    if (this.props.auth.user.isAuthenticated) {
+    if (this.props.auth.isAuthenticated) {
       axios
         .post("/api/fridgeItem", {
           newIngredient: newIngredient,
@@ -135,7 +135,7 @@ class Fridge extends Component {
         .then(response => {
           console.log(response);
           console.log(this.props.auth.user.id);
-          this.props.getUserFridgeData(this.props.auth.user);
+          this.props.getUserFridgeData(this.props.auth.user.id);
         })
         .catch(err => {
           console.log(err);
@@ -177,8 +177,9 @@ class Fridge extends Component {
     });
     console.log(this.state.shoppingList);
   };
-  removeFrmList = event => {
+  removeFrmFridge = event => {
     const removeIndex = event.target.dataset.index;
+    const item = event.target.dataset.name;
     let updatedList = this.state.shoppingList;
     console.log(updatedList);
     updatedList.splice(removeIndex, 1);
@@ -189,6 +190,9 @@ class Fridge extends Component {
     if (this.state.modal2) {
       this.toggleModal(2);
     }
+    if (this.props.auth.isAuthenticated) {
+      this.props.removeFridgeItem(item, this.props.auth.user.id)
+    }      
   };
   getClasses = (ingredient, amount) => {
     console.log("---getclasses---");
@@ -265,7 +269,7 @@ class Fridge extends Component {
         </div>
         {this.props.userData.fridge.map((ingredient, i) => (
           <div key={i} className="row">
-            <div className="col-md-6 border">{ingredient.name}</div>
+            <div className="col-md-5 border">{ingredient.name}</div>
             <small className="col-md-3 border p-0">
               {ingredient.amountNeeded} {ingredient.unit}
             </small>
@@ -293,6 +297,13 @@ class Fridge extends Component {
                 </form>
               </small>
             )}
+            <button
+              className="col-md-1 border p-0 tiny material-icons text-red"
+              onClick={this.removeFrmFridge}
+              data-name={ingredient.name}
+            >
+              clear
+            </button>
           </div>
         ))}
       </div>
@@ -302,7 +313,8 @@ class Fridge extends Component {
 Fridge.propTypes = {
   auth: PropTypes.object.isRequired,
   userData: PropTypes.object.isRequired,
-  setFridgeData: PropTypes.func.isRequired
+  setFridgeData: PropTypes.func.isRequired,
+  removeFridgeItem: PropTypes.func.isRequired
 };
 const mapStateToProps = state => ({
   auth: state.auth,
@@ -310,5 +322,6 @@ const mapStateToProps = state => ({
 });
 export default connect(mapStateToProps, {
   getUserFridgeData,
-  setFridgeData
+  setFridgeData,
+  removeFridgeItem
 })(Fridge);
