@@ -98,8 +98,8 @@ class RecipeForm extends Component {
           name: ingredient.name.toLowerCase(),
           amount: this.convertToDecimal(ingredient.amount, ingredient.unit),
           unit: "oz",
-          className:
-            "row border-bottom border-primary d-flex bg-transparent pl-3 font-italic"
+          enoughInFridge: false
+            // "row border-bottom border-primary d-flex bg-transparent pl-3 font-italic"
         };
         shoppingList.push(newIngredient);
         this.setState({
@@ -117,7 +117,6 @@ class RecipeForm extends Component {
         }));
         this.updateShoppingListItem(ingredient.name,ingredient.amount)
       }
-      this.getClasses(ingredient.name, ingredient.amount);
       console.log(this.state.shoppingList);
     });
   };
@@ -158,46 +157,6 @@ class RecipeForm extends Component {
       this.props.setShoppingList(this.state.shoppingList);
     }
   };
-  getClasses = (ingredient, amount) => {
-    console.log("---getclasses---");
-    let fridge = this.state.fridge;
-    console.log(fridge.length, fridge);
-    console.log(ingredient, amount);
-    if (fridge.length > 0) {
-      let classes = fridge.map((item, x) =>
-        item.name === ingredient
-          ? item.amountStored >= amount
-            ? this.setState(prevState => ({
-                shoppingList: prevState.shoppingList.map(el =>
-                  el.name === ingredient
-                    ? {
-                        ...el,
-                        className:
-                          "bg-info font-italic text-secondary border border-dark d-flex"
-                      }
-                    : el
-                )
-              }))
-            : this.setState(prevState => ({
-                shoppingList: prevState.shoppingList.map(el =>
-                  el.name === ingredient
-                    ? {
-                        ...el,
-                        className:
-                          "d-flex pl-3 row exists border-bottom border-primary"
-                      }
-                    : el
-                )
-              }))
-          : ""
-      );
-      console.log("---end of getclasses---");
-      return classes;
-    } else {
-      return "border d-flex bg-dark";
-    }
-  };
-
   handleFormSubmit = event => {
     //event.preventDefault();
     const url = encodeURIComponent(this.state.recipelink);

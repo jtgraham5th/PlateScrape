@@ -4,7 +4,12 @@ import React, { Component } from "react";
 import { Button } from "reactstrap";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getUserFridgeData, setFridgeData, removeFridgeItem } from "../actions/authActions";
+import {
+  getUserFridgeData,
+  setFridgeData,
+  removeFridgeItem,
+  setShoppingList
+} from "../actions/authActions";
 
 var axios = require("axios");
 
@@ -27,12 +32,12 @@ class Fridge extends Component {
       this.props.setFridgeData([]);
     }
   }
-  componentDidUpdate(props) {
-    console.log(props);
-    if (this.state.fridge.length !== this.props.userData.fridge.length) {
-      this.setState({
-        fridge: this.props.userData.fridge
-      });
+  componentDidUpdate(prevProps) {
+    if (prevProps.userData.shoppingList !== this.props.userData.shoppingList) {
+      this.setState({ shoppingList: this.props.userData.shoppingList });
+    }
+    if (prevProps.userData.fridge !== this.props.userData.fridge) {
+      this.setState({ fridge: this.props.userData.fridge });
     }
   }
   toggleFridgeEdit = event => {
@@ -76,8 +81,6 @@ class Fridge extends Component {
     this.getClasses(ingredientName, ingredientAmount);
   };
   handleNewFridgeItem = event => {
-    console.log(event.target);
-    console.log(event);
     let newValue = event.target.value;
     this.setState({
       newItem: newValue
@@ -143,40 +146,6 @@ class Fridge extends Component {
         });
     }
   };
-  alphaSort = event => {
-    let alphaSort = this.state.shoppingList.sort((a, b) =>
-      a.name.toLowerCase() > b.name.toLowerCase()
-        ? 1
-        : b.name.toLowerCase() > a.name.toLowerCase()
-        ? -1
-        : 0
-    );
-    console.log(alphaSort);
-    this.setState({
-      shoppingList: alphaSort
-    });
-    console.log(this.state.shoppingList);
-  };
-  increaseSort = event => {
-    let increaseSort = this.state.shoppingList.sort((a, b) =>
-      a.amount > b.amount ? 1 : b.amount > a.amount ? -1 : 0
-    );
-    console.log(increaseSort);
-    this.setState({
-      shoppingList: increaseSort
-    });
-    console.log(this.state.shoppingList);
-  };
-  decreaseSort = event => {
-    let decreaseSort = this.state.shoppingList.sort((a, b) =>
-      b.amount > a.amount ? 1 : a.amount > b.amount ? -1 : 0
-    );
-    console.log(decreaseSort);
-    this.setState({
-      shoppingList: decreaseSort
-    });
-    console.log(this.state.shoppingList);
-  };
   removeFrmFridge = event => {
     const removeIndex = event.target.dataset.index;
     const item = event.target.dataset.name;
@@ -191,47 +160,48 @@ class Fridge extends Component {
       this.toggleModal(2);
     }
     if (this.props.auth.isAuthenticated) {
-      this.props.removeFridgeItem(item, this.props.auth.user.id)
-    }      
+      this.props.removeFridgeItem(item, this.props.auth.user.id);
+    }
   };
   getClasses = (ingredient, amount) => {
     console.log("---getclasses---");
-    let fridge = this.state.fridge;
+    let fridge = this.props.userData.fridge;
     console.log(fridge.length, fridge);
     console.log(ingredient, amount);
     if (fridge.length > 0) {
       let classes = fridge.map((item, x) =>
         item.name === ingredient
           ? item.amountStored >= amount
-            ? this.setState(prevState => ({
-                shoppingList: prevState.shoppingList.map(el =>
-                  el.name === ingredient
-                    ? {
-                        ...el,
-                        className:
-                          "bg-info font-italic text-secondary border border-dark d-flex"
-                      }
-                    : el
-                )
-              }))
+            ? this.setState(
+                prevState => (
+                  console.log("changing to TRUE"),
+                  {
+                    shoppingList: prevState.shoppingList.map(el =>
+                      el.name === ingredient
+                        ? {
+                            ...el,
+                            enoughInFridge: true
+                          }
+                        : el
+                    )
+                  }
+                ),
+                () => this.props.setShoppingList(this.state.shoppingList)
+              )
             : this.setState(prevState => ({
                 shoppingList: prevState.shoppingList.map(el =>
                   el.name === ingredient
                     ? {
                         ...el,
-                        className:
-                          "d-flex pl-3 row exists border-bottom border-primary"
+                        enoughInFridge: false
                       }
                     : el
                 )
               }))
           : ""
       );
-      console.log("---end of getclasses---");
-      return classes;
-    } else {
-      return "border d-flex bg-dark";
     }
+    // this.props.setShoppingList(this.state.shoppingList);
   };
   render(props) {
     return (
@@ -323,5 +293,6 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps, {
   getUserFridgeData,
   setFridgeData,
-  removeFridgeItem
+  removeFridgeItem,
+  setShoppingList
 })(Fridge);

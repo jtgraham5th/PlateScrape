@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 // import { Link } from "react-router-dom";
-// import "./style.css";
+import "../containers/home/style.css";
 import {
   Button,
   Row,
@@ -48,12 +48,14 @@ class ShoppingList extends Component {
       this.props.setShoppingList([]);
     }
   }
-  componentDidUpdate(props) {
-    console.log(props);
-    if (
-      this.state.shoppingList.length !== this.props.userData.shoppingList.length
-    ) {
+  componentDidUpdate(prevProps) {
+    console.log(prevProps);
+    console.log(this.props);
+    if (prevProps.userData.shoppingList !== this.props.userData.shoppingList) {
       this.setState({ shoppingList: this.props.userData.shoppingList });
+    }
+    if (prevProps.userData.fridge !== this.props.userData.fridge) {
+      this.setState({ fridge: this.props.userData.fridge });
     }
   }
   alphaSort = event => {
@@ -125,10 +127,10 @@ class ShoppingList extends Component {
       fridge.push(newIngredient);
       if (this.props.auth.isAuthenticated) {
         axios
-        .post("/api/fridgeItem", {
-          newIngredient: newIngredient,
-          userId: this.props.auth.user.id
-        })
+          .post("/api/fridgeItem", {
+            newIngredient: newIngredient,
+            userId: this.props.auth.user.id
+          })
           .then(response => {
             console.log(response);
           })
@@ -137,9 +139,14 @@ class ShoppingList extends Component {
             alert("Failed to create: " + err.message);
           });
       }
-      this.props.setFridgeData(fridge);
+      this.setState({ fridge: fridge }, () => {
+        this.props.setFridgeData(fridge);
+        this.getClasses(newIngredientName, newIngredientAmount);
+      });
     } else {
-      // let fridge = this.state.fridge;
+      console.log("before:", this.state.fridge);
+
+      let fridge = this.state.fridge;
       this.setState(prevState => ({
         fridge: prevState.fridge.map(el =>
           el.name === newIngredientName
@@ -150,9 +157,9 @@ class ShoppingList extends Component {
             : el
         )
       }));
+      console.log("after:", this.state.fridge);
       this.props.setFridgeData(this.state.fridge);
     }
-    this.getClasses(newIngredientName, newIngredientAmount);
     console.log(this.state.fridge);
     this.toggleModal(2);
     //   });
@@ -174,45 +181,72 @@ class ShoppingList extends Component {
   };
   getClasses = (ingredient, amount) => {
     console.log("---getclasses---");
-    let fridge = this.state.fridge;
+    let fridge = this.props.userData.fridge;
     console.log(fridge.length, fridge);
     console.log(ingredient, amount);
     if (fridge.length > 0) {
       let classes = fridge.map((item, x) =>
         item.name === ingredient
           ? item.amountStored >= amount
-            ? this.setState(prevState => ({
-                shoppingList: prevState.shoppingList.map(el =>
-                  el.name === ingredient
-                    ? {
-                        ...el,
-                        className:
-                          "bg-info font-italic text-secondary border border-dark d-flex"
-                      }
-                    : el
-                )
-              }))
+            ? this.setState(
+                prevState => (
+                  console.log("changing to TRUE"),
+                  {
+                    shoppingList: prevState.shoppingList.map(el =>
+                      el.name === ingredient
+                        ? {
+                            ...el,
+                            enoughInFridge: true
+                          }
+                        : el
+                    )
+                  }
+                ),
+                  () => this.props.setShoppingList(this.state.shoppingList)
+              )
             : this.setState(prevState => ({
                 shoppingList: prevState.shoppingList.map(el =>
                   el.name === ingredient
                     ? {
                         ...el,
-                        className:
-                          "d-flex pl-3 row exists border-bottom border-primary"
+                        enoughInFridge: false
                       }
                     : el
                 )
               }))
           : ""
       );
-      console.log("---end of getclasses---");
-      return classes;
-    } else {
-      return "border d-flex bg-dark";
     }
+    // this.props.setShoppingList(this.state.shoppingList);
   };
 
   render(props) {
+    let ingredientStyle = {
+      display: "flex",
+      paddingLeft: "1rem",
+      fontStyle: "italic",
+      borderBottom: "1px solid #007bff",
+      backgroundColor: "transparent",
+      flexWrap: "wrap",
+      marginRight: "-15px",
+      marginLeft: "-15px",
+      marginBottom: "0px"
+    };
+
+    let ingredientInFridge = {
+      display: "flex",
+      paddingLeft: "1rem",
+      fontStyle: "italic",
+      borderBottom: "1px solid #007bff",
+      backgroundColor: "transparent",
+      flexWrap: "wrap",
+      marginRight: "-15px",
+      marginLeft: "-15px",
+      marginBottom: "0px",
+      color: "red",
+      textDecoration: "line-through"
+    };
+
     return (
       <div className="col-md-4 rounded bg-light yellow lighten-4 mr-4">
         <Row className="text-center brown border border-bottom border-dark">
@@ -253,7 +287,9 @@ class ShoppingList extends Component {
             data-name={ingredient.name}
             data-amount={ingredient.amount}
             key={i}
-            className={ingredient.className}
+            style={
+              ingredient.enoughInFridge ? ingredientInFridge : ingredientStyle
+            }
           >
             {ingredient.name}
             <em className="ml-auto pr-2 ">
@@ -284,7 +320,7 @@ class ShoppingList extends Component {
               <ModalHeader
                 toggle={() => this.toggleModal(2)}
                 className="teal darken-4 white-text"
-                style={{fontFamily: "monospace"}}
+                style={{ fontFamily: "monospace" }}
               >
                 Item added to Fridge
               </ModalHeader>
@@ -292,7 +328,12 @@ class ShoppingList extends Component {
                 Would you also like to remove this item from your shopping list?
               </ModalBody>
               <ModalFooter className="d-flex justify-content-center">
-                <Button color="secondary" onClick={this.removeFrmList} id={i} className="mr-4">
+                <Button
+                  color="secondary"
+                  onClick={this.removeFrmList}
+                  id={i}
+                  className="mr-4"
+                >
                   Yes
                 </Button>
                 <Button color="secondary" onClick={() => this.toggleModal(2)}>

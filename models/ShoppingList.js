@@ -11,10 +11,10 @@ var ShoppingListSchema = new Schema({
         required: false,
         default: 0
     },
-    amountStored: {
-        type: Number,
-        required: false,
-        default: 0
+    enoughInFridge: {
+        type: Boolean,
+        required: true,
+        default: false
     },
     unit: {
         type: String,
