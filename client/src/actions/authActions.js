@@ -11,7 +11,7 @@ import {
   AUTH_ERROR,
   SET_FRIDGE_DATA,
   SET_SHOPPINGLIST,
-  ADD_RECIPE
+  SET_RECIPES
 } from "./types";
 // Register User
 export const registerUser = (userData, history) => dispatch => {
@@ -53,6 +53,7 @@ export const loginUser = userData => dispatch => {
       console.log(decoded);
       // Set current user
       batch(() => {
+        dispatch(setRecipes([]));
         dispatch(setCurrentUser(decoded));
         dispatch(getUserFridgeData(decoded.id));
         dispatch(getUserShoppingList(decoded));
@@ -111,10 +112,10 @@ export const setFridgeData = fridgeData => {
   };
 };
 //Save Recipe Data
-export const addRecipe = recipeData => {
-  console.log(recipeData);
+export const setRecipes = recipeData => {
+  console.log("setRecipes", recipeData);
   return {
-    type: ADD_RECIPE,
+    type: SET_RECIPES,
     payload: recipeData
   };
 };
@@ -142,6 +143,7 @@ export const logoutUser = () => dispatch => {
     dispatch(setCurrentUser({}));
     dispatch(setFridgeData([]));
     dispatch(setShoppingList([]));
+    dispatch(setRecipes([]));
   });
 };
 //Check token & load user

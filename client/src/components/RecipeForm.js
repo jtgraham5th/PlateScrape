@@ -16,7 +16,7 @@ import {
   getUserFridgeData,
   getUserShoppingList,
   setShoppingList,
-  addRecipe
+  setRecipes
 } from "../actions/authActions";
 
 var axios = require("axios");
@@ -35,8 +35,8 @@ class RecipeForm extends Component {
       shoppingList: this.props.userData.shoppingList
     });
   }
-  componentDidUpdate(props) {
-    console.log(props);
+  componentDidUpdate(prevProps) {
+    console.log(prevProps);
     if (
       this.state.shoppingList.length !== this.props.userData.shoppingList.length
     ) {
@@ -45,6 +45,9 @@ class RecipeForm extends Component {
         shoppingList: this.props.userData.shoppingList
       });
     }
+    if (prevProps.userData.recipes !== this.props.userData.recipes) {
+      this.setState({ recipes: this.props.userData.recipes });
+    } 
   }
   handleInputChange = event => {
     const { name, value } = event.target;
@@ -178,7 +181,7 @@ class RecipeForm extends Component {
             this.setState({
               recipes
             });
-            this.props.addRecipe(this.state.recipes);
+            this.props.setRecipes(this.state.recipes);
 
             console.log(this.state.recipes);
             this.addToList(response.data);
@@ -221,5 +224,5 @@ export default connect(mapStateToProps, {
   getUserFridgeData,
   getUserShoppingList,
   setShoppingList,
-  addRecipe
+  setRecipes
 })(RecipeForm);

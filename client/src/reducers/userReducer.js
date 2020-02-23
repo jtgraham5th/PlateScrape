@@ -1,7 +1,7 @@
 import {
   SET_FRIDGE_DATA,
   SET_SHOPPINGLIST,
-  ADD_RECIPE
+  SET_RECIPES
 } from "../actions/types";
 // const isEmpty = require("is-empty");
 const initialState = {
@@ -21,7 +21,7 @@ export default function(state = initialState, action) {
         ...state,
         shoppingList: action.payload
       };
-    case ADD_RECIPE:
+    case SET_RECIPES:
       return {
         ...state,
         recipes: action.payload

@@ -22,13 +22,11 @@ class RecipeList extends Component {
       recipes: this.props.userData.recipes
     })
   };
-  componentDidUpdate(props) {
-    console.log(props);
-    if (this.state.recipes.length !== this.props.userData.recipes.length) {
-      this.setState({
-        recipes: this.props.userData.recipes
-      });
-    }
+  componentDidUpdate(prevProps) {
+    console.log(prevProps);
+    if (prevProps.userData.recipes !== this.props.userData.recipes) {
+      this.setState({ recipes: this.props.userData.recipes });
+    } 
   }
   render(props) {
     return (

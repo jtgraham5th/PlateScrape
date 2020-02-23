@@ -6,4 +6,4 @@ export const USER_LOADED = "USER_LOADED";
 export const AUTH_ERROR = "AUTH_ERROR";
 export const SET_FRIDGE_DATA = "SET_FRIDGE_DATA";
 export const SET_SHOPPINGLIST = "SET_SHOPPINGLIST";
-export const ADD_RECIPE = "ADD_RECIPE";
+export const SET_RECIPES = "SET_RECIPES";

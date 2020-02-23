@@ -32,9 +32,9 @@ class ShoppingList extends Component {
   state = {
     recipes: [],
     shoppingList: [],
+    itemKey: 0,
     fridge: [],
-    modal1: false,
-    modal2: false
+    modal: false  
   };
 
   componentDidMount() {
@@ -96,17 +96,10 @@ class ShoppingList extends Component {
 
     console.log(this.state.shoppingList);
   };
-  toggleModal = num => {
-    console.log(num, "NUM");
-    if (num === 1) {
+  toggleModal = event => {
       this.setState({
-        modal1: !this.state.modal1
+        modal: !this.state.modal
       });
-    } else if (num === 2) {
-      this.setState({
-        modal2: !this.state.modal2
-      });
-    }
   };
   addToFridge = event => {
     let newIngredientName = event.target.name;
@@ -139,9 +132,12 @@ class ShoppingList extends Component {
             alert("Failed to create: " + err.message);
           });
       }
-      this.setState({ fridge: fridge }, () => {
+      this.setState({ fridge: fridge, itemKey: event.target.dataset.index }, () => {
+        console.log(this.state.itemKey);
         this.props.setFridgeData(fridge);
         this.getClasses(newIngredientName, newIngredientAmount);
+        this.toggleModal();
+
       });
     } else {
       console.log("before:", this.state.fridge);
@@ -161,23 +157,21 @@ class ShoppingList extends Component {
       this.props.setFridgeData(this.state.fridge);
     }
     console.log(this.state.fridge);
-    this.toggleModal(2);
-    //   });
   };
 
   removeFrmList = event => {
     const removeIndex = event.target.dataset.index;
     let updatedList = this.state.shoppingList;
     console.log(updatedList);
+    console.log(removeIndex);
     updatedList.splice(removeIndex, 1);
     console.log(updatedList);
     this.setState({
       shoppingList: updatedList
+    }, () => {this.props.setShoppingList(this.state.shoppingList);
     });
-    this.props.setShoppingList(this.state.shoppingList);
-    if (this.state.modal2) {
-      this.toggleModal(2);
-    }
+      this.toggleModal();
+    
   };
   getClasses = (ingredient, amount) => {
     console.log("---getclasses---");
@@ -217,7 +211,6 @@ class ShoppingList extends Component {
           : ""
       );
     }
-    // this.props.setShoppingList(this.state.shoppingList);
   };
 
   render(props) {
@@ -282,7 +275,7 @@ class ShoppingList extends Component {
             onClick={this.increaseSort}
           />
         </Row>
-        {this.props.userData.shoppingList.map((ingredient, i) => (
+        {this.state.shoppingList.map((ingredient, i) => (
           <div
             data-name={ingredient.name}
             data-amount={ingredient.amount}
@@ -301,6 +294,7 @@ class ShoppingList extends Component {
               name={ingredient.name}
               data-amount={ingredient.amount}
               data-unit={ingredient.unit}
+              data-index={i}
               onClick={this.addToFridge}
             >
               add
@@ -313,12 +307,13 @@ class ShoppingList extends Component {
             >
               close
             </button>
+            {this.state.itemKey == i ? 
             <Modal
-              isOpen={this.state.modal2}
-              toggle={() => this.toggleModal(2)}
+              isOpen={this.state.modal}
+              toggle={this.toggleModal}
             >
               <ModalHeader
-                toggle={() => this.toggleModal(2)}
+                toggle={this.toggleModal}
                 className="teal darken-4 white-text"
                 style={{ fontFamily: "monospace" }}
               >
@@ -331,16 +326,16 @@ class ShoppingList extends Component {
                 <Button
                   color="secondary"
                   onClick={this.removeFrmList}
-                  id={i}
+                  data-index={i}
                   className="mr-4"
                 >
                   Yes
                 </Button>
-                <Button color="secondary" onClick={() => this.toggleModal(2)}>
+                <Button color="secondary" onClick={this.toggleModal}>
                   No
                 </Button>
               </ModalFooter>
-            </Modal>
+            </Modal> : console.log(i)}
           </div>
         ))}
       </div>
