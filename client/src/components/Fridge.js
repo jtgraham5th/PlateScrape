@@ -79,6 +79,7 @@ class Fridge extends Component {
     );
     console.log(ingredientAmount);
     this.getClasses(ingredientName, ingredientAmount);
+    this.props.setFridgeData(this.state.fridge)
   };
   handleNewFridgeItem = event => {
     let newValue = event.target.value;
@@ -156,9 +157,6 @@ class Fridge extends Component {
     this.setState({
       shoppingList: updatedList
     });
-    if (this.state.modal2) {
-      this.toggleModal(2);
-    }
     if (this.props.auth.isAuthenticated) {
       this.props.removeFridgeItem(item, this.props.auth.user.id);
     }
@@ -201,7 +199,6 @@ class Fridge extends Component {
           : ""
       );
     }
-    // this.props.setShoppingList(this.state.shoppingList);
   };
   render(props) {
     return (
@@ -237,7 +234,7 @@ class Fridge extends Component {
           <div className="col-md-3 border h6 p-0">Needed</div>
           <div className="col-md-3 border h6 p-0">Have</div>
         </div>
-        {this.props.userData.fridge.map((ingredient, i) => (
+        {this.state.fridge.map((ingredient, i) => (
           <div key={i} className="row">
             <div className="col-md-5 border">{ingredient.name}</div>
             <small className="col-md-3 border p-0">

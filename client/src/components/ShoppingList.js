@@ -335,7 +335,7 @@ class ShoppingList extends Component {
                   No
                 </Button>
               </ModalFooter>
-            </Modal> : console.log(i)}
+            </Modal> : null}
           </div>
         ))}
       </div>
