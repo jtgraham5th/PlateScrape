@@ -5,23 +5,38 @@ var cheerio = require("cheerio");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../config/keys");
+const querystring = require('querystring');
+// const cors = require('cors')
 
 // Load input validation
 const validateRegisterInput = require("../validation/register");
 const validateLoginInput = require("../validation/login");
 const db = require("../models");
 
+// var corsOptions = {
+//   origin: 'http://localhost:3000/',
+//   methods: "GET,HEAD,PUT,PATCH,POST",
+//   credentials: true,
+//   optionsSuccessStatus: 200
+// }
+// router.use(cors(corsOptions));
+
+// router.options("/pinterest", (req, res) => {
+  // res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.end;
+// });
 // API Routes
 // router.use("/api", apiRoutes);
 router.get("/pinterest", (req, res) => {
-  console.log("im here");
-  axios
-    .get(
-      "https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://serene-plateau-07976.herokuapp.com/&client_id=5073939286663940267&scope=read_public,write_public&state=8675309"
-    )
-    .then(response => {
-      res.json(response);
-    });
+  console.log("hit");
+  res.redirect('https://api.pinterest.com/oauth?' +
+  querystring.stringify({
+    response_type: "code",
+    redirect_uri: "https://serene-plateau-07976.herokuapp.com",
+    client_id: "5073939286663940267",
+    scope: "read_public",
+    state: "768uyFys"
+    }))
 });
 // If no API routes are hit, send the React app
 router.get("/recipes/:id", (req, res) => {
@@ -52,11 +67,11 @@ router.get("/recipes/:id", (req, res) => {
   });
 });
 router.post("/shoppingListItem", function(req, res) {
-  const { newIngredient, userId} = req.body;
+  const { newIngredient, userId } = req.body;
   console.log("Adding Item to Shopping List");
-  console.log(req.body)
-  console.log(newIngredient)
-  console.log(userId)
+  console.log(req.body);
+  console.log(newIngredient);
+  console.log(userId);
   db.User.updateOne({ _id: userId }, { $push: { shoppingList: newIngredient } })
     .then(newItem => {
       console.log("New Shopping List Item", newItem);
@@ -75,11 +90,11 @@ router.post("/shoppingListItem", function(req, res) {
     });
 });
 router.post("/fridgeItem", function(req, res) {
-  const { newIngredient, userId} = req.body;
+  const { newIngredient, userId } = req.body;
   console.log("Adding Item to Fridge");
-  console.log(req.body)
-  console.log(newIngredient)
-  console.log(userId)
+  console.log(req.body);
+  console.log(newIngredient);
+  console.log(userId);
   db.User.updateOne({ _id: userId }, { $push: { fridge: newIngredient } })
     .then(newItem => {
       console.log("New Fridge Item", newItem);
@@ -98,9 +113,9 @@ router.post("/fridgeItem", function(req, res) {
     });
 });
 router.put("/fridgeItem", function(req, res) {
-  const { itemName, userId} = req.body;
-  console.log(req.body)
-  db.User.update({ _id: userId }, { $pull: { fridge: { name: itemName } }})
+  const { itemName, userId } = req.body;
+  console.log(req.body);
+  db.User.update({ _id: userId }, { $pull: { fridge: { name: itemName } } })
     .then(removedItem => {
       console.log("Removed Fridge Item", removedItem);
       res.json({
@@ -117,7 +132,6 @@ router.put("/fridgeItem", function(req, res) {
       });
     });
 });
-
 
 router.get("/getFridge/:id", (req, res) => {
   console.log("Retrieving Fridge Data...");

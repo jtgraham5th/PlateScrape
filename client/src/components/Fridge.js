@@ -229,10 +229,10 @@ class Fridge extends Component {
             Add
           </Button>
         </form>
-        <div className="row">
-          <div className="col-md-6 border h6 p-0">Ingredient Name</div>
+        <div className="row mb-0">
+          <div className="col-md-5 border h6 p-0">Ingredient Name</div>
           <div className="col-md-3 border h6 p-0">Needed</div>
-          <div className="col-md-3 border h6 p-0">Have</div>
+          <div className="col-md-4 border h6 p-0">Have</div>
         </div>
         {this.state.fridge.map((ingredient, i) => (
           <div key={i} className="row">

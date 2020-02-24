@@ -6,10 +6,19 @@ const mongoose = require("mongoose");
 const app = express();
 const routes = require("./routes");
 const passport = require("passport");
+// const cors = require('cors');
 
 const PORT = process.env.PORT || 3001;
 
+// const corsOptions = {
+//   origin: 'http://localhost:3000/',
+//   methods: "GET,HEAD,PUT,PATCH,POST",
+//   credentials: true,
+//   optionsSuccessStatus: 200
+// }
+
 // Define middleware here
+// app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));

@@ -47,25 +47,25 @@ class Pins extends Component {
     console.log("userAuthCode", userAuthCode);
 
     // --- EXCHANGE FOR ACCESS TOKEN ---
-    axios
-      .post(
-        `https://api.pinterest.com/v1/oauth/token?grant_type=authorization_code&client_id=5073939286663940267&client_secret=f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743&code=${userAuthCode}`
-      )
-      .then(function(response) {
-        const accessToken = response.data.access_token;
-        console.log("pinterest access Token:", accessToken);
-        this.setState({ accessToken: accessToken });
-        console.log("ACUTAL TOKEN", accessToken);
-        this.pinterestAPIBoardRequest();
-      })
-      .catch(err => {
-        console.log("ERROR:", err);
+    // axios
+    //   .post(
+    //     `https://api.pinterest.com/v1/oauth/token?grant_type=authorization_code&client_id=5073939286663940267&client_secret=f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743&code=${userAuthCode}`
+    //   )
+    //   .then(function(response) {
+    //     const accessToken = response.data.access_token;
+    //     console.log("pinterest access Token:", accessToken);
+    //     this.setState({ accessToken: accessToken });
+    //     console.log("ACUTAL TOKEN", accessToken);
+    //     this.pinterestAPIBoardRequest();
+    //   })
+    //   .catch(err => {
+    //     console.log("ERROR:", err);
         // const accessToken =
         //   "Aj5cBG-EFZy8RRy1skpJ0zVYY_QkFeSnWQ45H_lGakDl-YDIqwJUgDAAAAMgRmtif9EgrmUAAAAA";
         // this.setState({ accessToken: accessToken });
         // console.log("TEMPORARY TOKEN", accessToken);
         // this.pinterestAPIBoardRequest();
-      });
+      // });
   }
   pinterestAPIBoardRequest() {
     // --- MAKE A REQUEST ---
