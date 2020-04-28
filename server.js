@@ -1,4 +1,6 @@
 require("dotenv").config();
+const fs = require('fs');
+const https = require('https');
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
@@ -6,19 +8,11 @@ const mongoose = require("mongoose");
 const app = express();
 const routes = require("./routes");
 const passport = require("passport");
-// const cors = require('cors');
+const cors = require('cors');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const PORT = process.env.PORT || 3001;
-
-// const corsOptions = {
-//   origin: 'http://localhost:3000/',
-//   methods: "GET,HEAD,PUT,PATCH,POST",
-//   credentials: true,
-//   optionsSuccessStatus: 200
-// }
-
-// Define middleware here
-// app.use(cors(corsOptions));
+app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
@@ -41,8 +35,7 @@ connection.on("connected", () => {
 connection.on("error", err => {
   console.log("Mongoose default connection error: " + err);
 });
-
-app.use("/api", routes);
+app.use("/api", routes)
 
 // Serve up static assets (usually on heroku)
 if (process.env.NODE_ENV === "production") {
@@ -55,8 +48,6 @@ app.get('*', (req, res) => {
 //ROUTES
 
 // || "mongodb://localhost/recipe-scraper"
-
-
 app.listen(PORT, function() {
   console.log(`App is running on http://localhost:${PORT}`);
 });

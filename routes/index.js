@@ -5,39 +5,46 @@ var cheerio = require("cheerio");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../config/keys");
-const querystring = require('querystring');
-// const cors = require('cors')
+const passport = require("passport");
+const PinterestStrategy = require("passport-pinterest");
+const querystring = require("querystring");
 
 // Load input validation
 const validateRegisterInput = require("../validation/register");
 const validateLoginInput = require("../validation/login");
 const db = require("../models");
-
-// var corsOptions = {
-//   origin: 'http://localhost:3000/',
-//   methods: "GET,HEAD,PUT,PATCH,POST",
-//   credentials: true,
-//   optionsSuccessStatus: 200
-// }
-// router.use(cors(corsOptions));
-
-// router.options("/pinterest", (req, res) => {
-  // res.setHeader("Access-Control-Allow-Origin", "*");
-//   res.end;
-// });
-// API Routes
-// router.use("/api", apiRoutes);
+const redirect_uri = "http://localhost:3000";
+const credentials = {
+  client: {
+    id: "5073939286663940267",
+    secret: "f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743"
+  },
+  auth: {
+    tokenHost: "https://api.pinterest.com/oauth/"
+  }
+};
 router.get("/pinterest", (req, res) => {
-  console.log("hit");
-  res.redirect('https://api.pinterest.com/oauth?' +
-  querystring.stringify({
-    response_type: "code",
-    redirect_uri: "https://serene-plateau-07976.herokuapp.com",
-    client_id: "5073939286663940267",
-    scope: "read_public",
-    state: "768uyFys"
-    }))
+  console.log("hey");
+  passport.authenticate("pinterest");
+
+  // const oauth2 = require('simple-oauth2').create(credentials);
+
+  // const authorizationUri = oauth2.authorizationCode.authorizeURL({
+  //   response_type: 'code',
+  //   redirect_uri: 'http://localhost:3000/callback',
+  //   scope: 'read_public,write_public',
+  //   state: '768uyFys'
+  // })
+  // res.redirect(authorizationUri)
 });
+router.get(
+  "/pinterest/callback",
+  passport.authenticate("pinterest", { failureRedirect: "/" }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect("/");
+  }
+);
 // If no API routes are hit, send the React app
 router.get("/recipes/:id", (req, res) => {
   console.log(req.params.id);
@@ -132,7 +139,6 @@ router.put("/fridgeItem", function(req, res) {
       });
     });
 });
-
 router.get("/getFridge/:id", (req, res) => {
   console.log("Retrieving Fridge Data...");
   const userID = req.params.id;
@@ -176,7 +182,6 @@ router.get("/getShoppingList/:id", (req, res) => {
     });
 });
 router.post("/register", (req, res) => {
-  console.log("im here");
   // Form validation
   const { errors, isValid } = validateRegisterInput(req.body);
   // Check validation
