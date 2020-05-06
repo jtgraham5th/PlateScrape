@@ -11,37 +11,50 @@ import {
   AUTH_ERROR,
   SET_FRIDGE_DATA,
   SET_SHOPPINGLIST,
-  SET_RECIPES
+  SET_RECIPES,
 } from "./types";
 // Register User
-export const registerUser = (userData, history) => dispatch => {
+export const pinterestLogin = () => {
+  return () => {
+    axios
+      .get("api/pinterestLogin")
+      .then((response) => {
+        console.log(response);
+        // history.push("/student");
+      })
+      .catch((err) => {
+        console.log(err);
+        // history.push("/");
+      });
+  };
+};
+export const registerUser = (userData, history) => (dispatch) => {
   axios
     .post("/api/register", userData)
-    .then(res => history.push("/login")) // re-direct to login on successful register
-    .catch(err =>
+    .then((res) => history.push("/login")) // re-direct to login on successful register
+    .catch((err) =>
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data
+        payload: err.response.data,
       })
     );
 };
-export const removeFridgeItem = (itemName, userId) => dispatch => {
+export const removeFridgeItem = (itemName, userId) => (dispatch) => {
   axios
     .put("/api/fridgeItem", { itemName: itemName, userId: userId })
-    .then(res => {
+    .then((res) => {
       console.log("Fridge Item Removed:", res);
       dispatch(getUserFridgeData(userId));
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       alert("Failed to remove: " + err.message);
     });
 };
-
-export const loginUser = userData => dispatch => {
+export const loginUser = (userData) => (dispatch) => {
   axios
     .post("/api/login", userData)
-    .then(res => {
+    .then((res) => {
       // Save to localStorage
       // Set token to localStorage
       const { token } = res.data;
@@ -59,81 +72,80 @@ export const loginUser = userData => dispatch => {
         dispatch(getUserShoppingList(decoded));
       });
     })
-    .catch(err =>
+    .catch((err) =>
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data
+        payload: err.response.data,
       })
     );
 };
-
-export const getUserFridgeData = userId => dispatch => {
+export const getUserFridgeData = (userId) => (dispatch) => {
   axios
     .get(`/api/getFridge/${userId}`)
-    .then(response => {
+    .then((response) => {
       console.log(response);
       dispatch(setFridgeData(response.data.data.fridge));
     })
-    .catch(err =>
+    .catch((err) =>
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data
+        payload: err.response.data,
       })
     );
 };
-export const getUserShoppingList = userId => dispatch => {
+export const getUserShoppingList = (userId) => (dispatch) => {
   axios
     .get(`/api/getShoppingList/${userId.id}`)
-    .then(response => {
+    .then((response) => {
       console.log(response);
       dispatch(setShoppingList(response.data.data.shoppingList));
     })
-    .catch(err =>
+    .catch((err) =>
       dispatch({
         type: GET_ERRORS,
-        payload: err.response.data
+        payload: err.response.data,
       })
     );
 };
 //Save user Shopping List
-export const setShoppingList = shoppingListData => {
+export const setShoppingList = (shoppingListData) => {
   console.log("SetShoppingList", shoppingListData);
   return {
     type: SET_SHOPPINGLIST,
-    payload: shoppingListData
+    payload: shoppingListData,
   };
 };
 //Save user Fridge Data
-export const setFridgeData = fridgeData => {
+export const setFridgeData = (fridgeData) => {
   console.log("SetFridgeData", fridgeData);
   return {
     type: SET_FRIDGE_DATA,
-    payload: fridgeData
+    payload: fridgeData,
   };
 };
 //Save Recipe Data
-export const setRecipes = recipeData => {
+export const setRecipes = (recipeData) => {
   console.log("setRecipes", recipeData);
   return {
     type: SET_RECIPES,
-    payload: recipeData
+    payload: recipeData,
   };
 };
 // Set logged in user
-export const setCurrentUser = decoded => {
+export const setCurrentUser = (decoded) => {
   return {
     type: SET_CURRENT_USER,
-    payload: decoded
+    payload: decoded,
   };
 };
 // User loading
 export const setUserLoading = () => {
   return {
-    type: USER_LOADING
+    type: USER_LOADING,
   };
 };
 // Log user out
-export const logoutUser = () => dispatch => {
+export const logoutUser = () => (dispatch) => {
   // Remove token from local storage
   localStorage.removeItem("jwtToken");
   // Remove auth header for future requests
@@ -153,30 +165,29 @@ export const loadUser = () => (dispatch, getState) => {
 
   axios
     .get("/api/auth/user", tokenConfig(getState))
-    .then(res =>
+    .then((res) =>
       dispatch({
         type: USER_LOADED,
-        payload: res.data
+        payload: res.data,
       })
     )
-    .catch(err => {
+    .catch((err) => {
       dispatch(returnErrors(err.response.data, err.response.status));
       dispatch({
-        type: AUTH_ERROR
+        type: AUTH_ERROR,
       });
     });
 };
-
 // Setup config/headers and token
-export const tokenConfig = getState => {
+export const tokenConfig = (getState) => {
   // Get token from localstorage
   const token = getState().auth.token;
 
   // Headers
   const config = {
     headers: {
-      "Content-type": "application/json"
-    }
+      "Content-type": "application/json",
+    },
   };
 
   // If token, add to headers

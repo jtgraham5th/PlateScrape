@@ -1,51 +1,26 @@
-const path = require("path");
 const router = require("express").Router();
 var axios = require("axios");
 var cheerio = require("cheerio");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../config/keys");
+
 const passport = require("passport");
-const PinterestStrategy = require("passport-pinterest");
-const querystring = require("querystring");
+const passportService = require("../config/passport");
+const Authentication = require("../controllers/authentication");
+const pinterestAuth = passport.authenticate("pinterest", { session: false })
 
 // Load input validation
 const validateRegisterInput = require("../validation/register");
 const validateLoginInput = require("../validation/login");
-const db = require("../models");
-const redirect_uri = "http://localhost:3000";
-const credentials = {
-  client: {
-    id: "5073939286663940267",
-    secret: "f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743"
-  },
-  auth: {
-    tokenHost: "https://api.pinterest.com/oauth/"
-  }
-};
-router.get("/pinterest", (req, res) => {
-  console.log("hey");
-  passport.authenticate("pinterest");
 
-  // const oauth2 = require('simple-oauth2').create(credentials);
-
-  // const authorizationUri = oauth2.authorizationCode.authorizeURL({
-  //   response_type: 'code',
-  //   redirect_uri: 'http://localhost:3000/callback',
-  //   scope: 'read_public,write_public',
-  //   state: '768uyFys'
-  // })
-  // res.redirect(authorizationUri)
+router.get('/', function (req, res) {
+  res.header('Content-type', 'text/html');
 });
-router.get(
-  "/pinterest/callback",
-  passport.authenticate("pinterest", { failureRedirect: "/" }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    res.redirect("/");
-  }
-);
-// If no API routes are hit, send the React app
+
+router.get("/pinterestLogin", pinterestAuth ,Authentication.pinterestLogin);
+
+
 router.get("/recipes/:id", (req, res) => {
   console.log(req.params.id);
   let decodedUrl = decodeURIComponent(req.params.id);

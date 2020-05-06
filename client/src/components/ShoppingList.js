@@ -22,7 +22,7 @@ import {
   getUserShoppingList,
   setShoppingList,
   setFridgeData
-} from "../actions/authActions";
+} from "../actions";
 
 library.add(faSortAlphaUp);
 

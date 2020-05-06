@@ -9,7 +9,7 @@ import {
   setFridgeData,
   removeFridgeItem,
   setShoppingList
-} from "../actions/authActions";
+} from "../actions";
 
 var axios = require("axios");
 

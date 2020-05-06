@@ -1,8 +1,5 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-// import jwt_decode from "jwt-decode";
-// import setAuthToken from "./utils/setAuthToken";
-// import { setCurrentUser, logoutUser } from "./actions/authActions";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
@@ -15,7 +12,6 @@ import Login from "./components/auth/Login";
 import PrivateRoute from "./components/private-route/PrivateRoute";
 import { Provider } from "react-redux";
 import store from "./store";
-import { loadUser } from './actions/authActions';
 
 
 library.add(fas, fab);

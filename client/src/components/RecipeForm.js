@@ -17,7 +17,7 @@ import {
   getUserShoppingList,
   setShoppingList,
   setRecipes
-} from "../actions/authActions";
+} from "../actions";
 
 var axios = require("axios");
 

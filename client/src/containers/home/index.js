@@ -9,9 +9,7 @@ import ShoppingList from "../../components/ShoppingList";
 import RecipeList from "../../components/RecipeList";
 import RecipeForm from "../../components/RecipeForm";
 import Pins from "../../components/Pins";
-import { logoutUser } from "../../actions/authActions";
-import { loginUser } from "../../actions/authActions";
-import { getUserFridgeData } from "../../actions/authActions";
+import { logoutUser, getUserFridgeData, loginUser } from "../../actions";
 
 class Home extends Component {
   state = {

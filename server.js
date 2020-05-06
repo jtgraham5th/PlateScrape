@@ -12,15 +12,24 @@ const cors = require('cors');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const PORT = process.env.PORT || 3001;
+// Creates HTTPS on local machine
+https.createServer({
+  key: fs.readFileSync('key.pem'),
+  cert: fs.readFileSync('cert.pem')
+}, app).listen(PORT, function() {
+  console.log(`App is running on http://localhost:${PORT}`);
+});
+
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true })); 
+// or try app.use(express.session({ secret: 'SECRET' }));
 app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
 
-// Passport config
-require("./config/passport")(passport);
 
 mongoose.set("useCreateIndex", true);
 
@@ -47,7 +56,9 @@ app.get('*', (req, res) => {
   });
 //ROUTES
 
-// || "mongodb://localhost/recipe-scraper"
-app.listen(PORT, function() {
-  console.log(`App is running on http://localhost:${PORT}`);
-});
+
+
+//Use for deployment
+// app.listen(PORT, function() {
+//   console.log(`App is running on http://localhost:${PORT}`);
+// });

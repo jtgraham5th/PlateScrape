@@ -6,7 +6,7 @@ import {
 } from "reactstrap";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getUserFridgeData } from "../actions/authActions";
+import { getUserFridgeData } from "../actions";
 
 // var axios = require("axios");
 
