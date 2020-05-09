@@ -23,7 +23,6 @@ class RecipeList extends Component {
     })
   };
   componentDidUpdate(prevProps) {
-    console.log(prevProps);
     if (prevProps.userData.recipes !== this.props.userData.recipes) {
       this.setState({ recipes: this.props.userData.recipes });
     } 

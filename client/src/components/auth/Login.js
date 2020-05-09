@@ -14,21 +14,21 @@ import {
   FormGroup,
   Label,
   Input,
-  Alert
+  Alert,
 } from "reactstrap";
 class Login extends Component {
   state = {
     email: "",
     password: "",
     errors: {},
-    msg: null
+    msg: null,
   };
 
   static propTypes = {
     isAuthenticated: PropTypes.bool,
     error: PropTypes.object.isRequired,
     login: PropTypes.func.isRequired,
-    clearErrors: PropTypes.func.isRequired
+    clearErrors: PropTypes.func.isRequired,
   };
 
   componentDidUpdate(prevProps) {
@@ -56,109 +56,102 @@ class Login extends Component {
     // Clear errors
     this.props.clearErrors();
     this.setState({
-      modal: !this.state.modal
+      modal: !this.state.modal,
     });
   };
 
-  onChange = e => {
+  onChange = (e) => {
     this.setState({ [e.target.id]: e.target.value });
   };
-  onSubmit = e => {
+  onSubmit = (e) => {
     e.preventDefault();
     const userData = {
       email: this.state.email,
-      password: this.state.password
+      password: this.state.password,
     };
     this.props.loginUser(userData);
-    // since we handle the redirect within our component, we don't need to pass in this.props.history as a parameter
   };
   render() {
     const { errors } = this.state;
     return (
-      <div className="pr-2">
-        <Button onClick={this.toggle}>Login</Button>
-        <Modal isOpen={this.state.modal} toggle={this.toggle}>
-          <ModalHeader toggle={this.toggle}>Login</ModalHeader>
-          <ModalBody>
-            {this.state.msg ? (
-              <Alert color="danger">{this.state.msg}</Alert>
-            ) : null}
-            <Link to="/" className="btn-flat waves-effect">
-              <i className="material-icons left">keyboard_backspace</i> Back to
-              home
-            </Link>
-            <h4>
-              <b>Login</b> below
-            </h4>
-            <p className="grey-text text-darken-1">
-              Don't have an account? <Link to="/register">Register</Link>
-            </p>
-            <Form noValidate onSubmit={this.onSubmit}>
-              <FormGroup>
-                <Label for="email">Email</Label>
-                <Input
-                  onChange={this.onChange}
-                  value={this.state.email}
-                  error={errors.email}
-                  id="email"
-                  type="email"
-                  className={classnames("", {
-                    invalid: errors.email || errors.emailnotfound
-                  })}
-                />
+      <>
+        <ModalHeader toggle={this.props.toggle}>Login</ModalHeader>
+        <ModalBody>
+          {this.state.msg ? (
+            <Alert color="danger">{this.state.msg}</Alert>
+          ) : null}
+          <Form noValidate onSubmit={this.onSubmit}>
+            <FormGroup>
+              <Label for="email">Email</Label>
+              <Input
+                onChange={this.onChange}
+                value={this.state.email}
+                error={errors.email}
+                id="email"
+                type="email"
+                className={classnames("", {
+                  invalid: errors.email || errors.emailnotfound,
+                })}
+              />
 
-                <span className="red-text">
-                  {errors.email}
-                  {errors.emailnotfound}
-                </span>
-                <Label for="password">Password</Label>
-                <Input
-                  onChange={this.onChange}
-                  value={this.state.password}
-                  error={errors.password}
-                  id="password"
-                  type="password"
-                  className={classnames("", {
-                    invalid: errors.password || errors.passwordincorrect
-                  })}
-                />
-                <span className="red-text">
-                  {errors.password}
-                  {errors.passwordincorrect}
-                </span>
-                <div className="col s12" style={{ paddingLeft: "11.250px" }}>
-                  <Button
-                    style={{
-                      width: "150px",
-                      borderRadius: "3px",
-                      letterSpacing: "1.5px",
-                      marginTop: "1rem"
-                    }}
-                    type="submit"
-                    className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-                  >
-                    Login
-                  </Button>
-                </div>
-              </FormGroup>
-            </Form>
-          </ModalBody>
-        </Modal>
-      </div>
+              <span className="red-text">
+                {errors.email}
+                {errors.emailnotfound}
+              </span>
+              <Label for="password">Password</Label>
+              <Input
+                onChange={this.onChange}
+                value={this.state.password}
+                error={errors.password}
+                id="password"
+                type="password"
+                className={classnames("", {
+                  invalid: errors.password || errors.passwordincorrect,
+                })}
+              />
+              <span className="red-text">
+                {errors.password}
+                {errors.passwordincorrect}
+              </span>
+              <p className="grey-text text-darken-1">
+                Don't have an account?
+                <Link to="" onClick={this.props.changeModal}>
+                  Register
+                </Link>
+              </p>
+
+              <div className="col s12" style={{ paddingLeft: "11.250px" }}>
+                <Button
+                  style={{
+                    width: "150px",
+                    borderRadius: "3px",
+                    letterSpacing: "1.5px",
+                    marginTop: "1rem",
+                  }}
+                  type="submit"
+                  className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+                >
+                  Login
+                </Button>
+              </div>
+            </FormGroup>
+          </Form>
+        </ModalBody>
+      </>
     );
   }
 }
 Login.propTypes = {
   loginUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
+  errors: PropTypes.object.isRequired,
 };
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   auth: state.auth,
-  errors: state.errors
+  errors: state.errors,
 });
 export default connect(mapStateToProps, {
   loginUser,
   clearErrors,
-  getUserFridgeData
+  getUserFridgeData,
 })(Login);

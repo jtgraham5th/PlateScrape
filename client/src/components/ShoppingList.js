@@ -49,8 +49,6 @@ class ShoppingList extends Component {
     }
   }
   componentDidUpdate(prevProps) {
-    console.log(prevProps);
-    console.log(this.props);
     if (prevProps.userData.shoppingList !== this.props.userData.shoppingList) {
       this.setState({ shoppingList: this.props.userData.shoppingList });
     }

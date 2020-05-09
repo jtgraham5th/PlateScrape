@@ -31,7 +31,6 @@ class Home extends Component {
 
   componentDidMount() {}
   componentDidUpdate(props) {
-    console.log(props);
     // if (this.state.fridge.length !== this.props.userData.fridge.length) {
     //   this.setState({
     //     fridge: this.props.userData.fridge

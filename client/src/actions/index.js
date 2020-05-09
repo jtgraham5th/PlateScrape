@@ -83,7 +83,6 @@ export const getUserFridgeData = (userId) => (dispatch) => {
   axios
     .get(`/api/getFridge/${userId}`)
     .then((response) => {
-      console.log(response);
       dispatch(setFridgeData(response.data.data.fridge));
     })
     .catch((err) =>
@@ -97,7 +96,6 @@ export const getUserShoppingList = (userId) => (dispatch) => {
   axios
     .get(`/api/getShoppingList/${userId.id}`)
     .then((response) => {
-      console.log(response);
       dispatch(setShoppingList(response.data.data.shoppingList));
     })
     .catch((err) =>
@@ -109,7 +107,6 @@ export const getUserShoppingList = (userId) => (dispatch) => {
 };
 //Save user Shopping List
 export const setShoppingList = (shoppingListData) => {
-  console.log("SetShoppingList", shoppingListData);
   return {
     type: SET_SHOPPINGLIST,
     payload: shoppingListData,
@@ -117,7 +114,6 @@ export const setShoppingList = (shoppingListData) => {
 };
 //Save user Fridge Data
 export const setFridgeData = (fridgeData) => {
-  console.log("SetFridgeData", fridgeData);
   return {
     type: SET_FRIDGE_DATA,
     payload: fridgeData,
@@ -125,7 +121,6 @@ export const setFridgeData = (fridgeData) => {
 };
 //Save Recipe Data
 export const setRecipes = (recipeData) => {
-  console.log("setRecipes", recipeData);
   return {
     type: SET_RECIPES,
     payload: recipeData,

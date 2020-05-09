@@ -36,7 +36,6 @@ class RecipeForm extends Component {
     });
   }
   componentDidUpdate(prevProps) {
-    console.log(prevProps);
     if (
       this.state.shoppingList.length !== this.props.userData.shoppingList.length
     ) {

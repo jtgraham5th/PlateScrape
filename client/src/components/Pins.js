@@ -18,7 +18,7 @@ import {
   Modal,
   ModalBody,
   ModalHeader,
-  ModalFooter
+  ModalFooter,
 } from "reactstrap";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -37,36 +37,39 @@ class Pins extends Component {
     accessToken: "",
     activeTab: 1,
     modal1: false,
-    modal2: false
+    modal2: false,
   };
 
-  componentDidMount() {
+  componentDidMount = () => {
     // -- GET AUTHORIZATION CODE --
     let params = new URLSearchParams(window.location.href);
     let userAuthCode = params.get("code");
     console.log("userAuthCode", userAuthCode);
 
     // --- EXCHANGE FOR ACCESS TOKEN ---
-    // axios
-    //   .post(
-    //     `https://api.pinterest.com/v1/oauth/token?grant_type=authorization_code&client_id=5073939286663940267&client_secret=f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743&code=${userAuthCode}`
-    //   )
-    //   .then(function(response) {
-    //     const accessToken = response.data.access_token;
-    //     console.log("pinterest access Token:", accessToken);
-    //     this.setState({ accessToken: accessToken });
-    //     console.log("ACUTAL TOKEN", accessToken);
-    //     this.pinterestAPIBoardRequest();
-    //   })
-    //   .catch(err => {
-    //     console.log("ERROR:", err);
+    if (userAuthCode) {
+    axios
+      .post(
+        `https://api.pinterest.com/v1/oauth/token?grant_type=authorization_code&client_id=5073939286663940267&client_secret=f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743&code=${userAuthCode}`
+      )
+      .then((response) => {
+        console.log(response);
+        const accessToken = response.data.access_token;
+        console.log("pinterest access Token:", accessToken);
+        this.setState({ accessToken: accessToken });
+        console.log("ACUTAL TOKEN", accessToken);
+        this.pinterestAPIBoardRequest();
+      })
+      .catch((err) => {
+        console.log("ERROR:", err);
         // const accessToken =
         //   "Aj5cBG-EFZy8RRy1skpJ0zVYY_QkFeSnWQ45H_lGakDl-YDIqwJUgDAAAAMgRmtif9EgrmUAAAAA";
         // this.setState({ accessToken: accessToken });
         // console.log("TEMPORARY TOKEN", accessToken);
         // this.pinterestAPIBoardRequest();
-      // });
-  }
+      });
+  };
+};
   pinterestAPIBoardRequest() {
     // --- MAKE A REQUEST ---
     if (this.state.accessToken.length > 1) {
@@ -74,13 +77,13 @@ class Pins extends Component {
         .get(
           `https://api.pinterest.com/v1/me/boards/?access_token=${this.state.accessToken}&fields=id%2Cname%2Curl%2Cimage%2Cdescription`
         )
-        .then(response => {
+        .then((response) => {
           console.log(response);
           this.setState({
-            userBoards: response.data.data
+            userBoards: response.data.data,
           });
         })
-        .catch(err => {
+        .catch((err) => {
           console.log("Error", err);
         });
     }
@@ -93,14 +96,14 @@ class Pins extends Component {
     //   });
     // }
   }
-  addRecipe = async event => {
+  addRecipe = async (event) => {
     const url = event.target.dataset.url;
     this.setState({ recipelink: url }, () => {
       this.handleFormSubmit(event);
       console.log(this.state.recipelink);
     });
   };
-  displayPins = event => {
+  displayPins = (event) => {
     event.preventDefault();
     let boardID = event.target.id;
     let boarddata = [];
@@ -121,9 +124,9 @@ class Pins extends Component {
       this.setState({ activeTab: event.target.key });
     }
   };
-  showPins = boarddata => {
+  showPins = (boarddata) => {
     this.setState({
-      boardPins: []
+      boardPins: [],
     });
     let boardPins = this.state.boardPins;
     const requests = boarddata.map((pin, index) => {
@@ -134,26 +137,26 @@ class Pins extends Component {
         description: !pin.metadata.link
           ? "No Description"
           : pin.metadata.link.description,
-        ogLink: pin.original_link
+        ogLink: pin.original_link,
       };
       boardPins.push(newPin);
     });
     Promise.all(requests).then(() => {
       this.setState({
-        boardPins
+        boardPins,
       });
       console.log(this.state.boardPins);
     });
   };
-  toggleModal = num => {
+  toggleModal = (num) => {
     console.log(num, "NUM");
     if (num === 1) {
       this.setState({
-        modal1: !this.state.modal1
+        modal1: !this.state.modal1,
       });
     } else if (num === 2) {
       this.setState({
-        modal2: !this.state.modal2
+        modal2: !this.state.modal2,
       });
     }
   };
@@ -170,7 +173,7 @@ class Pins extends Component {
                   onClick={this.displayPins}
                   className={classnames(
                     {
-                      active: this.state.activeTab === `${i}`
+                      active: this.state.activeTab === `${i}`,
                     },
                     "bg-white border-dark"
                   )}
@@ -252,10 +255,10 @@ class Pins extends Component {
 }
 Pins.propTypes = {
   auth: PropTypes.object.isRequired,
-  userData: PropTypes.object.isRequired
+  userData: PropTypes.object.isRequired,
 };
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   auth: state.auth,
-  userData: state.userData
+  userData: state.userData,
 });
 export default connect(mapStateToProps)(Pins);

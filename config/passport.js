@@ -15,7 +15,7 @@ const pinterest = new PinterestStrategy(
         clientID: "5073939286663940267",
         clientSecret: "f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743",
         scope: ["read_public", "read_relationships"],
-        callbackURL: "https://localhost:3000",
+        callbackURL: "https://localhost:3000/",
         state: true
       },
       function(accessToken, refreshToken, profile, done) {

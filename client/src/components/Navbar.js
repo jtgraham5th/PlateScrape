@@ -4,29 +4,60 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import PinterestBtn from "./PinterestButton";
+import { Button, Modal } from "reactstrap";
 import Login from "./auth/Login";
 import Logout from "./auth/Logout";
 import Register from "./auth/Register";
 
 class Navbar extends Component {
   state = {
-    isOpen: false
+    modal: false,
+    modalContent: null,
   };
 
   static propTypes = {
-    auth: PropTypes.object.isRequired
+    auth: PropTypes.object.isRequired,
   };
 
   toggle = () => {
+    this.setState({modal: !this.state.modal})
+  };
+  changeModal = (e) => {
+    let modalName = e.target.textContent;
     this.setState({
-      isOpen: !this.state.isOpen
+      modalContent: modalName,
     });
   };
 
+  toggleModal = (e) => {
+    let modalName = e.target.textContent;
+    if (this.state.ModalContent === modalName) {
+      this.setState({
+        modalContent: "",
+      });
+    } else {
+      this.setState({
+        modalContent: modalName,
+      });
+    }
+    if (!this.state.toggle){
+      this.toggle();
+    }
+  };
+  modalContent = () => {
+    switch (this.state.modalContent) {
+      case "Login":
+        return <Login toggle={this.toggle} changeModal={this.changeModal}/>;
+      case "Register":
+        return <Register toggle={this.toggle} changeModal={this.changeModal}/>;
+      case "Logout":
+        return <Logout toggle={this.toggle} />;
+      default:
+        return <div></div>;
+    }
+  };
   render() {
     const { isAuthenticated, user } = this.props.auth;
-    console.log(isAuthenticated);
-    console.log(this.props);
 
     const authLinks = (
       <ul id="nav-mobile" className="right">
@@ -34,7 +65,7 @@ class Navbar extends Component {
           <PinterestBtn />
         </li>
         <li>
-          <Logout />
+          <Button onClick={this.toggleModal}>Logout</Button>
         </li>
       </ul>
     );
@@ -44,10 +75,10 @@ class Navbar extends Component {
           <PinterestBtn />
         </li>
         <li>
-          <Login />
+          <Button onClick={this.toggleModal}>Login</Button>
         </li>
         <li>
-          <Register />
+          <Button onClick={this.toggleModal}>Register</Button>
         </li>
       </ul>
     );
@@ -59,7 +90,7 @@ class Navbar extends Component {
             <Link
               to="/"
               style={{
-                fontFamily: "monospace"
+                fontFamily: "monospace",
               }}
               className="s5 brand-logo white-text"
             >
@@ -72,12 +103,16 @@ class Navbar extends Component {
             {isAuthenticated ? authLinks : guestLinks}
           </div>
         </nav>
+        (
+        <Modal isOpen={this.state.modal} toggle={this.toggle}>
+          {this.modalContent()}
+        </Modal>
       </div>
     );
   }
 }
-const mapStateToProps = state => ({
-  auth: state.auth
+const mapStateToProps = (state) => ({
+  auth: state.auth,
 });
 
 export default connect(mapStateToProps, null)(Navbar);

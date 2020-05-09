@@ -3,12 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-  "proxy": {
-    "/api/pinterestLogin": {
-      "target": "https://localhost:3000/api/"
-    }
-  },
-  "secure": false,
+  "proxy": "https://localhost:3001",
+  "secure": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",

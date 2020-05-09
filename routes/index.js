@@ -8,18 +8,20 @@ const keys = require("../config/keys");
 const passport = require("passport");
 const passportService = require("../config/passport");
 const Authentication = require("../controllers/authentication");
-const pinterestAuth = passport.authenticate("pinterest", { session: false })
+const pinterestAuth = passport.authenticate("pinterest", { session: false });
 
 // Load input validation
 const validateRegisterInput = require("../validation/register");
 const validateLoginInput = require("../validation/login");
 
-router.get('/', function (req, res) {
-  res.header('Content-type', 'text/html');
+router.get("/", function(req, res) {});
+
+// router.get("/pinterestLogin", pinterestAuth, Authentication.pinterestLogin);
+router.get("/pinterestLogin", (req, res) => {
+  res.redirect(
+      "https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://localhost:3000/&client_id=5073939286663940267&scope=read_public,write_public&state=768uyFys"
+    )
 });
-
-router.get("/pinterestLogin", pinterestAuth ,Authentication.pinterestLogin);
-
 
 router.get("/recipes/:id", (req, res) => {
   console.log(req.params.id);
@@ -55,19 +57,19 @@ router.post("/shoppingListItem", function(req, res) {
   console.log(newIngredient);
   console.log(userId);
   db.User.updateOne({ _id: userId }, { $push: { shoppingList: newIngredient } })
-    .then(newItem => {
+    .then((newItem) => {
       console.log("New Shopping List Item", newItem);
       res.json({
         message: "Successfully created",
         error: false,
-        data: newItem
+        data: newItem,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       res.json({
         message: err.message,
-        error: true
+        error: true,
       });
     });
 });
@@ -78,19 +80,19 @@ router.post("/fridgeItem", function(req, res) {
   console.log(newIngredient);
   console.log(userId);
   db.User.updateOne({ _id: userId }, { $push: { fridge: newIngredient } })
-    .then(newItem => {
+    .then((newItem) => {
       console.log("New Fridge Item", newItem);
       res.json({
         message: "Successfully created",
         error: false,
-        data: newItem
+        data: newItem,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       res.json({
         message: err.message,
-        error: true
+        error: true,
       });
     });
 });
@@ -98,19 +100,19 @@ router.put("/fridgeItem", function(req, res) {
   const { itemName, userId } = req.body;
   console.log(req.body);
   db.User.update({ _id: userId }, { $pull: { fridge: { name: itemName } } })
-    .then(removedItem => {
+    .then((removedItem) => {
       console.log("Removed Fridge Item", removedItem);
       res.json({
         message: "Successfully removed",
         error: false,
-        data: removedItem
+        data: removedItem,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       res.json({
         message: err.message,
-        error: true
+        error: true,
       });
     });
 });
@@ -120,18 +122,18 @@ router.get("/getFridge/:id", (req, res) => {
   console.log(req.params);
   console.log(userID);
   db.User.findById(userID, "fridge")
-    .then(allItems => {
+    .then((allItems) => {
       res.json({
         message: "Requested all Fridge Items",
         error: false,
-        data: allItems
+        data: allItems,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       res.json({
         message: err.message,
-        error: true
+        error: true,
       });
     });
 });
@@ -141,18 +143,18 @@ router.get("/getShoppingList/:id", (req, res) => {
   console.log(req.params);
   console.log(userID);
   db.User.findById(userID, "shoppingList")
-    .then(allItems => {
+    .then((allItems) => {
       res.json({
         message: "Requested Shopping List",
         error: false,
-        data: allItems
+        data: allItems,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       res.json({
         message: err.message,
-        error: true
+        error: true,
       });
     });
 });
@@ -163,7 +165,7 @@ router.post("/register", (req, res) => {
   if (!isValid) {
     return res.status(400).json(errors);
   }
-  db.User.findOne({ email: req.body.email }).then(user => {
+  db.User.findOne({ email: req.body.email }).then((user) => {
     if (user) {
       console.log("user exist");
       return res.status(400).json({ email: "Email already exists" });
@@ -175,7 +177,7 @@ router.post("/register", (req, res) => {
         email: req.body.email,
         password: req.body.password,
         fridge: [],
-        shoppingList: []
+        shoppingList: [],
       });
       // Hash password before saving in database
       bcrypt.genSalt(10, (err, salt) => {
@@ -184,8 +186,8 @@ router.post("/register", (req, res) => {
           newUser.password = hash;
           newUser
             .save()
-            .then(user => res.json(user))
-            .catch(err => console.log(err));
+            .then((user) => res.json(user))
+            .catch((err) => console.log(err));
         });
       });
     }
@@ -201,31 +203,31 @@ router.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   // Find user by email
-  db.User.findOne({ email }).then(user => {
+  db.User.findOne({ email }).then((user) => {
     // Check if user exists
     if (!user) {
       return res.status(404).json({ emailnotfound: "Email not found" });
     }
     // Check password
-    bcrypt.compare(password, user.password).then(isMatch => {
+    bcrypt.compare(password, user.password).then((isMatch) => {
       if (isMatch) {
         // User matched
         // Create JWT Payload
         const payload = {
           id: user.id,
-          name: user.name
+          name: user.name,
         };
         // Sign token
         jwt.sign(
           payload,
           keys.secretOrKey,
           {
-            expiresIn: 31556926 // 1 year in seconds
+            expiresIn: 31556926, // 1 year in seconds
           },
           (err, token) => {
             res.json({
               success: true,
-              token: "Bearer " + token
+              token: "Bearer " + token,
             });
           }
         );
