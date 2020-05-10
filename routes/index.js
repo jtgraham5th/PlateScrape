@@ -1,27 +1,24 @@
 const router = require("express").Router();
 var axios = require("axios");
 var cheerio = require("cheerio");
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const keys = require("../config/keys");
 
 const passport = require("passport");
 const passportService = require("../config/passport");
 const Authentication = require("../controllers/authentication");
-const pinterestAuth = passport.authenticate("pinterest", { session: false });
+const ShoppingList = require("../controllers/shoppingListController");
+const Fridge = require("../controllers/fridgeController");
+
+const requireAuth = passport.authenticate("jwt", { session: false });
+const requireUserLogin = passport.authenticate("login", { session: false });
 
 // Load input validation
-const validateRegisterInput = require("../validation/register");
-const validateLoginInput = require("../validation/login");
 
 router.get("/", function(req, res) {});
-
-// router.get("/pinterestLogin", pinterestAuth, Authentication.pinterestLogin);
-router.get("/pinterestLogin", (req, res) => {
-  res.redirect(
-      "https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://localhost:3000/&client_id=5073939286663940267&scope=read_public,write_public&state=768uyFys"
-    )
-});
+router.post("/login", requireUserLogin, Authentication.login);
+router.post("/register", Authentication.register);
+router.get("/getShoppingList/:id", ShoppingList.getList);
+router.get("/getFridge/:id", Fridge.getItems);
 
 router.get("/recipes/:id", (req, res) => {
   console.log(req.params.id);
@@ -115,129 +112,6 @@ router.put("/fridgeItem", function(req, res) {
         error: true,
       });
     });
-});
-router.get("/getFridge/:id", (req, res) => {
-  console.log("Retrieving Fridge Data...");
-  const userID = req.params.id;
-  console.log(req.params);
-  console.log(userID);
-  db.User.findById(userID, "fridge")
-    .then((allItems) => {
-      res.json({
-        message: "Requested all Fridge Items",
-        error: false,
-        data: allItems,
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.json({
-        message: err.message,
-        error: true,
-      });
-    });
-});
-router.get("/getShoppingList/:id", (req, res) => {
-  console.log("Retriving Shopping List Data...");
-  const userID = req.params.id;
-  console.log(req.params);
-  console.log(userID);
-  db.User.findById(userID, "shoppingList")
-    .then((allItems) => {
-      res.json({
-        message: "Requested Shopping List",
-        error: false,
-        data: allItems,
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.json({
-        message: err.message,
-        error: true,
-      });
-    });
-});
-router.post("/register", (req, res) => {
-  // Form validation
-  const { errors, isValid } = validateRegisterInput(req.body);
-  // Check validation
-  if (!isValid) {
-    return res.status(400).json(errors);
-  }
-  db.User.findOne({ email: req.body.email }).then((user) => {
-    if (user) {
-      console.log("user exist");
-      return res.status(400).json({ email: "Email already exists" });
-    } else {
-      console.log("user does not exist");
-
-      const newUser = new User({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        fridge: [],
-        shoppingList: [],
-      });
-      // Hash password before saving in database
-      bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(newUser.password, salt, (err, hash) => {
-          if (err) throw err;
-          newUser.password = hash;
-          newUser
-            .save()
-            .then((user) => res.json(user))
-            .catch((err) => console.log(err));
-        });
-      });
-    }
-  });
-});
-router.post("/login", (req, res) => {
-  // Form validation
-  const { errors, isValid } = validateLoginInput(req.body);
-  // Check validation
-  if (!isValid) {
-    return res.status(400).json(errors);
-  }
-  const email = req.body.email;
-  const password = req.body.password;
-  // Find user by email
-  db.User.findOne({ email }).then((user) => {
-    // Check if user exists
-    if (!user) {
-      return res.status(404).json({ emailnotfound: "Email not found" });
-    }
-    // Check password
-    bcrypt.compare(password, user.password).then((isMatch) => {
-      if (isMatch) {
-        // User matched
-        // Create JWT Payload
-        const payload = {
-          id: user.id,
-          name: user.name,
-        };
-        // Sign token
-        jwt.sign(
-          payload,
-          keys.secretOrKey,
-          {
-            expiresIn: 31556926, // 1 year in seconds
-          },
-          (err, token) => {
-            res.json({
-              success: true,
-              token: "Bearer " + token,
-            });
-          }
-        );
-      } else {
-        return res
-          .status(400)
-          .json({ passwordincorrect: "Password incorrect" });
-      }
-    });
-  });
 });
 
 // router.use(function(req, res) {

@@ -7,7 +7,6 @@ import { clearErrors } from "../../actions/errorActions";
 import classnames from "classnames";
 import {
   Button,
-  Modal,
   ModalHeader,
   ModalBody,
   Form,

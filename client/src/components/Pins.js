@@ -22,6 +22,7 @@ import {
 } from "reactstrap";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { compareSync } from "bcrypt-nodejs";
 // import { CLEAR_ERRORS } from "../../actions/types";
 // import { getUserFridgeData } from "../actions/authActions";
 
@@ -43,14 +44,27 @@ class Pins extends Component {
   componentDidMount = () => {
     // -- GET AUTHORIZATION CODE --
     let params = new URLSearchParams(window.location.href);
-    let userAuthCode = params.get("code");
-    console.log("userAuthCode", userAuthCode);
+    let pinterestAuthCode = params.get("code");
+    console.log("pinterestAuthCode", pinterestAuthCode);
+    const { isAuthenticated, user } = this.props.auth;
+    console.log(user)
+    console.log(isAuthenticated)
 
-    // --- EXCHANGE FOR ACCESS TOKEN ---
-    if (userAuthCode) {
+    //if user is logged in and does not have a pinterest auth code
+    if (isAuthenticated && !user.pinterestCode) {
+      console.log("user has no pin code")
+    }
+
+    //if user is logged in and does have a pinterest auth code
+    if (isAuthenticated && user.pinterestCode) {
+      console.log("user has pin code")
+    }
+
+    //if user is not logged
+    if (pinterestAuthCode) {
     axios
       .post(
-        `https://api.pinterest.com/v1/oauth/token?grant_type=authorization_code&client_id=5073939286663940267&client_secret=f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743&code=${userAuthCode}`
+        `https://api.pinterest.com/v1/oauth/token?grant_type=authorization_code&client_id=5073939286663940267&client_secret=f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743&code=${pinterestAuthCode}`
       )
       .then((response) => {
         console.log(response);
@@ -90,11 +104,23 @@ class Pins extends Component {
   }
   componentDidUpdate(props) {
     console.log(props);
-    // if (this.state.fridge.length !== this.props.userData.fridge.length) {
-    //   this.setState({
-    //     fridge: this.props.userData.fridge
-    //   });
-    // }
+    const { isAuthenticated, user } = this.props.auth;
+    console.log(user)
+    console.log(isAuthenticated)
+
+    //if user is logged in and does not have a pinterest auth code
+    if (isAuthenticated && !user.pinterestCode) {
+      let params = new URLSearchParams(window.location.href);
+      let pinterestAuthCode = params.get("code");
+      console.log("pinterestAuthCode", pinterestAuthCode);
+
+      console.log("user has no pin code")
+    }
+
+    //if user is logged in and does have a pinterest auth code
+    if (isAuthenticated && user.pinterestCode) {
+      console.log("user has pin code")
+    }
   }
   addRecipe = async (event) => {
     const url = event.target.dataset.url;

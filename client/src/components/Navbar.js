@@ -20,7 +20,7 @@ class Navbar extends Component {
   };
 
   toggle = () => {
-    this.setState({modal: !this.state.modal})
+    this.setState({ modal: !this.state.modal });
   };
   changeModal = (e) => {
     let modalName = e.target.textContent;
@@ -40,18 +40,16 @@ class Navbar extends Component {
         modalContent: modalName,
       });
     }
-    if (!this.state.toggle){
+    if (!this.state.toggle) {
       this.toggle();
     }
   };
   modalContent = () => {
     switch (this.state.modalContent) {
       case "Login":
-        return <Login toggle={this.toggle} changeModal={this.changeModal}/>;
+        return <Login toggle={this.toggle} changeModal={this.changeModal} />;
       case "Register":
-        return <Register toggle={this.toggle} changeModal={this.changeModal}/>;
-      case "Logout":
-        return <Logout toggle={this.toggle} />;
+        return <Register toggle={this.toggle} changeModal={this.changeModal} />;
       default:
         return <div></div>;
     }
@@ -65,7 +63,7 @@ class Navbar extends Component {
           <PinterestBtn />
         </li>
         <li>
-          <Button onClick={this.toggleModal}>Logout</Button>
+          <Logout />
         </li>
       </ul>
     );

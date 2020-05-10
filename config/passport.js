@@ -1,35 +1,70 @@
-// const JwtStrategy = require("passport-jwt").Strategy;
-// const ExtractJwt = require("passport-jwt").ExtractJwt;
+const JwtStrategy = require("passport-jwt").Strategy;
+const ExtractJwt = require("passport-jwt").ExtractJwt;
+require("dotenv").config();
 
 const passport = require("passport");
-const PinterestStrategy = require("passport-pinterest").Strategy;
 const User = require("../models/User");
-const keys = require("./keys");
-const localOptions = {};
 
-// localOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-localOptions.secretOrKey = keys.secretOrKey;
+const LocalStrategy = require("passport-local");
+const validateLoginInput = require("../validation/login");
 
-const pinterest = new PinterestStrategy(
-      {
-        clientID: "5073939286663940267",
-        clientSecret: "f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743",
-        scope: ["read_public", "read_relationships"],
-        callbackURL: "https://localhost:3000/",
-        state: true
-      },
-      function(accessToken, refreshToken, profile, done) {
-        console.log("profile", profile);
-        console.log("accessToken", accessToken);
-        console.log("refreshToken", refreshToken);
-        User.findOrCreate({ pinterestId: profile.id }, function (err, user) {
-          return done(err, user);
-      });
-        
+//Create local Strategy
+const localOptions = { usernameField: "email" };
 
-        // return cb(null, profile);
+const login = new LocalStrategy(localOptions, function(email, password, done) {
+  const { errors, isValid } = validateLoginInput(email, password);
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+  //verify this email and password,
+  //call done with the email and password
+  //otherwise, call done with false
+  User.findOne({ email }, function(err, user) {
+    if (err) {
+      return done(err);
+    }
+    if (!user) {
+      return done(null, false);
+    }
+
+    //compare passwords - is 'password' equal to user.password
+    user.comparePassword(password, function(err, isMatch) {
+      if (err) {
+        return done(err);
       }
-    );
+      if (!isMatch) {
+        return done(null, false);
+      } else {
+        return done(null, user);
+      }
+    });
+  });
+});
+
+//Setup options for Jwt Strategy
+const jwtOptions = {
+  jwtFromRequest: ExtractJwt.fromHeader("authorization"),
+  secretOrKey: process.env.secret,
+};
+
+//Create JWT Strategy
+const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
+  //See if user ID in the payload exists in our database
+  //If it does call 'done' with that other
+  //otherwise call 'done' with a user object
+  User.findById(payload.sub, function(err, user) {
+    if (err) {
+      return done(err, false);
+    }
+    if (user) {
+      done(null, user);
+    } else {
+      done(null, false);
+    }
+  });
+});
 
 //Tell passport to use these Strategies
-passport.use('pinterest',pinterest);
+passport.use("jwt", jwtLogin);
+passport.use("login", login);

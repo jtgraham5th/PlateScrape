@@ -4,7 +4,7 @@ import {
 } from "../actions/types";
 const isEmpty = require("is-empty");
 const initialState = {
-  isAuthenticated: false,
+  isAuthenticated: isEmpty(localStorage),
   user: {},
   loading: false
 };

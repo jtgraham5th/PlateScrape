@@ -57,7 +57,8 @@ export const loginUser = (userData) => (dispatch) => {
     .then((res) => {
       // Save to localStorage
       // Set token to localStorage
-      const { token } = res.data;
+      console.log(res)
+      const { token, userData } = res.data;
       localStorage.setItem("jwtToken", token);
       // Set token to Auth header
       setAuthToken(token);
@@ -67,9 +68,9 @@ export const loginUser = (userData) => (dispatch) => {
       // Set current user
       batch(() => {
         dispatch(setRecipes([]));
-        dispatch(setCurrentUser(decoded));
-        dispatch(getUserFridgeData(decoded.id));
-        dispatch(getUserShoppingList(decoded));
+        dispatch(setCurrentUser(userData));
+        dispatch(setFridgeData(userData.fridge))
+        dispatch(setShoppingList(userData.shoppingList))
       });
     })
     .catch((err) =>
@@ -80,6 +81,8 @@ export const loginUser = (userData) => (dispatch) => {
     );
 };
 export const getUserFridgeData = (userId) => (dispatch) => {
+  console.log("userId for fridge",userId)
+
   axios
     .get(`/api/getFridge/${userId}`)
     .then((response) => {
@@ -93,8 +96,9 @@ export const getUserFridgeData = (userId) => (dispatch) => {
     );
 };
 export const getUserShoppingList = (userId) => (dispatch) => {
+  console.log("userId for shopping",userId)
   axios
-    .get(`/api/getShoppingList/${userId.id}`)
+    .get(`/api/getShoppingList/${userId}`)
     .then((response) => {
       dispatch(setShoppingList(response.data.data.shoppingList));
     })

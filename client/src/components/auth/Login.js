@@ -7,7 +7,6 @@ import { clearErrors } from "../../actions/errorActions";
 import classnames from "classnames";
 import {
   Button,
-  Modal,
   ModalHeader,
   ModalBody,
   Form,
@@ -63,13 +62,14 @@ class Login extends Component {
   onChange = (e) => {
     this.setState({ [e.target.id]: e.target.value });
   };
-  onSubmit = (e) => {
+  onSubmit = async (e) => {
     e.preventDefault();
     const userData = {
       email: this.state.email,
       password: this.state.password,
     };
-    this.props.loginUser(userData);
+    await this.props.loginUser(userData);
+    this.props.toggle();
   };
   render() {
     const { errors } = this.state;
