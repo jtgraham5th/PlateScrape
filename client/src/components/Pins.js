@@ -24,7 +24,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compareSync } from "bcrypt-nodejs";
 // import { CLEAR_ERRORS } from "../../actions/types";
-import { storeAuthCode } from "../actions";
+// import { storeAuthCode } from "../actions";
 
 var axios = require("axios");
 
@@ -42,91 +42,46 @@ class Pins extends Component {
   };
 
   componentDidMount = () => {
-    // -- GET AUTHORIZATION CODE --
-    let params = new URLSearchParams(window.location.href);
-    let pinterestAuthCode = params.get("code");
-    console.log("pinterestAuthCode", pinterestAuthCode);
-    const { isAuthenticated, pinterestCode } = this.props.auth;
-    console.log(pinterestCode);
-    console.log(isAuthenticated);
-
-    //if user is logged in and does not have a pinterest auth code
-    if (isAuthenticated && !pinterestCode) {
-      console.log("user has no pin code");
-    }
-
-    //if user is logged in and does have a pinterest auth code
-    if (isAuthenticated && pinterestCode) {
-      console.log("user has pin code");
-    }
-
-    //if user is not logged
-    if (pinterestAuthCode) {
-      axios
-        .post(
-          `https://api.pinterest.com/v1/oauth/token?grant_type=authorization_code&client_id=5073939286663940267&client_secret=f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743&code=${pinterestAuthCode}`
-        )
-        .then((response) => {
-          console.log(response);
-          const accessToken = response.data.access_token;
-          console.log("pinterest access Token:", accessToken);
-          this.setState({ accessToken: accessToken });
-          console.log("ACUTAL TOKEN", accessToken);
-          this.pinterestAPIBoardRequest();
-        })
-        .catch((err) => {
-          console.log("ERROR:", err);
-          // const accessToken =
-          //   "Aj5cBG-EFZy8RRy1skpJ0zVYY_QkFeSnWQ45H_lGakDl-YDIqwJUgDAAAAMgRmtif9EgrmUAAAAA";
-          // this.setState({ accessToken: accessToken });
-          // console.log("TEMPORARY TOKEN", accessToken);
-          // this.pinterestAPIBoardRequest();
-        });
-    }
   };
-  pinterestAPIBoardRequest() {
-    // --- MAKE A REQUEST ---
-    if (this.state.accessToken.length > 1) {
-      axios
-        .get(
-          `https://api.pinterest.com/v1/me/boards/?access_token=${this.state.accessToken}&fields=id%2Cname%2Curl%2Cimage%2Cdescription`
-        )
-        .then((response) => {
-          console.log(response);
-          this.setState({
-            userBoards: response.data.data,
-          });
-        })
-        .catch((err) => {
-          console.log("Error", err);
-        });
-    }
-  }
+
   componentDidUpdate(props) {
-    console.log(props);
-    const { isAuthenticated, pinterestCode, userId } = this.props.auth;
-    console.log(userId);
-    console.log(isAuthenticated);
-    console.log(pinterestCode);
+    const { isAuthenticated, userId } = this.props.auth;
 
     //if user is logged in and does not have a pinterest auth code
-    if (isAuthenticated && !pinterestCode) {
+    if (isAuthenticated) {
       let params = new URLSearchParams(window.location.href);
       let pinterestAuthCode = params.get("code");
-      console.log("pinterestAuthCode", pinterestAuthCode);
+      // console.log("pinterestAuthCode", pinterestAuthCode);
       if (pinterestAuthCode) {
         let data = {
-          pinterestAuthCode: pinterestAuthCode, 
-          userId: userId
-        }
-        console.log(data)
+          pinterestAuthCode: pinterestAuthCode,
+          userId: userId,
+        };
+        // console.log(data);
         // this.props.storeAuthCode(data);
       }
     }
 
     //if user is logged in and does have a pinterest auth code
-    if (isAuthenticated && pinterestCode) {
-      console.log("user has pin code");
+    
+  }
+
+  pinterestAPIBoardRequest() {
+    // --- MAKE A REQUEST ---
+    if (this.state.accessToken.length > 1) {
+      // axios
+      //   .get(
+      //     `https://api.pinterest.com/v1/me/boards/?access_token=${this.state.accessToken}&fields=id%2Cname%2Curl%2Cimage%2Cdescription`
+      //   )
+      //   .then((response) => {
+      //     console.log(response);
+      //     this.setState({
+      //       userBoards: response.data.data,
+      //     });
+      //   })
+      //   .catch((err) => {
+      //     console.log("Error", err);
+      //   });
     }
   }
   addRecipe = async (event) => {
@@ -142,17 +97,17 @@ class Pins extends Component {
     let boarddata = [];
     console.log(event.target.id);
     this.setState({ togglePins: true });
-    axios
-      .get(
-        `https://api.pinterest.com/v1/boards/${boardID}/pins/?access_token=${this.state.accessToken}&fields=id%2Clink%2Cnote%2Curl%2Cattribution%2Cimage%2Cmetadata%2Coriginal_link`
-      )
-      .then(
-        function(response) {
-          boarddata = response.data.data;
-          console.log(response.data.data);
-          this.showPins(boarddata);
-        }.bind(this)
-      );
+    // axios
+    //   .get(
+    //     `https://api.pinterest.com/v1/boards/${boardID}/pins/?access_token=${this.state.accessToken}&fields=id%2Clink%2Cnote%2Curl%2Cattribution%2Cimage%2Cmetadata%2Coriginal_link`
+    //   )
+    //   .then(
+    //     function(response) {
+    //       boarddata = response.data.data;
+    //       console.log(response.data.data);
+    //       this.showPins(boarddata);
+    //     }.bind(this)
+    //   );
     if (this.state.activeTab !== event.target.key) {
       this.setState({ activeTab: event.target.key });
     }
@@ -289,10 +244,9 @@ class Pins extends Component {
 Pins.propTypes = {
   auth: PropTypes.object.isRequired,
   userData: PropTypes.object.isRequired,
-  storeAuthCode: PropTypes.func.isRequired,
 };
 const mapStateToProps = (state) => ({
   auth: state.auth,
   userData: state.userData,
 });
-export default connect(mapStateToProps, { storeAuthCode })(Pins);
+export default connect(mapStateToProps)(Pins);

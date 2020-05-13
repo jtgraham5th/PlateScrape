@@ -44,9 +44,9 @@ exports.register = (req, res) => {
     });
   });
 };
-exports.storeAuthCode = (req, res) => {
-  User.update({_id: req.body.userId},{pinterestCode: req.body.pinterestAuthCode}).then(response => console.log(response))
-  console.log(req.body)
+exports.storeAuthToken = (req, res) => {
+  User.update({_id: req.body.userId},{pinterestToken: req.body.authToken}).then(response => console.log(response))
+  // console.log(req.body)
 };
 exports.loadUser = (req, res) => {
   User.findById(req.params.id)

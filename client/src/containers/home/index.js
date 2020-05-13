@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 // import { Link } from "react-router-dom";
 import "./style.css";
 import { Container } from "reactstrap";
@@ -9,12 +10,7 @@ import ShoppingList from "../../components/ShoppingList";
 import RecipeList from "../../components/RecipeList";
 import RecipeForm from "../../components/RecipeForm";
 import Pins from "../../components/Pins";
-import {
-  logoutUser,
-  loginUser,
-  storeAuthCode,
-  loadUser
-} from "../../actions";
+import { logoutUser, loginUser, getAuthToken, storeAuthToken, loadUser } from "../../actions";
 
 class Home extends Component {
   state = {
@@ -34,23 +30,31 @@ class Home extends Component {
     modal2: false,
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    // Load User Data
     if (this.props.auth.isAuthenticated && localStorage.getItem("jwtToken")) {
-      this.props.loadUser(localStorage.getItem("jwtToken"));
+      await this.props.loadUser(localStorage.getItem("jwtToken"));
+
+      // -- GET AUTHORIZATION CODE --
+      let params = new URLSearchParams(window.location.href);
+      let pinterestAuthCode = params.get("code");
+      const { isAuthenticated, pinterestToken } = this.props.auth;
+      console.log({ pinterestAuthCode, isAuthenticated, pinterestToken });
+
+      //if user is logged in and does NOT have a pinterest auth Token
+      if (isAuthenticated && !pinterestToken && pinterestAuthCode) {
+        console.log("user has no pinterest token");
+        await this.props.getAuthToken(pinterestAuthCode);
+      }
+
+      //if user is logged in and does have a pinterest auth Token
+      if (isAuthenticated && pinterestToken) {
+        console.log("user already has a pinterest Token");
+      }
     }
-  }
+  }  
 
   componentDidUpdate(props) {
-    //check if user is already logged in and get user data
-    console.log("component did update");
-    console.log(localStorage.getItem("jwtToken"));
-    if (this.props.auth.isAuthenticated && localStorage.getItem("jwtToken")) {
-      console.log(localStorage.getItem("jwtToken"));
-      // this.props.storeAuthCode(
-      //   localStorage.getItem("jwtToken"),
-      //   this.props.auth.userId
-      // );
-    }
   }
 
   render(props) {
@@ -81,6 +85,7 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   logoutUser,
   loginUser,
-  storeAuthCode,
-  loadUser
+  storeAuthToken,
+  loadUser,
+  getAuthToken
 })(Home);

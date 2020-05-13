@@ -23,7 +23,7 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  pinterestCode: {
+  pinterestToken: {
     type: String,
     default: null
   },

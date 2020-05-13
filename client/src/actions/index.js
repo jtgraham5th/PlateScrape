@@ -14,20 +14,6 @@ import {
   SET_RECIPES,
 } from "./types";
 // Register User
-export const pinterestLogin = () => {
-  return () => {
-    axios
-      .get("api/pinterestLogin")
-      .then((response) => {
-        console.log(response);
-        // history.push("/student");
-      })
-      .catch((err) => {
-        console.log(err);
-        // history.push("/");
-      });
-  };
-};
 export const registerUser = (userData, history) => (dispatch) => {
   axios
     .post("/api/register", userData)
@@ -39,11 +25,31 @@ export const registerUser = (userData, history) => (dispatch) => {
       })
     );
 };
-export const storeAuthCode = (authCode, userId) => (dispatch) => {
-  const userData = { authCode: authCode, userId: userId };
+export const getAuthToken = (pinterestAuthCode) => (dispatch) => {
+  console.log("hit me")
+    axios
+      .post(
+        `https://api.pinterest.com/v1/oauth/token?grant_type=authorization_code&client_id=5073939286663940267&client_secret=f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743&code=${pinterestAuthCode}`
+      )
+      .then((response) => {
+        const accessToken = response.data.access_token;
+        console.log("pinterest access Token:", accessToken);
+        dispatch(storeAuthToken(accessToken,localStorage.getItem("jwtToken")));
+      })
+      .catch((err) => {
+        console.log("ERROR:", err);
+      });
+  }
 
+export const storeAuthToken = (authToken, jwtToken) => (dispatch) => {
+  setAuthToken(jwtToken);
+  // Decode token to get user data
+  let decoded = jwt_decode(jwtToken).sub;
+
+  const userData = { userId: decoded, authToken: authToken };
+  console.log(userData)
   axios
-    .put("/api/storeAuthCode", userData)
+    .put("/api/storeAuthToken", userData)
     .then() // re-direct to login on successful register
     .catch((err) =>
       dispatch({
@@ -171,22 +177,22 @@ export const logoutUser = () => (dispatch) => {
   });
 };
 //Check token & load user
-export const loadUser = (token) => (dispatch) => {
+export const loadUser = (token) => async (dispatch) => {
   // User loading
   dispatch({ type: USER_LOADING });
 
   setAuthToken(token);
   // Decode token to get user data
   let decoded = jwt_decode(token).sub;
-  console.log(decoded);
 
-  axios
+  await axios
     .get(`/api/loadUser/${decoded}`)
     .then((res) =>
       batch(() => {
         dispatch(setCurrentUser(res.data));
         dispatch(setFridgeData(res.data.fridge));
-        dispatch(setShoppingList(res.data.shoppingList));
+        dispatch(setShoppingList(res.data.shoppingList))
+        dispatch({ type: USER_LOADED });;
       })
     )
     .catch((err) => {

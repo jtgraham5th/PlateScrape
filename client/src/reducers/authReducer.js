@@ -1,16 +1,13 @@
-import {
-  SET_CURRENT_USER,
-  USER_LOADING,
-} from "../actions/types";
+import { SET_CURRENT_USER, USER_LOADING, USER_LOADED } from "../actions/types";
 const isEmpty = require("is-empty");
 const initialState = {
   isAuthenticated: !!localStorage.getItem("jwtToken"),
-  userName: null, 
+  userName: null,
   userId: null,
-  pinterestCode: null,
-  loading: false
+  pinterestToken: null,
+  loading: false,
 };
-export default function reducer (state = initialState, action) {
+export default function reducer(state = initialState, action) {
   switch (action.type) {
     case SET_CURRENT_USER:
       return {
@@ -18,12 +15,18 @@ export default function reducer (state = initialState, action) {
         isAuthenticated: !!localStorage.getItem("jwtToken"),
         userName: action.payload.name,
         userId: action.payload._id,
-        pinterestCode: action.payload.pinterestCode
+        pinterestToken: action.payload.pinterestToken,
       };
     case USER_LOADING:
       return {
         ...state,
-        loading: true
+        loading: true,
+      };
+    case USER_LOADED:
+      console.log("done loading")
+      return {
+        ...state,
+        loading: false,
       };
     default:
       return state;
