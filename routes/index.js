@@ -17,8 +17,11 @@ const requireUserLogin = passport.authenticate("login", { session: false });
 router.get("/", function(req, res) {});
 router.post("/login", requireUserLogin, Authentication.login);
 router.post("/register", Authentication.register);
+router.post("/pinterest/storeAuthCode", Authentication.login);
 router.get("/getShoppingList/:id", ShoppingList.getList);
 router.get("/getFridge/:id", Fridge.getItems);
+router.put("/storeAuthCode", Authentication.storeAuthCode);
+router.get("/loadUser/:id", Authentication.loadUser)
 
 router.get("/recipes/:id", (req, res) => {
   console.log(req.params.id);

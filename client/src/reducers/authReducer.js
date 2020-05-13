@@ -4,8 +4,10 @@ import {
 } from "../actions/types";
 const isEmpty = require("is-empty");
 const initialState = {
-  isAuthenticated: isEmpty(localStorage),
-  user: {},
+  isAuthenticated: !!localStorage.getItem("jwtToken"),
+  userName: null, 
+  userId: null,
+  pinterestCode: null,
   loading: false
 };
 export default function reducer (state = initialState, action) {
@@ -13,8 +15,10 @@ export default function reducer (state = initialState, action) {
     case SET_CURRENT_USER:
       return {
         ...state,
-        isAuthenticated: !isEmpty(action.payload),
-        user: action.payload
+        isAuthenticated: !!localStorage.getItem("jwtToken"),
+        userName: action.payload.name,
+        userId: action.payload._id,
+        pinterestCode: action.payload.pinterestCode
       };
     case USER_LOADING:
       return {

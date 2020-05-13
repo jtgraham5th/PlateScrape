@@ -38,8 +38,8 @@ class ShoppingList extends Component {
   };
 
   componentDidMount() {
-    if (this.props.auth.user.isAuthenticated) {
-      this.props.getShoppingList(this.props.auth.user.id);
+    if (this.props.auth.isAuthenticated && this.props.auth.userId) {
+      this.props.getShoppingList(this.props.auth.userId);
       this.setState({
         fridge: this.props.userData.fridge,
         shoppingList: this.props.userData.shoppingList
@@ -120,7 +120,7 @@ class ShoppingList extends Component {
         axios
           .post("/api/fridgeItem", {
             newIngredient: newIngredient,
-            userId: this.props.auth.user.id
+            userId: this.props.auth.userId
           })
           .then(response => {
             console.log(response);

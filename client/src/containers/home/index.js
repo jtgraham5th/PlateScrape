@@ -9,7 +9,12 @@ import ShoppingList from "../../components/ShoppingList";
 import RecipeList from "../../components/RecipeList";
 import RecipeForm from "../../components/RecipeForm";
 import Pins from "../../components/Pins";
-import { logoutUser, getUserFridgeData, loginUser } from "../../actions";
+import {
+  logoutUser,
+  loginUser,
+  storeAuthCode,
+  loadUser
+} from "../../actions";
 
 class Home extends Component {
   state = {
@@ -26,13 +31,28 @@ class Home extends Component {
     activeTab: 1,
     cards: [],
     modal1: false,
-    modal2: false
+    modal2: false,
   };
 
-  componentDidMount() {}
-  componentDidUpdate(props) {
+  componentDidMount() {
+    if (this.props.auth.isAuthenticated && localStorage.getItem("jwtToken")) {
+      this.props.loadUser(localStorage.getItem("jwtToken"));
+    }
   }
-  
+
+  componentDidUpdate(props) {
+    //check if user is already logged in and get user data
+    console.log("component did update");
+    console.log(localStorage.getItem("jwtToken"));
+    if (this.props.auth.isAuthenticated && localStorage.getItem("jwtToken")) {
+      console.log(localStorage.getItem("jwtToken"));
+      // this.props.storeAuthCode(
+      //   localStorage.getItem("jwtToken"),
+      //   this.props.auth.userId
+      // );
+    }
+  }
+
   render(props) {
     return (
       <>
@@ -52,14 +72,15 @@ class Home extends Component {
 Home.propTypes = {
   logoutUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  userData: PropTypes.object.isRequired
+  userData: PropTypes.object.isRequired,
 };
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   auth: state.auth,
-  userData: state.userData
+  userData: state.userData,
 });
 export default connect(mapStateToProps, {
   logoutUser,
   loginUser,
-  getUserFridgeData
+  storeAuthCode,
+  loadUser
 })(Home);

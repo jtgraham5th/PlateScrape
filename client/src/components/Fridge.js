@@ -22,8 +22,9 @@ class Fridge extends Component {
   };
 
   componentDidMount() {
-    if (this.props.auth.user.isAuthenticated) {
-      this.props.getUserFridgeData(this.props.auth.user.id);
+    console.log(this.props)
+    if (this.props.auth.isAuthenticated && this.props.auth.userId) {
+      this.props.getUserFridgeData(this.props.auth.userId);
       this.setState({
         fridge: this.props.userData.fridge,
         shoppingList: this.props.userData.shoppingList
@@ -134,12 +135,12 @@ class Fridge extends Component {
       axios
         .post("/api/fridgeItem", {
           newIngredient: newIngredient,
-          userId: this.props.auth.user.id
+          userId: this.props.auth.userId
         })
         .then(response => {
           console.log(response);
-          console.log(this.props.auth.user.id);
-          this.props.getUserFridgeData(this.props.auth.user.id);
+          console.log(this.props.auth.userId);
+          this.props.getUserFridgeData(this.props.auth.userId);
         })
         .catch(err => {
           console.log(err);
@@ -158,7 +159,7 @@ class Fridge extends Component {
       shoppingList: updatedList
     });
     if (this.props.auth.isAuthenticated) {
-      this.props.removeFridgeItem(item, this.props.auth.user.id);
+      this.props.removeFridgeItem(item, this.props.auth.userId);
     }
   };
   getClasses = (ingredient, amount) => {
