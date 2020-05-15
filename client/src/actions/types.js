@@ -1,9 +1,11 @@
 export const GET_ERRORS = "GET_ERRORS";
 export const USER_LOADING = "USER_LOADING";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
-export const CLEAR_ERRORS = 'CLEAR_ERRORS';
+export const CLEAR_ERRORS = "CLEAR_ERRORS";
 export const USER_LOADED = "USER_LOADED";
 export const AUTH_ERROR = "AUTH_ERROR";
 export const SET_FRIDGE_DATA = "SET_FRIDGE_DATA";
 export const SET_SHOPPINGLIST = "SET_SHOPPINGLIST";
 export const SET_RECIPES = "SET_RECIPES";
+export const SET_BOARD_DATA = "SET_BOARD_DATA";
+export const SET_PINTEREST_TOKEN = "SET_PINTEREST_TOKEN";

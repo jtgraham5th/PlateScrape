@@ -1,0 +1,6 @@
+.row .col.s1 {
+    width: inherit;
+}
+.row .col.s4 {
+    height: 100vh;
+}

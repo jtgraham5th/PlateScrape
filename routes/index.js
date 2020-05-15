@@ -19,9 +19,13 @@ router.post("/login", requireUserLogin, Authentication.login);
 router.post("/register", Authentication.register);
 router.post("/pinterest/storeAuthCode", Authentication.login);
 router.get("/getShoppingList/:id", ShoppingList.getList);
+router.post("/shoppingListItem", ShoppingList.addItem);
 router.get("/getFridge/:id", Fridge.getItems);
 router.put("/storeAuthToken", Authentication.storeAuthToken);
-router.get("/loadUser/:id", Authentication.loadUser)
+router.get("/loadUser/:id", Authentication.loadUser);
+//Add pinterest boards to user collection in database
+router.post("/boards", Authentication.storeBoards);
+
 
 router.get("/recipes/:id", (req, res) => {
   console.log(req.params.id);
@@ -49,29 +53,6 @@ router.get("/recipes/:id", (req, res) => {
     // Send a ingredientData back as an array of objects back to the browser
     res.json(ingredientData);
   });
-});
-router.post("/shoppingListItem", function(req, res) {
-  const { newIngredient, userId } = req.body;
-  console.log("Adding Item to Shopping List");
-  console.log(req.body);
-  console.log(newIngredient);
-  console.log(userId);
-  db.User.updateOne({ _id: userId }, { $push: { shoppingList: newIngredient } })
-    .then((newItem) => {
-      console.log("New Shopping List Item", newItem);
-      res.json({
-        message: "Successfully created",
-        error: false,
-        data: newItem,
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.json({
-        message: err.message,
-        error: true,
-      });
-    });
 });
 router.post("/fridgeItem", function(req, res) {
   const { newIngredient, userId } = req.body;

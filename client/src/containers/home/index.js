@@ -10,7 +10,13 @@ import ShoppingList from "../../components/ShoppingList";
 import RecipeList from "../../components/RecipeList";
 import RecipeForm from "../../components/RecipeForm";
 import Pins from "../../components/Pins";
-import { logoutUser, loginUser, getAuthToken, storeAuthToken, loadUser } from "../../actions";
+import {
+  logoutUser,
+  loginUser,
+  getAuthToken,
+  storeAuthToken,
+  loadUser,
+} from "../../actions";
 
 class Home extends Component {
   state = {
@@ -51,24 +57,33 @@ class Home extends Component {
       if (isAuthenticated && pinterestToken) {
         console.log("user already has a pinterest Token");
       }
-    }
-  }  
 
-  componentDidUpdate(props) {
+      //if user is NOT logged in and does NOT have a pinterest auth Token
+      if (!isAuthenticated && !pinterestToken && pinterestAuthCode) {
+        console.log(
+          "user is NOT logged in and does not have a pinterest Token"
+        );
+        await this.props.getAuthToken(pinterestAuthCode);
+      }
+    }
   }
+
+  componentDidUpdate(props) {}
 
   render(props) {
     return (
       <>
-        <Pins />
-        <Container>
-          <RecipeForm />
-          <div className="row mb-0">
-            <RecipeList />
+        <div className="row mb-0">
+          <div className="col s4 lime lighten-5" id="shoppingList-component">
             <ShoppingList />
-            <Fridge />
           </div>
-        </Container>
+          <div className="col s8">
+            <RecipeForm />
+            <Fridge />
+            <Pins />
+            <RecipeList />
+          </div>
+        </div>
       </>
     );
   }
@@ -87,5 +102,5 @@ export default connect(mapStateToProps, {
   loginUser,
   storeAuthToken,
   loadUser,
-  getAuthToken
+  getAuthToken,
 })(Home);

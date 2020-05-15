@@ -1,3 +1,21 @@
+#recipe-form-input {
+  width: 90%
+}
+#shoppingList-component {
+  overflow-y: scroll
+}
+.user-boards{ 
+  margin-left: -1rem !important;
+  margin-right: 0rem !important;
+  border-right: 1px solid #e0e0e0;
+}
+#collapsible-item .collapsible-body { 
+  padding: unset
+}
+#board-collection{
+  padding: 0px 6px;
+  margin: 0rem 0rem 0rem .75rem
+}
 .row-display {
   overflow-x: auto;
   white-space: nowrap;

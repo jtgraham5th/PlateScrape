@@ -21,4 +21,29 @@ exports.getList = (req, res) => {
       });
     });
 };
+exports.addItem = (req,res) => {
+  const { newIngredient, userId } = req.body;
+  console.log("Adding Item to Shopping List");
+  console.log(req.body);
+  console.log(newIngredient);
+  console.log(userId);
+  User.updateOne({ _id: userId }, { $push: { shoppingList: newIngredient } })
+    .then((newItem) => {
+      console.log("New Shopping List Item", newItem);
+      res.json({
+        message: "Successfully created",
+        error: false,
+        data: newItem,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json({
+        message: err.message,
+        error: true,
+      });
+    });
+
+
+}
 

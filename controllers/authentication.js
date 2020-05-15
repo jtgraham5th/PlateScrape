@@ -52,4 +52,32 @@ exports.loadUser = (req, res) => {
   User.findById(req.params.id)
     .select('-password')
     .then(user => res.json(user));
+};
+exports.storeBoards = (req,res) => {
+  const { boards, userId } = req.body;
+  console.log("Adding boards to database");
+  console.log(req.body)
+  console.log({boards, userId});
+  // res.json({
+  //   message: "Successfully created",
+  //   error: false,
+  //   data: boards,
+  // });
+  User.update({ _id: userId }, { boards: boards })
+    .then((newBoards) => {
+      console.log("New Boards", newBoards);
+      res.json({
+        message: "Successfully add Boards",
+        error: false,
+        data: newBoards,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json({
+        message: err.message,
+        error: true,
+      });
+    });
+
 }

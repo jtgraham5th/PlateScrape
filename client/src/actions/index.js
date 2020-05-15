@@ -12,6 +12,8 @@ import {
   SET_FRIDGE_DATA,
   SET_SHOPPINGLIST,
   SET_RECIPES,
+  SET_BOARD_DATA,
+  SET_PINTEREST_TOKEN,
 } from "./types";
 // Register User
 export const registerUser = (userData, history) => (dispatch) => {
@@ -26,28 +28,70 @@ export const registerUser = (userData, history) => (dispatch) => {
     );
 };
 export const getAuthToken = (pinterestAuthCode) => (dispatch) => {
-  console.log("hit me")
-    axios
-      .post(
-        `https://api.pinterest.com/v1/oauth/token?grant_type=authorization_code&client_id=5073939286663940267&client_secret=f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743&code=${pinterestAuthCode}`
-      )
-      .then((response) => {
-        const accessToken = response.data.access_token;
-        console.log("pinterest access Token:", accessToken);
-        dispatch(storeAuthToken(accessToken,localStorage.getItem("jwtToken")));
-      })
-      .catch((err) => {
-        console.log("ERROR:", err);
-      });
-  }
-
+  console.log("hit me");
+  axios
+    .post(
+      `https://api.pinterest.com/v1/oauth/token?grant_type=authorization_code&client_id=5073939286663940267&client_secret=f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743&code=${pinterestAuthCode}`
+    )
+    .then((response) => {
+      const accessToken = response.data.access_token;
+      console.log("pinterest access Token:", accessToken);
+      if (!!localStorage.getItem("jwtToken")) {
+        dispatch(storeAuthToken(accessToken, localStorage.getItem("jwtToken")));
+      } else {
+        dispatch(setPinterestToken(accessToken));
+      }
+    })
+    .catch((err) => {
+      console.log("ERROR:", err);
+    });
+};
+export const setPinterestToken = (accessToken) => {
+  return {
+    type: SET_PINTEREST_TOKEN,
+    payload: accessToken,
+  };
+};
+export const pinterestAPIBoardRequest = (pinterestToken) => (dispatch) => {
+  let token = localStorage.getItem("jwtToken")
+  axios
+    .get(
+      `https://api.pinterest.com/v1/me/boards/?access_token=${pinterestToken}&fields=id%2Cname%2Curl%2Cimage%2Cdescription`
+    )
+    .then((response) => {
+      console.log(response.data.data);
+      if (token) {
+        batch(() => {
+          dispatch(storeBoards(response.data.data, token));
+          dispatch(setBoards(response.data.data));
+        });
+      } else {
+        dispatch(setBoards(response.data.data));
+      }
+    })
+    .catch((err) => {
+      console.log("Error", err);
+    });
+};
+export const storeBoards = (boards, jwtToken) => {
+  let decoded = jwt_decode(jwtToken).sub;
+  axios
+    .post("api/boards", { boards: boards, userId: decoded })
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((err) => {
+      console.log(err);
+      alert("Failed to create: " + err.message);
+    });
+};
 export const storeAuthToken = (authToken, jwtToken) => (dispatch) => {
   setAuthToken(jwtToken);
   // Decode token to get user data
   let decoded = jwt_decode(jwtToken).sub;
 
   const userData = { userId: decoded, authToken: authToken };
-  console.log(userData)
+  console.log(userData);
   axios
     .put("/api/storeAuthToken", userData)
     .then() // re-direct to login on successful register
@@ -57,6 +101,12 @@ export const storeAuthToken = (authToken, jwtToken) => (dispatch) => {
         payload: err.response.data,
       })
     );
+};
+export const setBoards = (boardData) => {
+  return {
+    type: SET_BOARD_DATA,
+    payload: boardData,
+  };
 };
 export const removeFridgeItem = (itemName, userId) => (dispatch) => {
   axios
@@ -90,6 +140,7 @@ export const loginUser = (userData) => (dispatch) => {
         dispatch(setCurrentUser(userData));
         dispatch(setFridgeData(userData.fridge));
         dispatch(setShoppingList(userData.shoppingList));
+        dispatch(setBoards(userData.boards));
       });
     })
     .catch((err) =>
@@ -174,6 +225,7 @@ export const logoutUser = () => (dispatch) => {
     dispatch(setFridgeData([]));
     dispatch(setShoppingList([]));
     dispatch(setRecipes([]));
+    dispatch(setBoards([]));
   });
 };
 //Check token & load user
@@ -191,8 +243,9 @@ export const loadUser = (token) => async (dispatch) => {
       batch(() => {
         dispatch(setCurrentUser(res.data));
         dispatch(setFridgeData(res.data.fridge));
-        dispatch(setShoppingList(res.data.shoppingList))
-        dispatch({ type: USER_LOADED });;
+        dispatch(setShoppingList(res.data.shoppingList));
+        dispatch(setBoards(res.data.boards));
+        dispatch({ type: USER_LOADED });
       })
     )
     .catch((err) => {

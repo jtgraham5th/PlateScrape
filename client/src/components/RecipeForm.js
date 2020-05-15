@@ -1,22 +1,14 @@
 import React, { Component } from "react";
 // import { Link } from "react-router-dom";
 // import "./style.css";
-import {
-  Button,
-  Form,
-  FormGroup,
-  Label,
-  Input,
-  InputGroupAddon,
-  InputGroup
-} from "reactstrap";
+import { Button, TextInput, Row, Col } from "react-materialize";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
   getUserFridgeData,
   getUserShoppingList,
   setShoppingList,
-  setRecipes
+  setRecipes,
 } from "../actions";
 
 var axios = require("axios");
@@ -26,13 +18,13 @@ class RecipeForm extends Component {
     recipes: [],
     shoppingList: [],
     fridge: [],
-    recipelink: ""
+    recipelink: "",
   };
 
   componentDidMount() {
     this.setState({
       fridge: this.props.userData.fridge,
-      shoppingList: this.props.userData.shoppingList
+      shoppingList: this.props.userData.shoppingList,
     });
   }
   componentDidUpdate(prevProps) {
@@ -41,17 +33,17 @@ class RecipeForm extends Component {
     ) {
       this.setState({
         fridge: this.props.userData.fridge,
-        shoppingList: this.props.userData.shoppingList
+        shoppingList: this.props.userData.shoppingList,
       });
     }
     if (prevProps.userData.recipes !== this.props.userData.recipes) {
       this.setState({ recipes: this.props.userData.recipes });
-    } 
+    }
   }
-  handleInputChange = event => {
+  handleInputChange = (event) => {
     const { name, value } = event.target;
     this.setState({
-      [name]: value
+      [name]: value,
     });
   };
   convertToDecimal = (amount, unit) => {
@@ -85,13 +77,13 @@ class RecipeForm extends Component {
     return result;
   };
 
-  addToList = data => {
+  addToList = (data) => {
     data.map((ingredient, i) => {
       console.log(ingredient);
       /* check to see if ingredient already exisit in the shoppingList*/
       if (
         !this.state.shoppingList.some(
-          e => e.name === ingredient.name.toLowerCase()
+          (e) => e.name === ingredient.name.toLowerCase()
         )
       ) {
         console.log("included");
@@ -100,40 +92,40 @@ class RecipeForm extends Component {
           name: ingredient.name.toLowerCase(),
           amount: this.convertToDecimal(ingredient.amount, ingredient.unit),
           unit: "oz",
-          enoughInFridge: false
-            // "row border-bottom border-primary d-flex bg-transparent pl-3 font-italic"
+          enoughInFridge: false,
+          // "row border-bottom border-primary d-flex bg-transparent pl-3 font-italic"
         };
         shoppingList.push(newIngredient);
         this.setState({
-          shoppingList
+          shoppingList,
         });
         this.saveNewShoppingListItem(newIngredient);
       } else {
         let key = ingredient.name;
-        this.setState(prevState => ({
-          shoppingList: prevState.shoppingList.map(el =>
+        this.setState((prevState) => ({
+          shoppingList: prevState.shoppingList.map((el) =>
             el.name === key
               ? { ...el, amount: el.amount + parseFloat(ingredient.amount) }
               : el
-          )
+          ),
         }));
-        this.updateShoppingListItem(ingredient.name,ingredient.amount)
+        this.updateShoppingListItem(ingredient.name, ingredient.amount);
       }
       console.log(this.state.shoppingList);
     });
   };
   updateShoppingListItem = (name, amount) => {
-    if (this.props.auth.user.isAuthenticated) {
+    if (this.props.auth.isAuthenticated) {
       axios
         .put("/api/updateShoppingListItem", {
           name: name,
           amount: amount,
-          userId: this.props.auth.user.id
+          userId: this.props.auth.userId,
         })
-        .then(response => {
-          this.props.getUserShoppingList(this.props.auth.user.id);
+        .then((response) => {
+          this.props.getUserShoppingList(this.props.auth.userId);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
           alert("Failed to create: " + err.message);
         });
@@ -141,17 +133,17 @@ class RecipeForm extends Component {
       this.props.setShoppingList(this.state.shoppingList);
     }
   };
-  saveNewShoppingListItem = newIngredient => {
-    if (this.props.auth.user.isAuthenticated) {
+  saveNewShoppingListItem = (newIngredient) => {
+    if (this.props.auth.isAuthenticated) {
       axios
         .post("/api/shoppingListItem", {
           newIngredient: newIngredient,
-          userId: this.props.auth.user.id
+          userId: this.props.auth.userId,
         })
-        .then(response => {
-          this.props.getUserShoppingList(this.props.auth.user.id);
+        .then((response) => {
+          this.props.getUserShoppingList(this.props.auth.userId);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
           alert("Failed to create: " + err.message);
         });
@@ -159,7 +151,7 @@ class RecipeForm extends Component {
       this.props.setShoppingList(this.state.shoppingList);
     }
   };
-  handleFormSubmit = event => {
+  handleFormSubmit = (event) => {
     //event.preventDefault();
     const url = encodeURIComponent(this.state.recipelink);
     console.log(url);
@@ -174,11 +166,11 @@ class RecipeForm extends Component {
             console.log("NEW!");
             let newRecipe = {
               URL: this.state.recipelink,
-              ingredients: response.data
+              ingredients: response.data,
             };
             recipes.push(newRecipe);
             this.setState({
-              recipes
+              recipes,
             });
             this.props.setRecipes(this.state.recipes);
 
@@ -192,36 +184,28 @@ class RecipeForm extends Component {
 
   render(props) {
     return (
-      <Form>
-        <FormGroup>
-          <Label for="exampleText">Enter link to Recipe article</Label>
-          <InputGroup>
-            <InputGroupAddon addonType="prepend">
-              <Button onClick={this.handleFormSubmit}>Submit</Button>
-            </InputGroupAddon>
-            <Input
-              type="input"
-              name="recipelink"
-              id="exampleText"
-              onChange={this.handleInputChange}
-            />{" "}
-          </InputGroup>
-        </FormGroup>
-      </Form>
+      <Row className="valign-wrapper">
+        <Col>
+        <Button type="submit" onClick={this.handleFormSubmit}>
+          Submit
+        </Button>
+        </Col>
+        <input name="recipelink" className="col s9" type="text" id="recipe-form-input" onChange={this.handleInputChange} />
+      </Row>
     );
   }
 }
 RecipeForm.propTypes = {
   auth: PropTypes.object.isRequired,
-  userData: PropTypes.object.isRequired
+  userData: PropTypes.object.isRequired,
 };
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   auth: state.auth,
-  userData: state.userData
+  userData: state.userData,
 });
 export default connect(mapStateToProps, {
   getUserFridgeData,
   getUserShoppingList,
   setShoppingList,
-  setRecipes
+  setRecipes,
 })(RecipeForm);

@@ -1,4 +1,4 @@
-import { SET_CURRENT_USER, USER_LOADING, USER_LOADED } from "../actions/types";
+import { SET_CURRENT_USER, USER_LOADING, USER_LOADED, SET_PINTEREST_TOKEN } from "../actions/types";
 const isEmpty = require("is-empty");
 const initialState = {
   isAuthenticated: !!localStorage.getItem("jwtToken"),
@@ -17,6 +17,11 @@ export default function reducer(state = initialState, action) {
         userId: action.payload._id,
         pinterestToken: action.payload.pinterestToken,
       };
+    case SET_PINTEREST_TOKEN:
+      return {
+        ...state,
+        pinterestToken: action.payload
+      }
     case USER_LOADING:
       return {
         ...state,

@@ -6,7 +6,6 @@ import {
   Button,
   Card,
   CardBody,
-  Row,
   Col,
   Nav,
   NavItem,
@@ -20,11 +19,21 @@ import {
   ModalHeader,
   ModalFooter,
 } from "reactstrap";
+import {
+  Row,
+  Collapsible,
+  CollapsibleItem,
+  Tabs,
+  Tab,
+  Icon,
+  Collection,
+  CollectionItem,
+} from "react-materialize";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compareSync } from "bcrypt-nodejs";
 // import { CLEAR_ERRORS } from "../../actions/types";
-// import { storeAuthCode } from "../actions";
+import { setBoards, pinterestAPIBoardRequest } from "../actions";
 
 var axios = require("axios");
 
@@ -40,50 +49,53 @@ class Pins extends Component {
     modal1: false,
     modal2: false,
   };
+  componentDidMount() {
+    const { isAuthenticated, pinterestToken, userId } = this.props.auth;
+    const { boards } = this.props.userData;
 
-  componentDidMount = () => {
+    //if the user is logged in and boards DO exist
+    if (isAuthenticated && boards.length > 0) {
+      console.log("logged in user HAS boards");
+      this.setState({
+        userBoards: boards,
+      });
+    }
+    //if the user is NOT logged in but has a pinterest token and boards in store
+    if (!isAuthenticated && pinterestToken && boards.length > 0) {
+      console.log("USER not logged in but has boards");
+      this.setState({
+        userBoards: boards,
+      });
+    }
+  }
+  componentDidUpdate = async () => {
+    const { isAuthenticated, pinterestToken, userId } = this.props.auth;
+    const { boards } = this.props.userData;
+    console.log(this.props.auth);
+    //if the user is logged in and has a Pinterest Auth Token and no boards exist
+    if (isAuthenticated && pinterestToken && boards.length <= 0) {
+      console.log("logged in user has no boards");
+      await this.props.pinterestAPIBoardRequest(pinterestToken);
+      console.log(boards);
+    }
+    //if the user is logged in and the boards in state do not equal the boards in redux store(props) then update state
+    if (isAuthenticated && boards !== this.state.userBoards) {
+      console.log("these are not the same");
+      this.setState({
+        userBoards: boards,
+      });
+    }
+
+    //if the user is NOT logged in but has a pinterest token and no boards
+    if (!isAuthenticated && pinterestToken && boards.length <= 0) {
+      console.log("USER not logged and has no boards");
+      await this.props.pinterestAPIBoardRequest(pinterestToken);
+      this.setState({
+        userBoards: boards,
+      });
+    }
   };
 
-  componentDidUpdate(props) {
-    const { isAuthenticated, userId } = this.props.auth;
-
-    //if user is logged in and does not have a pinterest auth code
-    if (isAuthenticated) {
-      let params = new URLSearchParams(window.location.href);
-      let pinterestAuthCode = params.get("code");
-      // console.log("pinterestAuthCode", pinterestAuthCode);
-      if (pinterestAuthCode) {
-        let data = {
-          pinterestAuthCode: pinterestAuthCode,
-          userId: userId,
-        };
-        // console.log(data);
-        // this.props.storeAuthCode(data);
-      }
-    }
-
-    //if user is logged in and does have a pinterest auth code
-    
-  }
-
-  pinterestAPIBoardRequest() {
-    // --- MAKE A REQUEST ---
-    if (this.state.accessToken.length > 1) {
-      // axios
-      //   .get(
-      //     `https://api.pinterest.com/v1/me/boards/?access_token=${this.state.accessToken}&fields=id%2Cname%2Curl%2Cimage%2Cdescription`
-      //   )
-      //   .then((response) => {
-      //     console.log(response);
-      //     this.setState({
-      //       userBoards: response.data.data,
-      //     });
-      //   })
-      //   .catch((err) => {
-      //     console.log("Error", err);
-      //   });
-    }
-  }
   addRecipe = async (event) => {
     const url = event.target.dataset.url;
     this.setState({ recipelink: url }, () => {
@@ -150,31 +162,37 @@ class Pins extends Component {
   };
   render(props) {
     return (
-      <div className="bg-secondary">
-        {this.state.userBoards.length > 1 ? (
-          <Nav tabs className="mt-3">
-            {this.state.userBoards.map((board, i) => (
-              <NavItem>
-                <NavLink
-                  key={i}
-                  id={board.id}
-                  onClick={this.displayPins}
-                  className={classnames(
-                    {
-                      active: this.state.activeTab === `${i}`,
-                    },
-                    "bg-white border-dark"
-                  )}
-                >
-                  {board.name}
-                </NavLink>
-              </NavItem>
-            ))}
-          </Nav>
-        ) : (
-          <div></div>
-        )}
-        {this.state.togglePins ? (
+      <>
+        <Collapsible accordion>
+          <CollapsibleItem
+            active
+            expanded={false}
+            icon={<Icon>arrow_drop_down</Icon>}
+            header="Pinterest"
+            node="div"
+            id="collapsible-item"
+          >
+            {this.state.userBoards.length > 1 ? (
+              <Row>
+                <Collection id="board-collection" className="col s3">
+                  {this.state.userBoards.map((board, i) => (
+                    <CollectionItem
+                      key={i}
+                      id={board.id}
+                      onClick={this.displayPins}
+                      className="row s12 valign-wrapper user-boards"
+                    >
+                      {board.name}
+                    </CollectionItem>
+                  ))}
+                </Collection>
+              </Row>
+            ) : (
+              <Row>
+                <CollectionItem>No Current Boards</CollectionItem>
+              </Row>
+            )}
+            {/* {this.state.togglePins ? (
           <TabContent activeTab={this.state.activeTab}>
             <TabPane tabId={this.state.activeTab}>
               <Row className="row-display bg-light" style={{ height: "200px" }}>
@@ -236,8 +254,10 @@ class Pins extends Component {
           </TabContent>
         ) : (
           ""
-        )}
-      </div>
+        )} */}
+          </CollapsibleItem>
+        </Collapsible>
+      </>
     );
   }
 }
@@ -249,4 +269,7 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
   userData: state.userData,
 });
-export default connect(mapStateToProps)(Pins);
+export default connect(mapStateToProps, {
+  setBoards,
+  pinterestAPIBoardRequest,
+})(Pins);

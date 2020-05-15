@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt-nodejs");
 
 const FridgeSchema = require("./Fridge");
 const shoppingListSchema = require("./ShoppingList")
+const BoardSchema = require("./Board")
 
 const Schema = mongoose.Schema;
 // Create Schema
@@ -27,6 +28,7 @@ const UserSchema = new Schema({
     type: String,
     default: null
   },
+  boards: [{type: Schema.Types.Mixed, ref: BoardSchema}],
   fridge: [{ type: Schema.Types.Mixed, ref: FridgeSchema }],
   shoppingList: [{ type: Schema.Types.Mixed, ref: shoppingListSchema }]
 
