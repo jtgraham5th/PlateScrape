@@ -21,23 +21,31 @@ router.post("/pinterest/storeAuthCode", Authentication.login);
 router.get("/getShoppingList/:id", ShoppingList.getList);
 router.post("/shoppingListItem", ShoppingList.addItem);
 router.get("/getFridge/:id", Fridge.getItems);
+router.post("/fridgeItem", Fridge.addItem);
+router.put("/fridgeItem", Fridge.removeItem);
+router.put("/shoppingListItem", ShoppingList.removeItem);
 router.put("/storeAuthToken", Authentication.storeAuthToken);
 router.get("/loadUser/:id", Authentication.loadUser);
-//Add pinterest boards to user collection in database
-router.post("/boards", Authentication.storeBoards);
-
+//Save pinterest boards to user collection in database
+router.post("/boards", Authentication.saveBoards);
 
 router.get("/recipes/:id", (req, res) => {
   console.log(req.params.id);
   let decodedUrl = decodeURIComponent(req.params.id);
   console.log(decodedUrl);
   axios.get(decodedUrl).then(function(response) {
-    var ingredientData = [];
+    var recipeData = {}
+    var ingredientData =[]
     // Load the html body from axios into cheerio
     var $ = cheerio.load(response.data);
+    ;
+    // Find the element that has a class of wprm-recipe-name
+    // and add to result object
+    recipeData.name = ($(".wprm-recipe-name").text());
+    recipeData.image = ($(".wprm-recipe-image").html());
     // For each element that has a class of wprm-recipe-ingredient
     $(".wprm-recipe-ingredient").each(function(i, element) {
-      var result = {};
+      var result = {}
       result.amount = $(this)
         .find(".wprm-recipe-ingredient-amount")
         .text();
@@ -49,57 +57,11 @@ router.get("/recipes/:id", (req, res) => {
         .text();
       console.log(result);
       ingredientData.push(result);
-    });
-    // Send a ingredientData back as an array of objects back to the browser
-    res.json(ingredientData);
+    },recipeData.ingredients = ingredientData)
+    // Send a recipeData back as an object with name and ingredients as keys back to the browser
+    res.json(recipeData);
   });
 });
-router.post("/fridgeItem", function(req, res) {
-  const { newIngredient, userId } = req.body;
-  console.log("Adding Item to Fridge");
-  console.log(req.body);
-  console.log(newIngredient);
-  console.log(userId);
-  db.User.updateOne({ _id: userId }, { $push: { fridge: newIngredient } })
-    .then((newItem) => {
-      console.log("New Fridge Item", newItem);
-      res.json({
-        message: "Successfully created",
-        error: false,
-        data: newItem,
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.json({
-        message: err.message,
-        error: true,
-      });
-    });
-});
-router.put("/fridgeItem", function(req, res) {
-  const { itemName, userId } = req.body;
-  console.log(req.body);
-  db.User.update({ _id: userId }, { $pull: { fridge: { name: itemName } } })
-    .then((removedItem) => {
-      console.log("Removed Fridge Item", removedItem);
-      res.json({
-        message: "Successfully removed",
-        error: false,
-        data: removedItem,
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.json({
-        message: err.message,
-        error: true,
-      });
-    });
-});
 
-// router.use(function(req, res) {
-//   res.sendFile(path.join(__dirname, "../client/build/index.html"));
-// });
 
 module.exports = router;

@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
+  Col,
   Collapsible,
   CollapsibleItem,
   Icon,
@@ -49,15 +50,15 @@ class Fridge extends Component {
       this.setState({ fridge: this.props.userData.fridge });
     }
   }
-  toggleFridgeEdit = (event) => {
+  toggleFridgeEdit = async (event) => {
     let ingredientName = event.target.dataset.name;
     console.log(event.target.dataset.name);
-    this.setState((prevState) => ({
+    await this.setState((prevState) => ({
       fridge: prevState.fridge.map((el) =>
         el.name === ingredientName ? { ...el, edit: !el.edit } : el
       ),
     }));
-    console.log(this.state.fridge);
+    console.log(this.state.fridge.indexOf(ingredientName));
   };
   handleInput = (event) => {
     let newValue = event.target.value;
@@ -75,19 +76,15 @@ class Fridge extends Component {
   };
   handleSubmit = (event) => {
     event.preventDefault();
+    this.toggleFridgeEdit(event);
     let ingredientName = event.target.name;
     console.log(ingredientName);
-    this.setState((prevState) => ({
-      fridge: prevState.fridge.map((el) =>
-        el.name === ingredientName ? { ...el, edit: !el.edit } : el
-      ),
-    }));
     let ingredientAmount = 0;
     this.state.shoppingList.map((el) =>
       el.name === ingredientName ? (ingredientAmount = el.amount) : el
     );
     console.log(ingredientAmount);
-    this.getClasses(ingredientName, ingredientAmount);
+    // this.getClasses(ingredientName, ingredientAmount);
     this.props.setFridgeData(this.state.fridge);
   };
   handleNewFridgeItem = (event) => {
@@ -97,8 +94,6 @@ class Fridge extends Component {
     });
   };
   handleNewFridgeAmount = (event) => {
-    console.log(event.target);
-    console.log(event);
     let newValue = event.target.value;
     if (isNaN(newValue)) {
       alert("Please enter a numeric value");
@@ -126,9 +121,13 @@ class Fridge extends Component {
         edit: false,
       };
       fridge.push(newIngredient);
-      this.setState({
-        fridge,
-      });
+      this.setState(
+        {
+          fridge,
+        },
+        () => this.props.setFridgeData(this.state.fridge)
+      );
+
       this.saveNewFridgeItem(newIngredient);
     } else {
       alert("This item already exist in your fridge");
@@ -146,8 +145,6 @@ class Fridge extends Component {
           userId: this.props.auth.userId,
         })
         .then((response) => {
-          console.log(response);
-          console.log(this.props.auth.userId);
           this.props.getUserFridgeData(this.props.auth.userId);
         })
         .catch((err) => {
@@ -159,13 +156,15 @@ class Fridge extends Component {
   removeFrmFridge = (event) => {
     const removeIndex = event.target.dataset.index;
     const item = event.target.dataset.name;
-    let updatedList = this.state.shoppingList;
-    console.log(updatedList);
+    let updatedList = this.state.fridge;
     updatedList.splice(removeIndex, 1);
-    console.log(updatedList);
-    this.setState({
-      shoppingList: updatedList,
-    });
+    this.setState(
+      {
+        fridge: updatedList,
+      },
+      () => this.props.setFridgeData(updatedList)
+    );
+
     if (this.props.auth.isAuthenticated) {
       this.props.removeFridgeItem(item, this.props.auth.userId);
     }
@@ -211,23 +210,29 @@ class Fridge extends Component {
   };
   render(props) {
     return (
-      <Collapsible accordion>
+      <Collapsible accordion className="final-component">
         <CollapsibleItem
-          expanded={false}
+          expanded
           icon={<Icon>arrow_drop_down</Icon>}
+          id="collapsible-item"
           header="Fridge"
           node="div"
         >
           <Collection>
-            <CollectionItem className="row s12 valign-wrapper">
+            <CollectionItem
+              id="add-fridge-section"
+              className="row s12 valign-wrapper"
+            >
               <TextInput
-                s="6"
+                s={6}
+                id="fridge-item-input"
                 type="text"
                 placeholder="What do you already have?"
                 onChange={this.handleNewFridgeItem}
               />
               <TextInput
-                s="3"
+                s={3}
+                id="fridge-amount-input"
                 type="text"
                 placeholder="Amount"
                 onChange={this.handleNewFridgeAmount}
@@ -240,20 +245,27 @@ class Fridge extends Component {
                 Add
               </Button>
             </CollectionItem>
-            <CollectionItem>
-              Ingredient Name
-              <div className="secondary-content">Needed</div>
-              <div className="secondary-content">Have</div>
+            <CollectionItem className="row fridge-item-header">
+              <Col s={9}>Ingredient Name</Col>
+              <Col s={1} className="">
+                Needed
+              </Col>
+              <Col s={1} className="">
+                Have
+              </Col>
             </CollectionItem>
             {this.state.fridge.map((ingredient, i) => (
-              <CollectionItem key={i}>
-                {ingredient.name}
-                <small className="secondary-content">
+              <CollectionItem
+                key={i}
+                className="row fridge-item valign-wrapper"
+              >
+                <Col s={9}>{ingredient.name} </Col>
+                <small className="col s1 fridge-amount-needed ">
                   {ingredient.amountNeeded} {ingredient.unit}
                 </small>
                 {!ingredient.edit ? (
                   <small
-                    className="secondary-content"
+                    className="col s1 center fridge-amount-have"
                     data-name={ingredient.name}
                     onClick={this.toggleFridgeEdit}
                   >
@@ -261,10 +273,14 @@ class Fridge extends Component {
                   </small>
                 ) : (
                   <small
-                    className="secondary-content"
+                    className="col s1 center fridge-amount-have"
                     data-name={ingredient.name}
                   >
-                    <form name={ingredient.name} onSubmit={this.handleSubmit}>
+                    <form
+                      name={ingredient.name}
+                      data-name={ingredient.name}
+                      onSubmit={this.handleSubmit}
+                    >
                       <input
                         type="text"
                         className="w-100"
@@ -275,13 +291,18 @@ class Fridge extends Component {
                     </form>
                   </small>
                 )}
-                <Icon
-                  className="secondary-content"
+                <button
+                  className="btn-flat col s1 center fridge-remove-item-button"
                   onClick={this.removeFrmFridge}
-                  data-name={ingredient.name}
                 >
-                  clear
-                </Icon>
+                  <i
+                    className="material-icons tiny"
+                    data-index={i}
+                    data-name={ingredient.name}
+                  >
+                    clear
+                  </i>
+                </button>
               </CollectionItem>
             ))}
           </Collection>

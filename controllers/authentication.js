@@ -53,7 +53,7 @@ exports.loadUser = (req, res) => {
     .select('-password')
     .then(user => res.json(user));
 };
-exports.storeBoards = (req,res) => {
+exports.saveBoards = (req,res) => {
   const { boards, userId } = req.body;
   console.log("Adding boards to database");
   console.log(req.body)

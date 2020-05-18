@@ -46,4 +46,23 @@ exports.addItem = (req,res) => {
 
 
 }
-
+exports.removeItem = (req, res) => {
+  const { itemName, userId } = req.body;
+  console.log(req.body);
+  User.update({ _id: userId }, { $pull: { shoppingList: { name: itemName } } })
+    .then((removedItem) => {
+      console.log("Removed Fridge Item", removedItem);
+      res.json({
+        message: "Successfully removed",
+        error: false,
+        data: removedItem,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json({
+        message: err.message,
+        error: true,
+      });
+    });
+}

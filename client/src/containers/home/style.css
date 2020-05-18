@@ -1,20 +1,104 @@
 #recipe-form-input {
-  width: 90%
+  width: 90%;
 }
-#shoppingList-component {
-  overflow-y: scroll
+/* #shoppingList-component {
+  height: 100vh !important
+} */
+.vertical-scroll {
+  overflow-y: scroll !important;
+  height: 72.6vh !important;
+  margin-top: 0;
 }
-.user-boards{ 
+.col.s8.vertical-scroll {
+  overflow-y: scroll !important;
+  height: 100vh !important;
+}
+.final-component {
+  margin-bottom: 15vh !important;
+}
+.extra-space {
+  height: 20vh;
+}
+.user-boards {
   margin-left: -1rem !important;
   margin-right: 0rem !important;
   border-right: 1px solid #e0e0e0;
 }
-#collapsible-item .collapsible-body { 
-  padding: unset
+#collapsible-item .collapsible-body {
+  padding: unset;
 }
-#board-collection{
+#board-collection {
   padding: 0px 6px;
-  margin: 0rem 0rem 0rem .75rem
+  margin: 0rem 0rem 0rem 0.75rem;
+}
+#recipe-button-containter {
+  margin-left: 0rem;
+  justify-content: center;
+}
+#recipe-button {
+  display: inline-block;
+  height: fit-content;
+  white-space: normal;
+  line-height: inherit;
+  margin-left: 14px;
+}
+.shopping-list-item {
+  padding: 0px 10px !important;
+  line-height: inherit !important;
+}
+.shopping-list-item-name {
+  padding-right: 0 !important;
+}
+small.shopping-list-button {
+  width: 3rem !important;
+}
+.shopping-list-button {
+  line-height: 25px !important;
+  height: 25px !important;
+  padding: 0 !important;
+}
+.disabled {
+  color: #b3b2b2 !important;
+}
+#add-fridge-section {
+  margin: 0 !important;
+  padding: 0px 20px !important;
+}
+
+.fridge-item-header {
+  padding: 10px 20px !important;
+  font-weight: bolder;
+}
+.fridge-item-header > .col.s1 {
+  width: 5rem !important;
+}
+.fridge-item {
+  padding: 0px 0px 0px 20px !important;
+}
+.fridge-item > .col.s9 {
+  padding: 0px 0rem 0px 0.75rem !important;
+  margin-left: 0rem !important;
+}
+.fridge-amount-needed {
+  width: 4rem !important;
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+  margin-left: 0rem !important;
+}
+.fridge-amount-have {
+  width: 4rem !important;
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+  margin-left: 0rem !important;
+}
+.fridge-remove-item-button {
+  width: 2rem !important;
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+  margin-left: 0rem !important;
+}
+.shopping-list-sort-buttons {
+  padding: 0 1rem 0 0 !important;
 }
 .row-display {
   overflow-x: auto;
@@ -28,6 +112,14 @@
 .modal {
   background-color: transparent;
   max-height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1050;
+  display: none;
+  width: 100%;
+  overflow: hidden;
+  outline: 0;
 }
 .modal-backdrop.show {
   opacity: 0.01;
@@ -41,4 +133,23 @@
   font-style: italic;
   border-color: #007bff;
   background-color: transparent;
+}
+.col{
+    /* -ms-flex-preferred-size: 0; */
+    flex-basis: unset !important;
+    /* -ms-flex-positive: 1; */
+    flex-grow: unset !important;
+    max-width: unset !important;
+}
+.valign-wrapper {
+  flex-wrap: unset;
+}
+.submit-recipe-button {
+  width: unset !important;
+}
+.btn, .btn-large, .btn-small{
+  background-color: #004d40 !important;
+}
+.list {
+  display: inherit;
 }

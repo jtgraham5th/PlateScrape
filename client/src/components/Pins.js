@@ -34,6 +34,7 @@ import { connect } from "react-redux";
 import { compareSync } from "bcrypt-nodejs";
 // import { CLEAR_ERRORS } from "../../actions/types";
 import { setBoards, pinterestAPIBoardRequest } from "../actions";
+import PinterestButton from "./PinterestButton";
 
 var axios = require("axios");
 
@@ -71,7 +72,6 @@ class Pins extends Component {
   componentDidUpdate = async () => {
     const { isAuthenticated, pinterestToken, userId } = this.props.auth;
     const { boards } = this.props.userData;
-    console.log(this.props.auth);
     //if the user is logged in and has a Pinterest Auth Token and no boards exist
     if (isAuthenticated && pinterestToken && boards.length <= 0) {
       console.log("logged in user has no boards");
@@ -80,7 +80,7 @@ class Pins extends Component {
     }
     //if the user is logged in and the boards in state do not equal the boards in redux store(props) then update state
     if (isAuthenticated && boards !== this.state.userBoards) {
-      console.log("these are not the same");
+      console.log("these boards are not the same");
       this.setState({
         userBoards: boards,
       });
@@ -163,10 +163,9 @@ class Pins extends Component {
   render(props) {
     return (
       <>
-        <Collapsible accordion>
+        <Collapsible accordion className="pinterest-item">
           <CollapsibleItem
-            active
-            expanded={false}
+            expanded
             icon={<Icon>arrow_drop_down</Icon>}
             header="Pinterest"
             node="div"
@@ -188,8 +187,15 @@ class Pins extends Component {
                 </Collection>
               </Row>
             ) : (
-              <Row>
-                <CollectionItem>No Current Boards</CollectionItem>
+              <Row
+                className="section center-align"
+                id="recipe-button-containter"
+              >
+                <h5>
+                  Connecting with Pinterest will personalize your experience
+                  with PlateScrape
+                </h5><PinterestButton />
+                
               </Row>
             )}
             {/* {this.state.togglePins ? (

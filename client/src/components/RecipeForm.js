@@ -77,8 +77,8 @@ class RecipeForm extends Component {
     return result;
   };
 
-  addToList = (data) => {
-    data.map((ingredient, i) => {
+  addToList = (ingredients) => {
+    ingredients.map((ingredient, i) => {
       console.log(ingredient);
       /* check to see if ingredient already exisit in the shoppingList*/
       if (
@@ -109,30 +109,30 @@ class RecipeForm extends Component {
               : el
           ),
         }));
-        this.updateShoppingListItem(ingredient.name, ingredient.amount);
+        // this.updateShoppingListItem(ingredient.name, ingredient.amount);
       }
       console.log(this.state.shoppingList);
     });
   };
-  updateShoppingListItem = (name, amount) => {
-    if (this.props.auth.isAuthenticated) {
-      axios
-        .put("/api/updateShoppingListItem", {
-          name: name,
-          amount: amount,
-          userId: this.props.auth.userId,
-        })
-        .then((response) => {
-          this.props.getUserShoppingList(this.props.auth.userId);
-        })
-        .catch((err) => {
-          console.log(err);
-          alert("Failed to create: " + err.message);
-        });
-    } else {
-      this.props.setShoppingList(this.state.shoppingList);
-    }
-  };
+  // updateShoppingListItem = (name, amount) => {
+  //   if (this.props.auth.isAuthenticated) {
+  //     axios
+  //       .put("/api/updateShoppingListItem", {
+  //         name: name,
+  //         amount: amount,
+  //         userId: this.props.auth.userId,
+  //       })
+  //       .then((response) => {
+  //         this.props.getUserShoppingList(this.props.auth.userId);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //         alert("Failed to create: " + err.message);
+  //       });
+  //   } else {
+  //     this.props.setShoppingList(this.state.shoppingList);
+  //   }
+  // };
   saveNewShoppingListItem = (newIngredient) => {
     if (this.props.auth.isAuthenticated) {
       axios
@@ -158,15 +158,16 @@ class RecipeForm extends Component {
     if (this.state.recipelink) {
       axios.get(`/api/recipes/${url}`).then(
         function(response) {
-          if (response.data.length < 1) {
+          if (response.data.ingredients.length < 1) {
             this.toggleModal(1);
           } else {
             console.log(response.data);
             let recipes = this.state.recipes;
-            console.log("NEW!");
             let newRecipe = {
               URL: this.state.recipelink,
-              ingredients: response.data,
+              name: response.data.name,
+              ingredients: response.data.ingredients,
+              image: response.data.image
             };
             recipes.push(newRecipe);
             this.setState({
@@ -175,7 +176,7 @@ class RecipeForm extends Component {
             this.props.setRecipes(this.state.recipes);
 
             console.log(this.state.recipes);
-            this.addToList(response.data);
+            this.addToList(response.data.ingredients);
           }
         }.bind(this)
       );
@@ -185,8 +186,8 @@ class RecipeForm extends Component {
   render(props) {
     return (
       <Row className="valign-wrapper">
-        <Col>
-        <Button type="submit" onClick={this.handleFormSubmit}>
+        <Col className="submit-recipe-button">
+        <Button type="submit"  onClick={this.handleFormSubmit}>
           Submit
         </Button>
         </Col>

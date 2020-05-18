@@ -23,6 +23,7 @@ import { connect } from "react-redux";
 import {
   getUserShoppingList,
   setShoppingList,
+  removeShoppingListItem,
   setFridgeData,
 } from "../actions";
 
@@ -41,21 +42,22 @@ class ShoppingList extends Component {
 
   componentDidMount() {
     if (this.props.auth.isAuthenticated && this.props.auth.userId) {
-      this.props.getShoppingList(this.props.auth.userId);
+      this.props.getUserShoppingList(this.props.auth.userId);
       this.setState({
         fridge: this.props.userData.fridge,
         shoppingList: this.props.userData.shoppingList,
-      });
+      },this.compareWithFridge());
+      
     } else {
       this.props.setShoppingList([]);
     }
   }
   componentDidUpdate(prevProps) {
     if (prevProps.userData.shoppingList !== this.props.userData.shoppingList) {
-      this.setState({ shoppingList: this.props.userData.shoppingList });
+      this.setState({ shoppingList: this.props.userData.shoppingList },this.compareWithFridge());
     }
     if (prevProps.userData.fridge !== this.props.userData.fridge) {
-      this.setState({ fridge: this.props.userData.fridge });
+      this.setState({ fridge: this.props.userData.fridge },this.compareWithFridge());
     }
   }
   alphaSort = (event) => {
@@ -80,7 +82,6 @@ class ShoppingList extends Component {
     this.setState({
       shoppingList: increaseSort,
     });
-    this.props.setShoppingList(this.state.shoppingList);
 
     console.log(this.state.shoppingList);
   };
@@ -92,7 +93,6 @@ class ShoppingList extends Component {
     this.setState({
       shoppingList: decreaseSort,
     });
-    this.props.setShoppingList(this.state.shoppingList);
 
     console.log(this.state.shoppingList);
   };
@@ -102,10 +102,10 @@ class ShoppingList extends Component {
     });
   };
   addToFridge = (event) => {
-    let newIngredientName = event.target.name;
+    let newIngredientName = event.target.dataset.name;
     let newIngredientAmount = parseFloat(event.target.dataset.amount) || 0;
     let newIngredientUnit = event.target.dataset.unit;
-    console.log(newIngredientUnit);
+    console.log(newIngredientName, event.target);
     /* check to see if ingredient already exisit in the groceryList*/
     if (!this.props.userData.fridge.some((e) => e.name === newIngredientName)) {
       let fridge = this.props.userData.fridge;
@@ -118,6 +118,16 @@ class ShoppingList extends Component {
         edit: false,
       };
       fridge.push(newIngredient);
+
+      this.setState(
+        { fridge: fridge, itemKey: event.target.dataset.index },
+        () => {
+          console.log(this.state.itemKey);
+          this.props.setFridgeData(fridge);
+          this.compareWithFridge()
+          this.toggleModal();
+        }
+      );
       if (this.props.auth.isAuthenticated) {
         axios
           .post("/api/fridgeItem", {
@@ -132,180 +142,165 @@ class ShoppingList extends Component {
             alert("Failed to create: " + err.message);
           });
       }
-      this.setState(
-        { fridge: fridge, itemKey: event.target.dataset.index },
-        () => {
-          console.log(this.state.itemKey);
-          this.props.setFridgeData(fridge);
-          this.getClasses(newIngredientName, newIngredientAmount);
-          this.toggleModal();
-        }
-      );
     } else {
       console.log("before:", this.state.fridge);
 
       let fridge = this.state.fridge;
-      this.setState((prevState) => ({
-        fridge: prevState.fridge.map((el) =>
-          el.name === newIngredientName
-            ? {
-                ...el,
-                amountNeeded: el.amountNeeded + parseFloat(newIngredientAmount),
-              }
-            : el
-        ),
-      }));
+      this.setState(
+        (prevState) => ({
+          fridge: prevState.fridge.map((el) =>
+            el.name === newIngredientName
+              ? {
+                  ...el,
+                  amountNeeded:
+                    el.amountNeeded + parseFloat(newIngredientAmount),
+                }
+              : el
+          ),
+        }),
+        () => this.props.setFridgeData(this.state.fridge)
+      );
       console.log("after:", this.state.fridge);
-      this.props.setFridgeData(this.state.fridge);
     }
     console.log(this.state.fridge);
   };
 
   removeFrmList = (event) => {
     const removeIndex = event.target.dataset.index;
+    const item = event.target.dataset.name;
     let updatedList = this.state.shoppingList;
-    console.log(updatedList);
-    console.log(removeIndex);
+    console.log(updatedList)
     updatedList.splice(removeIndex, 1);
-    console.log(updatedList);
     this.setState(
       {
         shoppingList: updatedList,
       },
-      () => {
-        this.props.setShoppingList(this.state.shoppingList);
+       () => { console.log(this.state.shoppingList);
+         this.props.setShoppingList(this.state.shoppingList);
       }
     );
+    if (this.props.auth.isAuthenticated) {
+      this.props.removeShoppingListItem(item, this.props.auth.userId);
+    }
+    this.compareWithFridge()
     this.toggleModal();
   };
-  getClasses = (ingredient, amount) => {
-    console.log("---getclasses---");
-    let fridge = this.props.userData.fridge;
-    console.log(fridge.length, fridge);
-    console.log(ingredient, amount);
-    if (fridge.length > 0) {
-      let classes = fridge.map((item, x) =>
-        item.name === ingredient
-          ? item.amountStored >= amount
+  compareWithFridge = () => {
+    this.props.userData.shoppingList.map((shopItem, x) => {
+      this.props.userData.fridge.map((fridgeItem, y) =>
+        fridgeItem.name === shopItem.name
+          ? fridgeItem.amountStored >= shopItem.amount
             ? this.setState(
-                (prevState) => (
-                  console.log("changing to TRUE"),
-                  {
-                    shoppingList: prevState.shoppingList.map((el) =>
-                      el.name === ingredient
-                        ? {
-                            ...el,
-                            enoughInFridge: true,
-                          }
-                        : el
-                    ),
-                  }
-                ),
+                (prevState) => ({
+                  shoppingList: prevState.shoppingList.map((el) =>
+                    el.name === shopItem.name
+                      ? {
+                          ...el,
+                          enoughInFridge: true,
+                        }
+                      : el
+                  ),
+                }),
                 () => this.props.setShoppingList(this.state.shoppingList)
               )
-            : this.setState((prevState) => ({
-                shoppingList: prevState.shoppingList.map((el) =>
-                  el.name === ingredient
-                    ? {
-                        ...el,
-                        enoughInFridge: false,
-                      }
-                    : el
-                ),
-              }))
+            : this.setState(
+                (prevState) => ({
+                  shoppingList: prevState.shoppingList.map((el) =>
+                    el.name === shopItem.name
+                      ? {
+                          ...el,
+                          enoughInFridge: false,
+                        }
+                      : el
+                  ),
+                }),
+                () => this.props.setShoppingList(this.state.shoppingList)
+              )
           : ""
       );
-    }
+    });
   };
+  checkFridge = (ingredient) => {
+    return ingredient.enoughInFridge ?  "disabled" : ""
+
+  }
 
   render(props) {
-    let ingredientStyle = {
-      display: "flex",
-      paddingLeft: "1rem",
-      fontStyle: "italic",
-      borderBottom: "1px solid #007bff",
-      backgroundColor: "transparent",
-      flexWrap: "wrap",
-      marginRight: "-15px",
-      marginLeft: "-15px",
-      marginBottom: "0px",
-    };
-
-    let ingredientInFridge = {
-      display: "flex",
-      paddingLeft: "1rem",
-      fontStyle: "italic",
-      borderBottom: "1px solid #007bff",
-      backgroundColor: "transparent",
-      flexWrap: "wrap",
-      marginRight: "-15px",
-      marginLeft: "-15px",
-      marginBottom: "0px",
-      color: "red",
-      textDecoration: "line-through",
-    };
-
     return (
       <>
-        <Row className="teal white-text valign-wrapper">
+        <Row className="teal darken-4 white-text valign-wrapper">
           <Col s={8}>
             <h5>Shopping List</h5>
           </Col>
           <Button
             flat
-            className="col s1"
+            className="col s1 shopping-list-sort-buttons"
             onClick={this.alphaSort}
             icon={<Icon tiny>sort_by_alpha</Icon>}
           />
           <Button
             flat
-            className="col s1"
+            className="col s1 shopping-list-sort-buttons"
             onClick={this.increaseSort}
             icon={<Icon tiny>vertical_align_top</Icon>}
           />
           <Button
             flat
-            className="col s1"
+            className="col s1 shopping-list-sort-buttons"
             onClick={this.decreaseSort}
-            icon={<Icon tiny center>vertical_align_bottom</Icon>}
+            icon={
+              <Icon tiny center>
+                vertical_align_bottom
+              </Icon>
+            }
           />
         </Row>
 
-        <Collection >
-          {this.state.shoppingList.map((ingredient, i) => (
+        <Collection className="row vertical-scroll list">
+          {this.props.userData.shoppingList.map((ingredient, i) => (
             <CollectionItem
+              className={`row transparent shopping-list-item ${this.checkFridge(ingredient)}
+                `}
               data-name={ingredient.name}
               data-amount={ingredient.amount}
               key={i}
-              style={
-                ingredient.enoughInFridge ? ingredientInFridge : ingredientStyle
-              }
             >
-              {ingredient.name}
-              <em className="secondary-content">
-                {ingredient.amount} {ingredient.unit}{" "}
-              </em>
-
-              <Icon
-                tiny
-                className="transparent secondary-content"
-                name={ingredient.name}
-                data-amount={ingredient.amount}
-                data-unit={ingredient.unit}
-                data-index={i}
+              <Col s={8} className="shopping-list-item-name">
+                {ingredient.name}{" "}
+              </Col>
+              <small className="col s1 shopping-list-button">
+                {ingredient.amount} {ingredient.unit}
+              </small>
+              <button
+                className={`col s1 btn-flat shopping-list-button ${
+                  ingredient.enoughInFridge ? "disabled" : ""
+                }`}
                 onClick={this.addToFridge}
               >
-                add
-              </Icon>
-              <Icon
-                tiny
-                className="transparent secondary-content"
-                name={ingredient.name}
-                data-index={i}
+                <i
+                  className="material-icons tiny"
+                  data-name={ingredient.name}
+                  data-amount={ingredient.amount}
+                  data-unit={ingredient.unit}
+                  data-index={i}
+                >
+                  add
+                </i>
+              </button>
+              <button
+                className={`col s1 btn-flat shopping-list-button ${
+                  ingredient.enoughInFridge ? "red-text" : ""
+                }`}
                 onClick={this.removeFrmList}
               >
-                close
-              </Icon>
+                <i
+                  className="material-icons tiny"
+                  data-name={ingredient.name}
+                  data-index={i}
+                >
+                  close
+                </i>
+              </button>
               {this.state.itemKey == i ? (
                 <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                   <ModalHeader
@@ -337,6 +332,37 @@ class ShoppingList extends Component {
             </CollectionItem>
           ))}
         </Collection>
+        <Row className="teal darken-3 white-text footer">
+          <Button
+            large
+            className="col s4"
+            // onClick={this.alphaSort}
+            icon={<Icon tiny>local_printshop</Icon>}
+          >
+            {" "}
+            Print{" "}
+          </Button>
+          <Button
+            large
+            className="col s4"
+            // onClick={this.increaseSort}
+            icon={<Icon tiny>send</Icon>}
+          >
+            Send
+          </Button>
+          <Button
+            large
+            className="col s4"
+            onClick={this.decreaseSort}
+            icon={
+              <Icon tiny center>
+                share
+              </Icon>
+            }
+          >
+            Share
+          </Button>
+        </Row>
       </>
     );
   }
@@ -353,5 +379,6 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   getUserShoppingList,
   setShoppingList,
+  removeShoppingListItem,
   setFridgeData,
 })(ShoppingList);

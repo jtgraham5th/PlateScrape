@@ -45,7 +45,6 @@ class Home extends Component {
       let params = new URLSearchParams(window.location.href);
       let pinterestAuthCode = params.get("code");
       const { isAuthenticated, pinterestToken } = this.props.auth;
-      console.log({ pinterestAuthCode, isAuthenticated, pinterestToken });
 
       //if user is logged in and does NOT have a pinterest auth Token
       if (isAuthenticated && !pinterestToken && pinterestAuthCode) {
@@ -77,11 +76,13 @@ class Home extends Component {
           <div className="col s4 lime lighten-5" id="shoppingList-component">
             <ShoppingList />
           </div>
-          <div className="col s8">
+          <div className="col s8 vertical-scroll">
             <RecipeForm />
-            <Fridge />
             <Pins />
             <RecipeList />
+            <Fridge />
+            
+            
           </div>
         </div>
       </>

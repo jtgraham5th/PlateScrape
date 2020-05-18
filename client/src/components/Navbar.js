@@ -60,18 +60,13 @@ class Navbar extends Component {
     const authLinks = (
       <ul id="nav-mobile" className="right">
         <li>
-          <PinterestBtn />
-        </li>
-        <li>
           <Logout />
         </li>
       </ul>
     );
     const guestLinks = (
       <ul id="nav-mobile" className="right">
-        <li>
-          <PinterestBtn />
-        </li>
+        
         <li>
           <Button onClick={this.toggleModal}>Login</Button>
         </li>

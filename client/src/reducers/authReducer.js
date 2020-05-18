@@ -28,7 +28,6 @@ export default function reducer(state = initialState, action) {
         loading: true,
       };
     case USER_LOADED:
-      console.log("done loading")
       return {
         ...state,
         loading: false,

@@ -62,7 +62,7 @@ export const pinterestAPIBoardRequest = (pinterestToken) => (dispatch) => {
       console.log(response.data.data);
       if (token) {
         batch(() => {
-          dispatch(storeBoards(response.data.data, token));
+          dispatch(saveBoards(response.data.data, token));
           dispatch(setBoards(response.data.data));
         });
       } else {
@@ -73,7 +73,8 @@ export const pinterestAPIBoardRequest = (pinterestToken) => (dispatch) => {
       console.log("Error", err);
     });
 };
-export const storeBoards = (boards, jwtToken) => {
+//saveBoards to Database
+export const saveBoards = (boards, jwtToken) => {
   let decoded = jwt_decode(jwtToken).sub;
   axios
     .post("api/boards", { boards: boards, userId: decoded })
@@ -102,6 +103,7 @@ export const storeAuthToken = (authToken, jwtToken) => (dispatch) => {
       })
     );
 };
+//Store user Boards
 export const setBoards = (boardData) => {
   return {
     type: SET_BOARD_DATA,
@@ -109,6 +111,7 @@ export const setBoards = (boardData) => {
   };
 };
 export const removeFridgeItem = (itemName, userId) => (dispatch) => {
+  console.log(itemName)
   axios
     .put("/api/fridgeItem", { itemName: itemName, userId: userId })
     .then((res) => {
@@ -150,6 +153,19 @@ export const loginUser = (userData) => (dispatch) => {
       })
     );
 };
+export const removeShoppingListItem = (itemName, userId) => (dispatch) => {
+  console.log(itemName)
+  axios
+    .put("/api/shoppingListItem", { itemName: itemName, userId: userId })
+    .then((res) => {
+      console.log("Shopping List Item Removed:", res);
+      dispatch(getUserShoppingList(userId));
+    })
+    .catch((err) => {
+      console.log(err);
+      alert("Failed to remove: " + err.message);
+    });
+};
 export const getUserFridgeData = (userId) => (dispatch) => {
   console.log("userId for fridge", userId);
 
@@ -179,28 +195,28 @@ export const getUserShoppingList = (userId) => (dispatch) => {
       })
     );
 };
-//Save user Shopping List
+//Store user Shopping List
 export const setShoppingList = (shoppingListData) => {
   return {
     type: SET_SHOPPINGLIST,
     payload: shoppingListData,
   };
 };
-//Save user Fridge Data
+//Store user Fridge Data
 export const setFridgeData = (fridgeData) => {
   return {
     type: SET_FRIDGE_DATA,
     payload: fridgeData,
   };
 };
-//Save Recipe Data
+//Store Recipe Data
 export const setRecipes = (recipeData) => {
   return {
     type: SET_RECIPES,
     payload: recipeData,
   };
 };
-// Set logged in user
+//Store logged in user
 export const setCurrentUser = (userData) => {
   return {
     type: SET_CURRENT_USER,
