@@ -14,10 +14,10 @@ const PORT = process.env.PORT || 3001;
 // // Creates HTTPS on local machine
 https
   .createServer(
-    {
-      key: fs.readFileSync("key.pem"),
-      cert: fs.readFileSync("cert.pem"),
-    },
+    // {
+    //   key: fs.readFileSync("key.pem"),
+    //   cert: fs.readFileSync("cert.pem"),
+    // },
     app
   )
   .listen(PORT, function() {
