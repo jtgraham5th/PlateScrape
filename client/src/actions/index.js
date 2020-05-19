@@ -1,6 +1,7 @@
 import axios from "axios";
 import setAuthToken from "../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
+require("dotenv").config();
 import { returnErrors } from "./errorActions";
 import { batch } from "react-redux";
 import {
