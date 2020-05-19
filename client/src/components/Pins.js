@@ -171,10 +171,10 @@ class Pins extends Component {
             node="div"
             id="collapsible-item"
           >
-            {this.state.userBoards.length > 1 ? (
+            {this.props.userData.boards.length > 1 ? (
               <Row>
                 <Collection id="board-collection" className="col s3">
-                  {this.state.userBoards.map((board, i) => (
+                  {this.props.userData.boards.map((board, i) => (
                     <CollectionItem
                       key={i}
                       id={board.id}

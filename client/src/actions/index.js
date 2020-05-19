@@ -33,7 +33,7 @@ export const getAuthToken = (pinterestAuthCode) => (dispatch) => {
   console.log("hit me");
   axios
     .post(
-      `https://api.pinterest.com/v1/oauth/token?grant_type=authorization_code&client_id=5073939286663940267&client_secret=f88681c57f7d8613522b1f09272c106f1fb1366e1464c80a8718442a19e8d743&code=${pinterestAuthCode}`
+      `https://api.pinterest.com/v1/oauth/token?grant_type=authorization_code&client_id=${process.env.clientId}&client_secret=${process.env.clientSecret}&code=${pinterestAuthCode}`
     )
     .then((response) => {
       const accessToken = response.data.access_token;
