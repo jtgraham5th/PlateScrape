@@ -9,7 +9,6 @@ const app = express();
 const routes = require("./routes");
 const passport = require("passport");
 const cors = require('cors');
-const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const PORT = process.env.PORT || 3001;
 // // Creates HTTPS on local machine
