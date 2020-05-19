@@ -1,7 +1,6 @@
 import axios from "axios";
 import setAuthToken from "../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
-require("dotenv").config();
 import { returnErrors } from "./errorActions";
 import { batch } from "react-redux";
 import {
@@ -16,6 +15,8 @@ import {
   SET_BOARD_DATA,
   SET_PINTEREST_TOKEN,
 } from "./types";
+require("dotenv").config();
+
 // Register User
 export const registerUser = (userData, history) => (dispatch) => {
   axios
