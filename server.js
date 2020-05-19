@@ -12,7 +12,7 @@ const cors = require("cors");
 
 const PORT = process.env.PORT || 3001;
 // // Creates HTTPS on local machine
-https
+http
   .createServer(
     // {
     //   key: fs.readFileSync("key.pem"),
