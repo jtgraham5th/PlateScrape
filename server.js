@@ -33,8 +33,8 @@ app.use(passport.session()); // persistent login sessions
 mongoose.set("useCreateIndex", true);
 
 var db = process.env.MONGODB_URI;
-mongoose.connect(db)
-// mongoose.connect(db, { useNewUrlParser: true });
+// mongoose.connect(db)
+mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true});
 const connection = mongoose.connection;
 
 connection.on("connected", () => {
