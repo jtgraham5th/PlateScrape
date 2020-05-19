@@ -12,7 +12,7 @@ class PinterestBtn extends React.Component {
     axios.get("/api/pinterestLogin").then((response) => console.log(response));
   };
   render() {
-    const pinterest = `https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://localhost:3000/&client_id=${process.env.clientId}&scope=read_public,write_public&state=768uyFys`
+    const pinterest = `https://api.pinterest.com/oauth/?response_type=code&redirect_uri=https://serene-plateau-07976.herokuapp.com//&client_id=${process.env.clientId}&scope=read_public,write_public&state=768uyFys`
 
     return (
       <Button  className="red darken-1" onClick={() => window.location.href=pinterest}>
