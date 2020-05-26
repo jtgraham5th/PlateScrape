@@ -181,7 +181,7 @@ class RecipeList extends Component {
                   <div className="card-content valign-wrapper">
                     {recipe.title}
                   </div>
-                  <a href={recipe.href}><button class="btn-flat">view recipe</button></a>
+                  <a href={recipe.href}>View recipe</a>
                   <div className="card-action">
                     <div className="btn add-recipe-btn" onClick={this.addRecipe} data-url={recipe.href}>Add Recipe</div>
                   </div>

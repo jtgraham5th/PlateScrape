@@ -176,10 +176,8 @@ small.shopping-list-button {
   max-height: 100%;
   display: inline-block;
 }
-.card-stacked > a .btn-flat {
-  width: 100%;
-  height: 16px;
-  line-height: 16px;
+.card-stacked > a {
+  text-align: center;
 }
 .card .card-content {
   padding: 0.5em !important;
@@ -191,6 +189,8 @@ small.shopping-list-button {
 }
 .add-recipe-btn {
   width: 100%;
+  height: 25px !important;
+  line-height: 25px !important;
 }
 .horizontal-scroll {
   flex-wrap: unset;
