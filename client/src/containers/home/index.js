@@ -1,8 +1,5 @@
 import React, { Component } from "react";
-import axios from "axios";
-// import { Link } from "react-router-dom";
 import "./style.css";
-import { Container } from "reactstrap";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Fridge from "../../components/Fridge";

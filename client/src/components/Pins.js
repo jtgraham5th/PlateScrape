@@ -1,42 +1,18 @@
 import React, { Component } from "react";
 // import { Link } from "react-router-dom";
-// import "./style.css";
-import classnames from "classnames";
-import {
-  Button,
-  Card,
-  CardBody,
-  Col,
-  Nav,
-  NavItem,
-  NavLink,
-  TabContent,
-  TabPane,
-  CardImg,
-  CardTitle,
-  Modal,
-  ModalBody,
-  ModalHeader,
-  ModalFooter,
-} from "reactstrap";
 import {
   Row,
   Collapsible,
   CollapsibleItem,
-  Tabs,
-  Tab,
   Icon,
   Collection,
   CollectionItem,
 } from "react-materialize";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { compareSync } from "bcrypt-nodejs";
 // import { CLEAR_ERRORS } from "../../actions/types";
 import { setBoards, pinterestAPIBoardRequest } from "../actions";
 import PinterestButton from "./PinterestButton";
-
-var axios = require("axios");
 
 class Pins extends Component {
   state = {
@@ -51,7 +27,7 @@ class Pins extends Component {
     modal2: false,
   };
   componentDidMount() {
-    const { isAuthenticated, pinterestToken, userId } = this.props.auth;
+    const { isAuthenticated, pinterestToken } = this.props.auth;
     const { boards } = this.props.userData;
 
     //if the user is logged in and boards DO exist
@@ -70,7 +46,7 @@ class Pins extends Component {
     }
   }
   componentDidUpdate = async () => {
-    const { isAuthenticated, pinterestToken, userId } = this.props.auth;
+    const { isAuthenticated, pinterestToken } = this.props.auth;
     const { boards } = this.props.userData;
     //if the user is logged in and has a Pinterest Auth Token and no boards exist
     if (isAuthenticated && pinterestToken && boards.length <= 0) {

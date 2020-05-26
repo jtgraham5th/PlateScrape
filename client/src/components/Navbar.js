@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import PinterestBtn from "./PinterestButton";
 import { Button, Modal } from "reactstrap";
 import Login from "./auth/Login";
 import Logout from "./auth/Logout";

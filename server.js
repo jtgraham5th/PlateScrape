@@ -1,7 +1,7 @@
 require("dotenv").config();
 const fs = require("fs");
 const http = require("http");
-// const https = require("https")
+const https = require("https")
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
@@ -13,12 +13,12 @@ const cors = require("cors");
 
 const PORT = process.env.PORT || 3001;
 // Use HTTPS on local machine for Development to access pinterest api
-http
+https
   .createServer(
-    // {
-    //   key: fs.readFileSync("key.pem"),
-    //   cert: fs.readFileSync("cert.pem"),
-    // },
+    {
+      key: fs.readFileSync("key.pem"),
+      cert: fs.readFileSync("cert.pem"),
+    },
     app
   )
   .listen(PORT, function() {

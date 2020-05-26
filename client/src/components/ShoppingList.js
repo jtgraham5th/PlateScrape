@@ -11,13 +11,6 @@ import {
   Button,
 } from "react-materialize";
 
-import { library } from "@fortawesome/fontawesome-svg-core";
-import {
-  faSortAlphaUp,
-  faSortAmountUp,
-  faSortAmountDownAlt,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
@@ -26,8 +19,6 @@ import {
   removeShoppingListItem,
   setFridgeData,
 } from "../actions";
-
-library.add(faSortAlphaUp);
 
 var axios = require("axios");
 
@@ -43,21 +34,29 @@ class ShoppingList extends Component {
   componentDidMount() {
     if (this.props.auth.isAuthenticated && this.props.auth.userId) {
       this.props.getUserShoppingList(this.props.auth.userId);
-      this.setState({
-        fridge: this.props.userData.fridge,
-        shoppingList: this.props.userData.shoppingList,
-      },this.compareWithFridge());
-      
+      this.setState(
+        {
+          fridge: this.props.userData.fridge,
+          shoppingList: this.props.userData.shoppingList,
+        },
+        this.compareWithFridge()
+      );
     } else {
       this.props.setShoppingList([]);
     }
   }
   componentDidUpdate(prevProps) {
     if (prevProps.userData.shoppingList !== this.props.userData.shoppingList) {
-      this.setState({ shoppingList: this.props.userData.shoppingList },this.compareWithFridge());
+      this.setState(
+        { shoppingList: this.props.userData.shoppingList },
+        this.compareWithFridge()
+      );
     }
     if (prevProps.userData.fridge !== this.props.userData.fridge) {
-      this.setState({ fridge: this.props.userData.fridge },this.compareWithFridge());
+      this.setState(
+        { fridge: this.props.userData.fridge },
+        this.compareWithFridge()
+      );
     }
   }
   alphaSort = (event) => {
@@ -124,7 +123,7 @@ class ShoppingList extends Component {
         () => {
           console.log(this.state.itemKey);
           this.props.setFridgeData(fridge);
-          this.compareWithFridge()
+          this.compareWithFridge();
           this.toggleModal();
         }
       );
@@ -145,7 +144,6 @@ class ShoppingList extends Component {
     } else {
       console.log("before:", this.state.fridge);
 
-      let fridge = this.state.fridge;
       this.setState(
         (prevState) => ({
           fridge: prevState.fridge.map((el) =>
@@ -169,20 +167,21 @@ class ShoppingList extends Component {
     const removeIndex = event.target.dataset.index;
     const item = event.target.dataset.name;
     let updatedList = this.state.shoppingList;
-    console.log(updatedList)
+    console.log(updatedList);
     updatedList.splice(removeIndex, 1);
     this.setState(
       {
         shoppingList: updatedList,
       },
-       () => { console.log(this.state.shoppingList);
-         this.props.setShoppingList(this.state.shoppingList);
+      () => {
+        console.log(this.state.shoppingList);
+        this.props.setShoppingList(this.state.shoppingList);
       }
     );
     if (this.props.auth.isAuthenticated) {
       this.props.removeShoppingListItem(item, this.props.auth.userId);
     }
-    this.compareWithFridge()
+    this.compareWithFridge();
     this.toggleModal();
   };
   compareWithFridge = () => {
@@ -221,9 +220,8 @@ class ShoppingList extends Component {
     });
   };
   checkFridge = (ingredient) => {
-    return ingredient.enoughInFridge ?  "disabled" : ""
-
-  }
+    return ingredient.enoughInFridge ? "disabled" : "";
+  };
 
   render(props) {
     return (
@@ -259,7 +257,9 @@ class ShoppingList extends Component {
         <Collection className="row vertical-scroll list">
           {this.props.userData.shoppingList.map((ingredient, i) => (
             <CollectionItem
-              className={`row transparent shopping-list-item ${this.checkFridge(ingredient)}
+              className={`row transparent shopping-list-item ${this.checkFridge(
+                ingredient
+              )}
                 `}
               data-name={ingredient.name}
               data-amount={ingredient.amount}
@@ -301,7 +301,7 @@ class ShoppingList extends Component {
                   close
                 </i>
               </button>
-              {this.state.itemKey == i ? (
+              {this.state.itemKey === i ? (
                 <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                   <ModalHeader
                     toggle={this.toggleModal}

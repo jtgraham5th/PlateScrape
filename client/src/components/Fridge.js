@@ -175,12 +175,11 @@ class Fridge extends Component {
     console.log(fridge.length, fridge);
     console.log(ingredient, amount);
     if (fridge.length > 0) {
-      let classes = fridge.map((item, x) =>
+      fridge.map((item, x) =>
         item.name === ingredient
           ? item.amountStored >= amount
             ? this.setState(
                 (prevState) => (
-                  console.log("changing to TRUE"),
                   {
                     shoppingList: prevState.shoppingList.map((el) =>
                       el.name === ingredient

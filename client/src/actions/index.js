@@ -29,6 +29,7 @@ export const registerUser = (userData, history) => (dispatch) => {
       })
     );
 };
+
 export const getAuthToken = (pinterestAuthCode) => (dispatch) => {
   console.log("hit me");
   axios

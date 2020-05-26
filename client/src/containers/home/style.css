@@ -34,6 +34,11 @@
 #recipe-button-containter {
   margin-left: 0rem;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+#recipe-button-contatiner > .btn.red {
+  width: 20rem;
 }
 #recipe-button {
   display: inline-block;
@@ -134,12 +139,12 @@ small.shopping-list-button {
   border-color: #007bff;
   background-color: transparent;
 }
-.col{
-    /* -ms-flex-preferred-size: 0; */
-    flex-basis: unset !important;
-    /* -ms-flex-positive: 1; */
-    flex-grow: unset !important;
-    max-width: unset !important;
+.col {
+  /* -ms-flex-preferred-size: 0; */
+  flex-basis: unset !important;
+  /* -ms-flex-positive: 1; */
+  flex-grow: unset !important;
+  max-width: unset !important;
 }
 .valign-wrapper {
   flex-wrap: unset;
@@ -147,9 +152,49 @@ small.shopping-list-button {
 .submit-recipe-button {
   width: unset !important;
 }
-.btn, .btn-large, .btn-small{
+.btn,
+.btn-large,
+.btn-small {
   background-color: #004d40 !important;
 }
 .list {
   display: inherit;
+}
+.card-image > img {
+  width: 100% !important;
+  height: 100% !important;
+}
+.card-image {
+  width: 10vw !important;
+}
+.card.horizontal {
+  flex-direction: row !important;
+  height: fit-content;
+}
+.card-stacked {
+  max-height: 100%;
+  display: inline-block;
+}
+.card-stacked > a .btn-flat {
+  width: 100%;
+}
+.card .card-content {
+  padding: 0.5em !important;
+  white-space: normal;
+  text-align: center;
+}
+.card-action {
+  padding: 0% !important;
+}
+.add-recipe-btn {
+  width: 100%;
+}
+.horizontal-scroll {
+  flex-wrap: unset;
+  overflow: auto !important;
+  white-space: nowrap;
+  margin: 0 !important;
+}
+.horizontal-scroll > .card {
+  /* display: inline-flex */
 }

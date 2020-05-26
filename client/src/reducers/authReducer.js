@@ -1,5 +1,5 @@
 import { SET_CURRENT_USER, USER_LOADING, USER_LOADED, SET_PINTEREST_TOKEN } from "../actions/types";
-const isEmpty = require("is-empty");
+// const isEmpty = require("is-empty");
 const initialState = {
   isAuthenticated: !!localStorage.getItem("jwtToken"),
   userName: null,
