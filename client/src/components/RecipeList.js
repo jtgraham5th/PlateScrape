@@ -11,7 +11,7 @@ import {
 } from "react-materialize";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getUserFridgeData, setRecipes, setShoppingList } from "../actions";
+import { getUserFridgeData, setRecipes, setShoppingList, getUserShoppingList } from "../actions";
 import axios from "axios";
 
 // var axios = require("axios");
@@ -239,5 +239,5 @@ const mapStateToProps = (state) => ({
   userData: state.userData,
 });
 export default connect(mapStateToProps, {
-  getUserFridgeData, setRecipes, setShoppingList
+  getUserFridgeData, setRecipes, setShoppingList, getUserShoppingList
 })(RecipeList);
