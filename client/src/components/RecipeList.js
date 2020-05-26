@@ -179,7 +179,7 @@ class RecipeList extends Component {
                 </div>
                 <div className="card-stacked">
                   <div className="card-content valign-wrapper">
-                    <h6>{recipe.title}</h6>
+                    {recipe.title}
                   </div>
                   <a href={recipe.href}><button class="btn-flat">view recipe</button></a>
                   <div className="card-action">
