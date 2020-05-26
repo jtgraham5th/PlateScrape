@@ -13,21 +13,21 @@ const cors = require("cors");
 
 const PORT = process.env.PORT || 3001;
 // Use HTTPS on local machine for Development to access pinterest api
-https
-  .createServer(
-    {
-      key: fs.readFileSync("key.pem"),
-      cert: fs.readFileSync("cert.pem"),
-    },
-    app
-  )
-  .listen(PORT, function() {
-    console.log(`App is running on http://localhost:${PORT}`);
-  })
-  .on("clientError", (err, socket) => {
-    console.error(err);
-    socket.end("HTTP/1.1 400 Bad Request\r\n\r\n");
-  });
+// https
+//   .createServer(
+//     {
+//       key: fs.readFileSync("key.pem"),
+//       cert: fs.readFileSync("cert.pem"),
+//     },
+//     app
+//   )
+//   .listen(PORT, function() {
+//     console.log(`App is running on https://localhost:${PORT}`);
+//   })
+//   .on("clientError", (err, socket) => {
+//     console.error(err);
+//     socket.end("HTTP/1.1 400 Bad Request\r\n\r\n");
+//   });
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -71,6 +71,6 @@ app.get("*", (req, res) => {
 //ROUTES
 
 //Use for deployment
-// app.listen(PORT, function() {
-//   console.log(`App is running on http://localhost:${PORT}`);
-// });
+app.listen(PORT, function() {
+  console.log(`App is running on http://localhost:${PORT}`);
+});
