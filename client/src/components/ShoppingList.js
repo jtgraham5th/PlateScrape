@@ -226,7 +226,7 @@ class ShoppingList extends Component {
   render(props) {
     return (
       <>
-        <Row className="teal darken-4 white-text valign-wrapper">
+        {/* <Row className="teal darken-4 white-text valign-wrapper">
           <Col s={8}>
             <h5>Shopping List</h5>
           </Col>
@@ -252,7 +252,7 @@ class ShoppingList extends Component {
               </Icon>
             }
           />
-        </Row>
+        </Row> */}
 
         <Collection className="row vertical-scroll list">
           {this.props.userData.shoppingList.map((ingredient, i) => (

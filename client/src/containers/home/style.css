@@ -1,9 +1,18 @@
-#recipe-form-input {
+/* #recipe-form-input {
   width: 90%;
-}
+} */
 /* #shoppingList-component {
   height: 100vh !important
 } */
+#recipe-list {
+  display: flex !important;
+}
+.tabs {
+  display: flex !important;
+}
+.tabs .tab a {
+  padding: 0 12px !important;
+}
 .vertical-scroll {
   overflow-y: scroll !important;
   height: 72.6vh !important;
@@ -149,9 +158,11 @@ small.shopping-list-button {
 .valign-wrapper {
   flex-wrap: unset;
 }
-.submit-recipe-button {
-  width: unset !important;
-}
+/* .submit-recipe-button {
+float: right !important;
+display: flex;
+align-content: center;
+} */
 .btn,
 .btn-large,
 .btn-small {

@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 // import { Link } from "react-router-dom";
 // import "./style.css";
 import {
-  Row,
+  Col,
   Button,
   Collapsible,
   CollapsibleItem,
@@ -162,15 +162,16 @@ class RecipeList extends Component {
   }
   render(props) {
     return (
-      <Collapsible accordion>
-        <CollapsibleItem
-          expanded
-          icon={<Icon>arrow_drop_down</Icon>}
-          header="Recipes"
-          node="div"
-          id="collapsible-item"
-        >
-          <Row className="section horizontal-scroll">
+      // <Collapsible accordion>
+      //   <CollapsibleItem
+      //     expanded
+      //     icon={<Icon>arrow_drop_down</Icon>}
+      //     header="Recipes"
+      //     node="div"
+      //     id="collapsible-item"
+      //   >
+      <>
+          <Col s={12} id="recipe-list" className="section horizontal-scroll">
             {this.state.suggestedRecipes.map((recipe, i) => (
               <div key={i} className="col s12 m7">
               <div className="card horizontal">
@@ -189,8 +190,8 @@ class RecipeList extends Component {
               </div>
             </div>
             ))}
-          </Row>
-          <Row className="section" id="recipe-button-containter">
+          </Col>
+          <Col s={12} className="section" id="recipe-button-containter">
             {this.state.recipes.map((recipe, i) => (
               <Button
                 className="col s4"
@@ -224,9 +225,10 @@ class RecipeList extends Component {
               //     </UncontrolledCollapse>
               //   </div>
             ))}
-          </Row>
-        </CollapsibleItem>
-      </Collapsible>
+          </Col>
+          </>
+      //   </CollapsibleItem>
+      // </Collapsible>
     );
   }
 }

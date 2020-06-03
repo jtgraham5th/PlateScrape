@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./style.css";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { Tabs, Tab, Row, Col } from "react-materialize";
 import Fridge from "../../components/Fridge";
 import ShoppingList from "../../components/ShoppingList";
 import RecipeList from "../../components/RecipeList";
@@ -69,19 +70,57 @@ class Home extends Component {
   render(props) {
     return (
       <>
-        <div className="row mb-0">
-          <div className="col s4 lime lighten-5" id="shoppingList-component">
-            <ShoppingList />
-          </div>
-          <div className="col s8 vertical-scroll">
-            <RecipeForm />
-            <Pins />
-            <RecipeList />
-            <Fridge />
-            
-            
-          </div>
-        </div>
+        <Row className="justify-content-center">
+          <RecipeForm />
+          <RecipeList />
+          
+          <Col s={12}>
+          <Tabs
+            className="tab-demo z-depth-1"
+            options={{
+              swipeable: true,
+            }}
+          >
+            <Tab
+              // className="blue"
+              options={{
+                duration: 100,
+                onShow: null,
+                responsiveThreshold: Infinity,
+                swipeable: false,
+              }}
+              title="Shopping List"
+            >
+                        <ShoppingList />
+            </Tab>
+            <Tab
+              active
+              // className="red"
+              options={{
+                duration: 100,
+                onShow: null,
+                responsiveThreshold: Infinity,
+                swipeable: false,
+              }}
+              title="Fridge"
+            >
+              <Fridge />
+            </Tab>
+            <Tab
+              // className="green"
+              options={{
+                duration: 100,
+                onShow: null,
+                responsiveThreshold: Infinity,
+                swipeable: false,
+              }}
+              title="Pinterest"
+            >
+              <Pins />
+            </Tab>
+          </Tabs>
+          </Col>
+          </Row>
       </>
     );
   }

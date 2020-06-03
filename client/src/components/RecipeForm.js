@@ -167,7 +167,7 @@ class RecipeForm extends Component {
               URL: this.state.recipelink,
               name: response.data.name,
               ingredients: response.data.ingredients,
-              image: response.data.image
+              image: response.data.image,
             };
             recipes.push(newRecipe);
             this.setState({
@@ -185,14 +185,20 @@ class RecipeForm extends Component {
 
   render(props) {
     return (
-      <Row className="valign-wrapper">
-        <Col className="submit-recipe-button">
-        <Button type="submit"  onClick={this.handleFormSubmit}>
-          Submit
-        </Button>
+      <>
+        <Col s={12} className="submit-recipe-button mt-3">
+          <Button type="submit" className="col s1" onClick={this.handleFormSubmit}>
+            Submit
+          </Button>
+          <input
+            name="recipelink"
+            className="col s10"
+            type="text"
+            id="recipe-form-input"
+            onChange={this.handleInputChange}
+          />
         </Col>
-        <input name="recipelink" className="col s9" type="text" id="recipe-form-input" onChange={this.handleInputChange} />
-      </Row>
+      </>
     );
   }
 }
