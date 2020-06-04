@@ -330,7 +330,7 @@ align-content: center;
     -webkit-transform: unset !important;
     transform: unset !important;
   }
-  .tabs-container > .row {
+  /* .tabs-container > .row {
     height: 85%;
-  }
+  } */
 }
