@@ -314,6 +314,9 @@ align-content: center;
 #my-recipes > li > .collapsible-header {
   padding: 0.5rem !important;
 }
+span.badge{
+  min-width: 1.5rem !important;
+}
 /* #mobile-nav {
   background-color: rgb(0, 77, 64);
 } */

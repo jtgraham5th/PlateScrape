@@ -11,6 +11,7 @@ import {
   Icon,
   Preloader,
   Card,
+  Badge,
   CardTitle,
 } from "react-materialize";
 import PropTypes from "prop-types";
@@ -54,9 +55,9 @@ class RecipeList extends Component {
   }
   renderTooltip(recipe) {
     return recipe.ingredients.map((ingredient, e) => (
-        <small className="left-align">
-          {ingredient.amount} {ingredient.unit} {ingredient.name}
-        </small>
+      <small className="left-align">
+        {ingredient.amount} {ingredient.unit} {ingredient.name}
+      </small>
     ));
   }
   saveNewShoppingListItem = (newIngredient) => {
@@ -222,7 +223,20 @@ class RecipeList extends Component {
           <CollapsibleItem
             icon={<Icon>arrow_drop_down</Icon>}
             id="collapsible-item"
-            header="My Recipes"
+            header={
+              <>
+                <div>
+                  My Recipes
+                  
+                </div>{this.props.userData.recipes.length > 0 ? (
+                    <Badge className="ml-2 teal darken-4 white-text p-0">
+                      {this.props.userData.recipes.length}
+                    </Badge>
+                  ) : (
+                    ""
+                  )}
+              </>
+            }
             node="div"
           >
             <Col s={12} className="section" id="recipe-button-container">
@@ -232,12 +246,16 @@ class RecipeList extends Component {
                   header={
                     <CardTitle image={recipe.image} reveal waves="light" />
                   }
-                  reveal={<ul>{recipe.ingredients.map((ingredient, e) => (
-                    <li className="left-align small">
-                      {ingredient.amount} {ingredient.unit} {ingredient.name}
-                    </li>
-                ))}</ul>}
-                  
+                  reveal={
+                    <ul>
+                      {recipe.ingredients.map((ingredient, e) => (
+                        <li className="left-align small">
+                          {ingredient.amount} {ingredient.unit}{" "}
+                          {ingredient.name}
+                        </li>
+                      ))}
+                    </ul>
+                  }
                   title={recipe.name}
                   className="recipe-button"
                 >

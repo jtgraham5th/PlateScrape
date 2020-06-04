@@ -73,52 +73,49 @@ class Home extends Component {
         <Row className="justify-content-center p-4 main-content">
           <RecipeForm />
           <RecipeList />
-          
+
           <Col s={12} className="tabs-container">
-          <Tabs
-            className="tab-demo z-depth-1"
-            
-          >
-            <Tab
-              className="full-height"
-              options={{
-                duration: 100,
-                onShow: null,
-                responsiveThreshold: Infinity,
-                swipeable: false,
-              }}
-              title="Shopping List"
-            >
-                        <ShoppingList />
-            </Tab>
-            <Tab
-              active
-              className="full-height"
-              options={{
-                duration: 100,
-                onShow: null,
-                responsiveThreshold: Infinity,
-                swipeable: false,
-              }}
-              title="Fridge"
-            >
-              <Fridge />
-            </Tab>
-            <Tab
-              className="full-height"
-              options={{
-                duration: 100,
-                onShow: null,
-                responsiveThreshold: Infinity,
-                swipeable: false,
-              }}
-              title="Pinterest"
-            >
-              <Pins />
-            </Tab>
-          </Tabs>
+            <Tabs className="tab-demo z-depth-1">
+              <Tab
+                active
+                className="full-height"
+                options={{
+                  duration: 100,
+                  onShow: null,
+                  responsiveThreshold: Infinity,
+                  swipeable: false,
+                }}
+                title="Shopping List"
+              >
+                <ShoppingList />
+              </Tab>
+              <Tab
+                className="full-height"
+                options={{
+                  duration: 100,
+                  onShow: null,
+                  responsiveThreshold: Infinity,
+                  swipeable: false,
+                }}
+                title="Fridge"
+              >
+                <Fridge />
+              </Tab>
+              <Tab
+                className="full-height"
+                options={{
+                  duration: 100,
+                  onShow: null,
+                  responsiveThreshold: Infinity,
+                  swipeable: false,
+                }}
+                title="Pinterest"
+              >
+                <Pins />
+              </Tab>
+            </Tabs>
           </Col>
-          </Row>
+        </Row>
       </>
     );
   }
