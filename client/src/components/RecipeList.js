@@ -10,6 +10,8 @@ import {
   CollapsibleItem,
   Icon,
   Preloader,
+  Card,
+  CardTitle,
 } from "react-materialize";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -52,12 +54,9 @@ class RecipeList extends Component {
   }
   renderTooltip(recipe) {
     return recipe.ingredients.map((ingredient, e) => (
-      <>
         <small className="left-align">
           {ingredient.amount} {ingredient.unit} {ingredient.name}
         </small>
-        <br />
-      </>
     ));
   }
   saveNewShoppingListItem = (newIngredient) => {
@@ -175,39 +174,41 @@ class RecipeList extends Component {
       }.bind(this)
     );
   };
-  toggleModal() {
+  toggleModal = () => {
     this.setState({ toggleModal: !this.state.toggleModal });
-  }
+    this.props.dataLoaded();
+  };
   render() {
     return (
       <>
         {!this.props.userData.loading ? (
           this.props.userData.suggestedRecipes < 1 ? (
-            <Col s={12} id="recipe-list" className="section justify-content-center">
+            <Col
+              s={12}
+              id="recipe-list"
+              className="section justify-content-center"
+            >
               <h6>No Results Found</h6>
             </Col>
           ) : (
             <Col s={12} id="recipe-list" className="section horizontal-scroll">
               {this.props.userData.suggestedRecipes.map((recipe, i) => (
-                <div key={i} className="col s12 m7">
-                  <div className="card horizontal">
-                    <div className="card-image">
-                      <img alt={recipe.title} src={recipe.thumbnail} />
+                <div key={i} className="card horizontal">
+                  <div className="card-image">
+                    <img alt={recipe.title} src={recipe.thumbnail} />
+                  </div>
+                  <div className="card-stacked">
+                    <div className="card-content valign-wrapper">
+                      <a href={recipe.href}>{recipe.title}</a>
                     </div>
-                    <div className="card-stacked">
-                      <div className="card-content valign-wrapper">
-                        {recipe.title}
-                      </div>
-                      <a href={recipe.href}>View recipe</a>
-                      <div className="card-action">
-                        <div
-                          className="btn add-recipe-btn"
-                          onClick={() => this.addRecipe(recipe)}
-                          data-url={recipe.href}
-                        >
-                          Add Recipe
-                        </div>
-                      </div>
+                  </div>
+                  <div className="card-action">
+                    <div
+                      className="btn add-recipe-btn"
+                      onClick={() => this.addRecipe(recipe)}
+                      data-url={recipe.href}
+                    >
+                      Add Recipe
                     </div>
                   </div>
                 </div>
@@ -224,39 +225,30 @@ class RecipeList extends Component {
             header="My Recipes"
             node="div"
           >
-            <Col s={12} className="section" id="recipe-button-containter">
+            <Col s={12} className="section" id="recipe-button-container">
               {this.props.userData.recipes.map((recipe, i) => (
-                <Button
-                  className="col s4"
-                  id="recipe-button"
-                  key={i}
-                  node="button"
-                  tooltip={renderToStaticMarkup(this.renderTooltip(recipe))}
-                  tooltipOptions={{
-                    position: "bottom",
-                  }}
-                  waves="light"
+                <Card
+                  closeIcon={<Icon>close</Icon>}
+                  header={
+                    <CardTitle image={recipe.image} reveal waves="light" />
+                  }
+                  reveal={<ul>{recipe.ingredients.map((ingredient, e) => (
+                    <li className="left-align small">
+                      {ingredient.amount} {ingredient.unit} {ingredient.name}
+                    </li>
+                ))}</ul>}
+                  
+                  title={recipe.name}
+                  className="recipe-button"
                 >
-                  <small>{recipe.name}</small>
-                </Button>
-                //  <div key={i} className="">
-                //     <button
-                //       className="small teal lighten-5 rounded w-100"
-                //       id={`toggler${i}`}
-                //     >
-                //       {recipe.URL}
-                //     </button>
-                //     <UncontrolledCollapse toggler={`#toggler${i}`}>
-                //       <div className="card-body white">
-                //         {recipe.ingredients.map((ingredient, e) => (
-                //           <h6 key={e}>
-                //             {ingredient.amount} {ingredient.unit}{" "}
-                //             {ingredient.name}
-                //           </h6>
-                //         ))}
-                //       </div>
-                //     </UncontrolledCollapse>
-                //   </div>
+                  <div
+                    className="btn add-recipe-btn"
+                    onClick={() => this.addToList(recipe.ingredient)}
+                    data-url={recipe.href}
+                  >
+                    Add Recipe
+                  </div>
+                </Card>
               ))}
             </Col>
           </CollapsibleItem>

@@ -211,7 +211,7 @@ class Fridge extends Component {
         <CollectionItem
           className="row collection-message"
         >
-          <div className="col s10">
+          <div className="col s12 small" style={{"line-height":"1rem"}}>
             Add items that you already have at home here and we'll compare them
             with what's in your shopping list so you won't have to worry about
             buying too much at the store!

@@ -9,8 +9,10 @@ body, a {
   height: 100vh !important
 } */
 #recipe-list {
-  display: flex !important;
-  height: 20%
+  display: grid !important;
+  grid-auto-flow: column;
+  grid-auto-columns: 20%;
+  gap: 0.5em;
 }
 .tabs {
   display: flex !important;
@@ -75,12 +77,29 @@ body, a {
 .collection-message > .btn.red {
   width: 20rem;
 }
-#recipe-button {
-  display: inline-block;
-  height: fit-content;
-  white-space: normal;
-  line-height: inherit;
-  margin-left: 14px;
+.recipe-button {
+  width: 15%;
+  margin-right: 2% !important;
+}
+.recipe-button > .card-image,.recipe-button > .card-content {
+  height: 50%
+}
+.activator.card-title {
+  font-size: 1em !important;
+  line-height: initial !important;
+}
+.card-reveal > .card-title {
+  font-size: 90% !important;
+  line-height: initial;
+  font-weight: 600;
+  margin-bottom: 1 !important;
+}
+.card-reveal {
+  padding: 5px !important;
+}
+#recipe-button-container {
+  padding: 1rem;
+  display: flex;
 }
 .shopping-list-item {
   padding: 0px 10px !important;
@@ -103,6 +122,10 @@ small.shopping-list-button {
 #add-fridge-section {
   margin: 0 !important;
   padding: 0px 20px !important;
+}
+#add-fridge-section > .input-field {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
 #fridge-collection {
   background-color: rgb(0, 77, 64, 0.2) !important;
@@ -206,28 +229,30 @@ align-content: center;
   height: 100% !important;
 }
 .card-image {
-  width: 10vw !important;
-  max-width: 35% !important;
+  grid-row: 1 / 3;
+  max-width: unset !important;
 }
 .card.horizontal {
-  flex-direction: row !important;
-  height: fit-content;
+  display: grid;
+    grid-template-columns: 38% 62%;
+    grid-template-rows: 75% 25%;
 }
 .card-stacked {
-  max-height: 100%;
-  display: inline-block;
+  grid-row: 1 / 2
 }
 .card-stacked > a {
   text-align: center;
 }
 .card .card-content {
-  padding: 0.5em !important;
+  padding: 0.5em 0.5em 0 0.5em!important;
   white-space: normal;
   text-align: center;
   font-family: Roboto;
+  line-height: initial;
 }
 .card-action {
-  padding: 0% !important;
+  grid-row: 2 / 3;
+  padding: 0px !important;
 }
 .add-recipe-btn {
   width: 100%;
@@ -265,6 +290,7 @@ align-content: center;
 .main-content {
   height: 90%;
   padding: .5em 1em !important;
+  overflow: auto;
 }
 .tabs-container {
   height: 55%;
@@ -282,6 +308,12 @@ align-content: center;
 
 @media screen and (max-width: 767px) {
   .vertical-scroll {
-    height: 45% !important;
+    height: 83% !important;
+  }
+  #recipe-list {
+    grid-auto-columns: 47%;
+  }
+  .recipe-button {
+    width: 35%;
   }
 }
