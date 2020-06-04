@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
   Col,
-  Collapsible,
+  Container,
   CollapsibleItem,
   Icon,
   Collection,
@@ -179,18 +179,16 @@ class Fridge extends Component {
         item.name === ingredient
           ? item.amountStored >= amount
             ? this.setState(
-                (prevState) => (
-                  {
-                    shoppingList: prevState.shoppingList.map((el) =>
-                      el.name === ingredient
-                        ? {
-                            ...el,
-                            enoughInFridge: true,
-                          }
-                        : el
-                    ),
-                  }
-                ),
+                (prevState) => ({
+                  shoppingList: prevState.shoppingList.map((el) =>
+                    el.name === ingredient
+                      ? {
+                          ...el,
+                          enoughInFridge: true,
+                        }
+                      : el
+                  ),
+                }),
                 () => this.props.setShoppingList(this.state.shoppingList)
               )
             : this.setState((prevState) => ({
@@ -209,104 +207,102 @@ class Fridge extends Component {
   };
   render(props) {
     return (
-      <Collapsible accordion className="final-component">
-        <CollapsibleItem
-          expanded
-          icon={<Icon>arrow_drop_down</Icon>}
-          id="collapsible-item"
-          header="Fridge"
-          node="div"
+      <Collection id="fridge-collection" className="vertical-scroll">
+        <CollectionItem
+          className="row collection-message"
         >
-          <Collection>
-            <CollectionItem
-              id="add-fridge-section"
-              className="row s12 valign-wrapper"
-            >
-              <TextInput
-                s={6}
-                id="fridge-item-input"
-                type="text"
-                placeholder="What do you already have?"
-                onChange={this.handleNewFridgeItem}
-              />
-              <TextInput
-                s={3}
-                id="fridge-amount-input"
-                type="text"
-                placeholder="Amount"
-                onChange={this.handleNewFridgeAmount}
-              />
-              <Button
-                type="submit"
-                className="col s2"
-                onClick={this.userCreatedNewFridgeItem}
+          <div className="col s10">
+            Add items that you already have at home here and we'll compare them
+            with what's in your shopping list so you won't have to worry about
+            buying too much at the store!
+          </div>
+        </CollectionItem>
+        <CollectionItem
+          id="add-fridge-section"
+          className="row s12 valign-wrapper"
+        >
+          <TextInput
+            s={6}
+            id="fridge-item-input"
+            type="text"
+            placeholder="What do you already have?"
+            onChange={this.handleNewFridgeItem}
+          />
+          <TextInput
+            s={3}
+            id="fridge-amount-input"
+            type="text"
+            placeholder="Amount"
+            onChange={this.handleNewFridgeAmount}
+          />
+          <Button
+            type="submit"
+            className="col s2"
+            onClick={this.userCreatedNewFridgeItem}
+          >
+            Add
+          </Button>
+        </CollectionItem>
+        <Container className="fridge">
+        <CollectionItem className="row fridge-item-header">
+          <Col s={9}>Ingredient Name</Col>
+          <Col s={1} className="">
+            Needed
+          </Col>
+          <Col s={1} className="">
+            Have
+          </Col>
+        </CollectionItem>
+        {this.state.fridge.map((ingredient, i) => (
+          <CollectionItem key={i} className="row fridge-item valign-wrapper">
+            <Col s={9}>{ingredient.name} </Col>
+            <small className="col s1 fridge-amount-needed ">
+              {ingredient.amountNeeded} {ingredient.unit}
+            </small>
+            {!ingredient.edit ? (
+              <small
+                className="col s1 center fridge-amount-have"
+                data-name={ingredient.name}
+                onClick={this.toggleFridgeEdit}
               >
-                Add
-              </Button>
-            </CollectionItem>
-            <CollectionItem className="row fridge-item-header">
-              <Col s={9}>Ingredient Name</Col>
-              <Col s={1} className="">
-                Needed
-              </Col>
-              <Col s={1} className="">
-                Have
-              </Col>
-            </CollectionItem>
-            {this.state.fridge.map((ingredient, i) => (
-              <CollectionItem
-                key={i}
-                className="row fridge-item valign-wrapper"
+                {ingredient.amountStored} {ingredient.unit}
+              </small>
+            ) : (
+              <small
+                className="col s1 center fridge-amount-have"
+                data-name={ingredient.name}
               >
-                <Col s={9}>{ingredient.name} </Col>
-                <small className="col s1 fridge-amount-needed ">
-                  {ingredient.amountNeeded} {ingredient.unit}
-                </small>
-                {!ingredient.edit ? (
-                  <small
-                    className="col s1 center fridge-amount-have"
-                    data-name={ingredient.name}
-                    onClick={this.toggleFridgeEdit}
-                  >
-                    {ingredient.amountStored} {ingredient.unit}
-                  </small>
-                ) : (
-                  <small
-                    className="col s1 center fridge-amount-have"
-                    data-name={ingredient.name}
-                  >
-                    <form
-                      name={ingredient.name}
-                      data-name={ingredient.name}
-                      onSubmit={this.handleSubmit}
-                    >
-                      <input
-                        type="text"
-                        className="w-100"
-                        name={ingredient.name}
-                        placeholder={ingredient.amountStored}
-                        onChange={this.handleInput}
-                      ></input>
-                    </form>
-                  </small>
-                )}
-                <button
-                  className="btn-flat col s1 center fridge-remove-item-button"
-                  onClick={this.removeFrmFridge}
+                <form
+                  name={ingredient.name}
+                  data-name={ingredient.name}
+                  onSubmit={this.handleSubmit}
                 >
-                  <i
-                    className="material-icons tiny"
-                    data-index={i}
-                    data-name={ingredient.name}
-                  >
-                    clear
-                  </i>
-                </button>
-              </CollectionItem>
-            ))}
-          </Collection>
-        </CollapsibleItem>
-      </Collapsible>
+                  <input
+                    type="text"
+                    className="w-100"
+                    name={ingredient.name}
+                    placeholder={ingredient.amountStored}
+                    onChange={this.handleInput}
+                  ></input>
+                </form>
+              </small>
+            )}
+            <button
+              className="btn-flat col s1 center fridge-remove-item-button"
+              onClick={this.removeFrmFridge}
+            >
+              <i
+                className="material-icons tiny"
+                data-index={i}
+                data-name={ingredient.name}
+              >
+                clear
+              </i>
+            </button>
+          </CollectionItem>
+        ))}
+        </Container>
+      </Collection>
     );
   }
 }

@@ -2,7 +2,10 @@ import {
   SET_FRIDGE_DATA,
   SET_SHOPPINGLIST,
   SET_RECIPES,
-  SET_BOARD_DATA
+  SET_BOARD_DATA,
+  GET_SUGGESTED_RECIPES,
+  DATA_LOADED,
+  DATA_LOADING
 } from "../actions/types";
 // const isEmpty = require("is-empty");
 const initialState = {
@@ -10,6 +13,8 @@ const initialState = {
   shoppingList: [],
   recipes: [],
   boards: [],
+  suggestedRecipes: [],
+  loading: true
 };
 export default function(state = initialState, action) {
   switch (action.type) {
@@ -33,6 +38,21 @@ export default function(state = initialState, action) {
         ...state,
         boards: action.payload,
       };
+    case GET_SUGGESTED_RECIPES:
+      return {
+        ...state,
+        suggestedRecipes: action.payload,
+      };
+      case DATA_LOADING:
+        return {
+          ...state,
+          loading: true,
+        };
+      case DATA_LOADED:
+        return {
+          ...state,
+          loading: false,
+        };
     default:
       return state;
   }

@@ -28,19 +28,45 @@ router.put("/storeAuthToken", Authentication.storeAuthToken);
 router.get("/loadUser/:id", Authentication.loadUser);
 //Save pinterest boards to user collection in database
 router.post("/boards", Authentication.saveBoards);
-router.get("/tastyAPI", (req, res) => {
+router.get("/yummlyAPI/popular", (req, res) => {
   axios({
     "method":"GET",
-    "url":"https://recipe-puppy.p.rapidapi.com/",
+    "url":"https://yummly2.p.rapidapi.com/feeds/list",
     "headers":{
-    "content-type":"application/octet-stream",
-    "x-rapidapi-host":"recipe-puppy.p.rapidapi.com",
+    "x-rapidapi-host":"yummly2.p.rapidapi.com",
     "x-rapidapi-key":"8c9d803252msh0838d888ce56253p165855jsna533a76ddc02",
     "useQueryString":true
+    },"params":{
+    "tag":"list.recipe.popular",
+    "limit":"20",
+    "start":"0"
     }
     })
     .then((response)=>{
-      res.json(response.data.results)
+      res.json(response.data.feed)
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
+});
+router.get("/yummlyAPI/search/:query", (req, res) => {
+  axios({
+    "method":"GET",
+    "url":"https://yummly2.p.rapidapi.com/feeds/search",
+    "headers":{
+    "x-rapidapi-host":"yummly2.p.rapidapi.com",
+    "x-rapidapi-key":"8c9d803252msh0838d888ce56253p165855jsna533a76ddc02",
+    "useQueryString":true
+    },"params":{
+    "FAT_KCALMax":"1000",
+    "allowedAttribute":"diet-lacto-vegetarian%2Cdiet-low-fodmap",
+    "q": req.params.query,
+    "start":"0",
+    "maxResult":"20"
+    }
+    })
+    .then((response)=>{
+      res.json(response.data.feed)
     })
     .catch((error)=>{
       console.log(error)
@@ -135,6 +161,25 @@ router.get("/recipes/:id", (req, res) => {
         .find(".recipe-ingredients__ingredient-part:first-child > span").text()
         result.name = $(this)
         .find(".recipe-ingredients__ingredient-part > a").text()
+        console.log(result);
+        ingredientData.push(result);
+      }, console.log(ingredientData),(recipeData.ingredients = ingredientData));
+    }
+    //Scrape handler for yummly.com
+    if ($("#optanon")) {
+      recipeData.name = $(".recipe-title").text();
+      recipeData.image = $(".recipe-image").html();
+      
+      $(".IngredientLine").each(function(i, element) {
+        let ingredient = $(this).text()
+        console.log(ingredient)
+        var result = {};
+        result.amount = $(this)
+        .find(".amount").text()
+        result.unit = $(this)
+        .find(".unit").text()
+        result.name = $(this)
+        .find(".ingredient").text()
         console.log(result);
         ingredientData.push(result);
       }, console.log(ingredientData),(recipeData.ingredients = ingredientData));

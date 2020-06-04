@@ -9,16 +9,16 @@ import {
   getUserShoppingList,
   setShoppingList,
   setRecipes,
+  searchRecipes,
+  setDataLoading
 } from "../actions";
-
-var axios = require("axios");
 
 class RecipeForm extends Component {
   state = {
     recipes: [],
     shoppingList: [],
     fridge: [],
-    recipelink: "",
+    searchQuery: "",
   };
 
   componentDidMount() {
@@ -46,74 +46,7 @@ class RecipeForm extends Component {
       [name]: value,
     });
   };
-  convertToDecimal = (amount, unit) => {
-    console.log(unit, "---------");
-    let result = amount;
-    if (amount.includes("/")) {
-      let split = amount.split("/");
-      result = parseInt(split[0], 10) / parseInt(split[1], 10);
-      console.log(result, "amount as a decimal");
-    }
-    //Convert CUPS to OUNCES
-    if (unit === "cup" || unit === "cups") {
-      result = +parseFloat(result * 8).toFixed(2);
-      console.log(result, "cups to oz");
-      //Converts TSP to TABLESPOONS to OUNCES
-    } else if (unit === "tsp" || unit === "teaspoons") {
-      result = +parseFloat(result / 3 / 2).toFixed(2);
-      console.log(result, "tsp to oz");
-      //Converts TABLESPOONS to OUNCES
-    } else if (unit === "tbsp" || unit === "tablespoons") {
-      result = +parseFloat(result / 2).toFixed(2);
-      console.log(result, "tbsp to oz");
-    } else if (!unit) {
-      result = parseFloat(amount);
-    } else if (!amount) {
-      result = 0;
-    } else if (isNaN(amount)) {
-      result = 0;
-    }
-    console.log(result);
-    return result;
-  };
 
-  addToList = (ingredients) => {
-    ingredients.map((ingredient, i) => {
-      console.log(ingredient);
-      /* check to see if ingredient already exisit in the shoppingList*/
-      if (
-        !this.state.shoppingList.some(
-          (e) => e.name === ingredient.name.toLowerCase()
-        )
-      ) {
-        console.log("included");
-        let shoppingList = this.state.shoppingList;
-        let newIngredient = {
-          name: ingredient.name.toLowerCase(),
-          amount: this.convertToDecimal(ingredient.amount, ingredient.unit),
-          unit: "oz",
-          enoughInFridge: false,
-          // "row border-bottom border-primary d-flex bg-transparent pl-3 font-italic"
-        };
-        shoppingList.push(newIngredient);
-        this.setState({
-          shoppingList,
-        });
-        this.saveNewShoppingListItem(newIngredient);
-      } else {
-        let key = ingredient.name;
-        this.setState((prevState) => ({
-          shoppingList: prevState.shoppingList.map((el) =>
-            el.name === key
-              ? { ...el, amount: el.amount + parseFloat(ingredient.amount) }
-              : el
-          ),
-        }));
-        // this.updateShoppingListItem(ingredient.name, ingredient.amount);
-      }
-      console.log(this.state.shoppingList);
-    });
-  };
   // updateShoppingListItem = (name, amount) => {
   //   if (this.props.auth.isAuthenticated) {
   //     axios
@@ -133,65 +66,25 @@ class RecipeForm extends Component {
   //     this.props.setShoppingList(this.state.shoppingList);
   //   }
   // };
-  saveNewShoppingListItem = (newIngredient) => {
-    if (this.props.auth.isAuthenticated) {
-      axios
-        .post("/api/shoppingListItem", {
-          newIngredient: newIngredient,
-          userId: this.props.auth.userId,
-        })
-        .then((response) => {
-          this.props.getUserShoppingList(this.props.auth.userId);
-        })
-        .catch((err) => {
-          console.log(err);
-          alert("Failed to create: " + err.message);
-        });
-    } else {
-      this.props.setShoppingList(this.state.shoppingList);
-    }
-  };
-  handleFormSubmit = (event) => {
-    //event.preventDefault();
-    const url = encodeURIComponent(this.state.recipelink);
-    console.log(url);
-    if (this.state.recipelink) {
-      axios.get(`/api/recipes/${url}`).then(
-        function(response) {
-          if (response.data.ingredients.length < 1) {
-            this.toggleModal(1);
-          } else {
-            console.log(response.data);
-            let recipes = this.state.recipes;
-            let newRecipe = {
-              URL: this.state.recipelink,
-              name: response.data.name,
-              ingredients: response.data.ingredients,
-              image: response.data.image,
-            };
-            recipes.push(newRecipe);
-            this.setState({
-              recipes,
-            });
-            this.props.setRecipes(this.state.recipes);
 
-            console.log(this.state.recipes);
-            this.addToList(response.data.ingredients);
-          }
-        }.bind(this)
-      );
-    }
+  handleFormSubmit = () => {
+    this.props.setDataLoading()
+    this.props.searchRecipes(this.state.searchQuery);
   };
 
   render(props) {
     return (
       <>
-        <Col s={12} className="submit-recipe-button mt-3">
-          <Button type="submit" className="col s1" onClick={this.handleFormSubmit}>
-            Submit
+        <Col s={12} className="submit-recipe-button mt-1">
+          <Button
+            type="submit"
+            className="col s1"
+            onClick={this.handleFormSubmit}
+          >
+            Search
           </Button>
           <input
-            name="recipelink"
+            name="searchQuery"
             className="col s10"
             type="text"
             id="recipe-form-input"
@@ -202,6 +95,7 @@ class RecipeForm extends Component {
     );
   }
 }
+
 RecipeForm.propTypes = {
   auth: PropTypes.object.isRequired,
   userData: PropTypes.object.isRequired,
@@ -215,4 +109,6 @@ export default connect(mapStateToProps, {
   getUserShoppingList,
   setShoppingList,
   setRecipes,
+  searchRecipes,
+  setDataLoading
 })(RecipeForm);

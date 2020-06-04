@@ -138,19 +138,11 @@ class Pins extends Component {
   };
   render(props) {
     return (
-      <>
-        <Collapsible accordion className="pinterest-item">
-          <CollapsibleItem
-            expanded
-            icon={<Icon>arrow_drop_down</Icon>}
-            header="Pinterest"
-            node="div"
-            id="collapsible-item"
-          >
+      <><Collection className="vertical-scroll list">
             {this.props.userData.boards.length > 1 ? (
-              <Row>
-                <Collection id="board-collection" className="col s3">
-                  {this.props.userData.boards.map((board, i) => (
+              
+                
+                  this.props.userData.boards.map((board, i) => (
                     <CollectionItem
                       key={i}
                       id={board.id}
@@ -159,21 +151,20 @@ class Pins extends Component {
                     >
                       {board.name}
                     </CollectionItem>
-                  ))}
-                </Collection>
-              </Row>
+                  ))
+                
+              
             ) : (
-              <Row
-                className="section center-align"
-                id="recipe-button-containter"
+              <CollectionItem
+                className="section center-align "
               >
                 <h5>
                   Connecting with Pinterest will personalize your experience
                   with PlateScrape
                 </h5><PinterestButton />
                 
-              </Row>
-            )}
+              </CollectionItem>
+            )}</Collection>
             {/* {this.state.togglePins ? (
           <TabContent activeTab={this.state.activeTab}>
             <TabPane tabId={this.state.activeTab}>
@@ -237,8 +228,6 @@ class Pins extends Component {
         ) : (
           ""
         )} */}
-          </CollapsibleItem>
-        </Collapsible>
       </>
     );
   }

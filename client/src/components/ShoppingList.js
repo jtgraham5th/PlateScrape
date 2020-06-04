@@ -254,115 +254,124 @@ class ShoppingList extends Component {
           />
         </Row> */}
 
-        <Collection className="row vertical-scroll list">
-          {this.props.userData.shoppingList.map((ingredient, i) => (
-            <CollectionItem
-              className={`row transparent shopping-list-item ${this.checkFridge(
-                ingredient
-              )}
+        <Collection className="vertical-scroll list">
+          {this.props.userData.shoppingList.length > 1 ? (
+            this.props.userData.shoppingList.map((ingredient, i) => (
+              <CollectionItem
+                className={`row transparent shopping-list-item ${this.checkFridge(
+                  ingredient
+                )}
                 `}
-              data-name={ingredient.name}
-              data-amount={ingredient.amount}
-              key={i}
-            >
-              <Col s={8} className="shopping-list-item-name">
-                {ingredient.name}{" "}
-              </Col>
-              <small className="col s1 shopping-list-button">
-                {ingredient.amount} {ingredient.unit}
-              </small>
-              <button
-                className={`col s1 btn-flat shopping-list-button ${
-                  ingredient.enoughInFridge ? "disabled" : ""
-                }`}
-                onClick={this.addToFridge}
+                data-name={ingredient.name}
+                data-amount={ingredient.amount}
+                key={i}
               >
-                <i
-                  className="material-icons tiny"
-                  data-name={ingredient.name}
-                  data-amount={ingredient.amount}
-                  data-unit={ingredient.unit}
-                  data-index={i}
+                <Col s={8} className="shopping-list-item-name">
+                  {ingredient.name}{" "}
+                </Col>
+                <small className="col s1 shopping-list-button">
+                  {ingredient.amount} {ingredient.unit}
+                </small>
+                <button
+                  className={`col s1 btn-flat shopping-list-button ${
+                    ingredient.enoughInFridge ? "disabled" : ""
+                  }`}
+                  onClick={this.addToFridge}
                 >
-                  add
-                </i>
-              </button>
-              <button
-                className={`col s1 btn-flat shopping-list-button ${
-                  ingredient.enoughInFridge ? "red-text" : ""
-                }`}
-                onClick={this.removeFrmList}
-              >
-                <i
-                  className="material-icons tiny"
-                  data-name={ingredient.name}
-                  data-index={i}
-                >
-                  close
-                </i>
-              </button>
-              {this.state.itemKey === i ? (
-                <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
-                  <ModalHeader
-                    toggle={this.toggleModal}
-                    className="teal darken-4 white-text"
-                    style={{ fontFamily: "monospace" }}
+                  <i
+                    className="material-icons tiny"
+                    data-name={ingredient.name}
+                    data-amount={ingredient.amount}
+                    data-unit={ingredient.unit}
+                    data-index={i}
                   >
-                    Item added to Fridge
-                  </ModalHeader>
-                  <ModalBody>
-                    Would you also like to remove this item from your shopping
-                    list?
-                  </ModalBody>
-                  <ModalFooter className="d-flex justify-content-center">
-                    <Button
-                      color="secondary"
-                      onClick={this.removeFrmList}
-                      data-index={i}
-                      className="mr-4"
+                    add
+                  </i>
+                </button>
+                <button
+                  className={`col s1 btn-flat shopping-list-button ${
+                    ingredient.enoughInFridge ? "red-text" : ""
+                  }`}
+                  onClick={this.removeFrmList}
+                >
+                  <i
+                    className="material-icons tiny"
+                    data-name={ingredient.name}
+                    data-index={i}
+                  >
+                    close
+                  </i>
+                </button>
+                {this.state.itemKey === i ? (
+                  <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
+                    <ModalHeader
+                      toggle={this.toggleModal}
+                      className="teal darken-4 white-text"
+                      style={{ fontFamily: "monospace" }}
                     >
-                      Yes
-                    </Button>
-                    <Button color="secondary" onClick={this.toggleModal}>
-                      No
-                    </Button>
-                  </ModalFooter>
-                </Modal>
-              ) : null}
-            </CollectionItem>
-          ))}
+                      Item added to Fridge
+                    </ModalHeader>
+                    <ModalBody>
+                      Would you also like to remove this item from your shopping
+                      list?
+                    </ModalBody>
+                    <ModalFooter className="d-flex justify-content-center">
+                      <Button
+                        color="secondary"
+                        onClick={this.removeFrmList}
+                        data-index={i}
+                        className="mr-4"
+                      >
+                        Yes
+                      </Button>
+                      <Button color="secondary" onClick={this.toggleModal}>
+                        No
+                      </Button>
+                    </ModalFooter>
+                  </Modal>
+                ) : null}
+              </CollectionItem>
+            ))
+          ) : (
+            <>
+              <CollectionItem className="section center-align border">
+                <h5>Select a recipe to display the Ingredients</h5>
+              </CollectionItem>
+            </>
+          )}
+
+          <CollectionItem className="white-text">
+            <Button
+              large
+              className="col s4"
+              // onClick={this.alphaSort}
+              icon={<Icon tiny>local_printshop</Icon>}
+            >
+              {" "}
+              Print{" "}
+            </Button>
+            <Button
+              large
+              className="col s4"
+              // onClick={this.increaseSort}
+              icon={<Icon tiny>send</Icon>}
+            >
+              Send
+            </Button>
+            <Button
+              large
+              className="col s4"
+              onClick={this.decreaseSort}
+              icon={
+                <Icon tiny center>
+                  share
+                </Icon>
+              }
+            >
+              Share
+            </Button>
+          </CollectionItem>
         </Collection>
-        <Row className="teal darken-3 white-text footer">
-          <Button
-            large
-            className="col s4"
-            // onClick={this.alphaSort}
-            icon={<Icon tiny>local_printshop</Icon>}
-          >
-            {" "}
-            Print{" "}
-          </Button>
-          <Button
-            large
-            className="col s4"
-            // onClick={this.increaseSort}
-            icon={<Icon tiny>send</Icon>}
-          >
-            Send
-          </Button>
-          <Button
-            large
-            className="col s4"
-            onClick={this.decreaseSort}
-            icon={
-              <Icon tiny center>
-                share
-              </Icon>
-            }
-          >
-            Share
-          </Button>
-        </Row>
       </>
     );
   }

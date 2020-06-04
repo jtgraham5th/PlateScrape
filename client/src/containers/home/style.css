@@ -1,3 +1,7 @@
+body, a {
+  font-family: Roboto !important;
+}
+
 /* #recipe-form-input {
   width: 90%;
 } */
@@ -6,16 +10,34 @@
 } */
 #recipe-list {
   display: flex !important;
+  height: 20%
 }
 .tabs {
   display: flex !important;
 }
 .tabs .tab a {
   padding: 0 12px !important;
+  text-transform: capitalize;
+  font-family: Oregano !important;
+  font-size: 1.5em !important;
+  color: #004d40 !important;
+}
+.tabs .tab a:hover, 
+.tabs .tab a:active,
+.tabs .tab a:focus {
+  background-color: rgb(0, 77, 64, 0.2) !important;
+  color: #004d40 !important;
+  text-decoration: none !important;
+}
+.tabs .indicator {
+  background-color: #004d40;
+}
+.tabs-content.carousel.carousel-slider {
+  height: 100% !important;
 }
 .vertical-scroll {
   overflow-y: scroll !important;
-  height: 72.6vh !important;
+  height: 65% !important;
   margin-top: 0;
 }
 .col.s8.vertical-scroll {
@@ -40,13 +62,17 @@
   padding: 0px 6px;
   margin: 0rem 0rem 0rem 0.75rem;
 }
-#recipe-button-containter {
-  margin-left: 0rem;
+.collection-message {
+  /* margin-left: 0rem !important; */
   justify-content: center;
   flex-direction: column;
   align-items: center;
 }
-#recipe-button-contatiner > .btn.red {
+.collection-message > div {
+  margin-left: 0rem !important;
+  text-align: center;
+}
+.collection-message > .btn.red {
   width: 20rem;
 }
 #recipe-button {
@@ -78,7 +104,9 @@ small.shopping-list-button {
   margin: 0 !important;
   padding: 0px 20px !important;
 }
-
+#fridge-collection {
+  background-color: rgb(0, 77, 64, 0.2) !important;
+}
 .fridge-item-header {
   padding: 10px 20px !important;
   font-weight: bolder;
@@ -167,6 +195,8 @@ align-content: center;
 .btn-large,
 .btn-small {
   background-color: #004d40 !important;
+  text-transform: capitalize;
+  font-size: 17px;
 }
 .list {
   display: inherit;
@@ -194,6 +224,7 @@ align-content: center;
   padding: 0.5em !important;
   white-space: normal;
   text-align: center;
+  font-family: Roboto;
 }
 .card-action {
   padding: 0% !important;
@@ -202,6 +233,7 @@ align-content: center;
   width: 100%;
   height: 25px !important;
   line-height: 25px !important;
+  font-family: Oregano;
 }
 .horizontal-scroll {
   flex-wrap: unset;
@@ -211,4 +243,45 @@ align-content: center;
 }
 .horizontal-scroll > .card {
   /* display: inline-flex */
+}
+.brand-font {
+  font-family: Oregano !important;
+  text-decoration: none !important;
+}
+.brand-logo > i {
+  font-size: 3rem !important;
+  margin-right: 2px !important;
+}
+.full-width{
+  width: 100% !important;
+}
+.full-height{
+  height: 100% !important
+}
+.container.fridge {
+  background-color: rgb(0, 77, 64, 0.2) !important;
+  border: 2px;
+}
+.main-content {
+  height: 90%;
+  padding: .5em 1em !important;
+}
+.tabs-container {
+  height: 55%;
+  overflow: visible;
+}
+.tabs-container > .row {
+  height: 90%;
+}
+#my-recipes {
+  margin: 0 0 1rem 0 !important
+}
+#my-recipes > li > .collapsible-header {
+  padding: .5rem !important;
+}
+
+@media screen and (max-width: 767px) {
+  .vertical-scroll {
+    height: 45% !important;
+  }
 }

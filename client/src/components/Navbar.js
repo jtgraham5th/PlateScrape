@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Button, Modal } from "reactstrap";
+import { Icon} from "react-materialize";
 import Login from "./auth/Login";
 import Logout from "./auth/Logout";
 import Register from "./auth/Register";
@@ -81,15 +82,13 @@ class Navbar extends Component {
           <div className="nav-wrapper teal darken-4 pr-4 pl-4">
             <Link
               to="/"
-              style={{
-                fontFamily: "monospace",
-              }}
-              className="s5 brand-logo white-text"
+              className="s5 brand-logo white-text brand-font"
             >
-              <FontAwesomeIcon
+              {/* <FontAwesomeIcon
                 icon={["fas", "drumstick-bite"]}
                 className="mr-3"
-              />
+              /> */}
+              <Icon small>shopping_cart</Icon>
               PlateScrape
             </Link>
             {isAuthenticated ? authLinks : guestLinks}

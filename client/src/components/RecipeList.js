@@ -2,16 +2,26 @@ import React, { Component } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 // import { Link } from "react-router-dom";
 // import "./style.css";
+import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
 import {
   Col,
   Button,
   Collapsible,
   CollapsibleItem,
   Icon,
+  Preloader,
 } from "react-materialize";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getUserFridgeData, setRecipes, setShoppingList, getUserShoppingList } from "../actions";
+import {
+  getUserFridgeData,
+  setRecipes,
+  setShoppingList,
+  getUserShoppingList,
+  getSuggestedRecipes,
+  setDataLoading,
+  dataLoaded,
+} from "../actions";
 import axios from "axios";
 
 // var axios = require("axios");
@@ -23,17 +33,18 @@ class RecipeList extends Component {
     groceryList: [],
     fridge: [],
     shoppingList: [],
+    toggleModal: false,
   };
 
-  componentDidMount() {
-    axios
-      .get("api/tastyAPI")
-      .then((response) => this.setState({ suggestedRecipes: response.data }));
+  async componentDidMount() {
+    await this.props.getSuggestedRecipes();
 
-    this.setState({
-      recipes: this.props.userData.recipes,
-    });
+    // this.setState({
+    //   suggestedRecipes: this.props.userData.suggestedRecipes,
+    //   recipes: this.props.userData.recipes,
+    // });
   }
+
   componentDidUpdate(prevProps) {
     if (prevProps.userData.recipes !== this.props.userData.recipes) {
       this.setState({ recipes: this.props.userData.recipes });
@@ -134,101 +145,138 @@ class RecipeList extends Component {
       console.log(this.state.shoppingList);
     });
   };
-  addRecipe =(event) => {
-    const url = encodeURIComponent(event.target.dataset.url)
+  addRecipe = (recipe) => {
+    const { title, thumbnail, href } = recipe;
+    const url = encodeURIComponent(href);
+    this.props.setDataLoading();
     axios.get(`/api/recipes/${url}`).then(
-        function(response) {
-          if (response.data.ingredients.length < 1) {
-          } else {
-            console.log(response.data);
-            let recipes = this.state.recipes;
-            let newRecipe = {
-              URL: this.state.recipelink,
-              name: response.data.name,
-              ingredients: response.data.ingredients,
-              image: response.data.image
-            };
-            recipes.push(newRecipe);
-            this.setState({
-              recipes,
-            });
-            this.props.setRecipes(this.state.recipes);
+      function(response) {
+        if (response.data.ingredients.length < 1) {
+          this.toggleModal();
+        } else {
+          console.log(response.data);
+          this.props.dataLoaded();
+          let recipes = this.state.recipes;
+          let newRecipe = {
+            URL: href,
+            name: title,
+            ingredients: response.data.ingredients,
+            image: thumbnail,
+          };
+          recipes.push(newRecipe);
+          this.setState({
+            recipes,
+          });
+          this.props.setRecipes(this.state.recipes);
 
-            console.log(this.state.recipes);
-            this.addToList(response.data.ingredients);
-          }
-        }.bind(this)
-      );
+          console.log(this.state.recipes);
+          this.addToList(response.data.ingredients);
+        }
+      }.bind(this)
+    );
+  };
+  toggleModal() {
+    this.setState({ toggleModal: !this.state.toggleModal });
   }
-  render(props) {
+  render() {
     return (
-      // <Collapsible accordion>
-      //   <CollapsibleItem
-      //     expanded
-      //     icon={<Icon>arrow_drop_down</Icon>}
-      //     header="Recipes"
-      //     node="div"
-      //     id="collapsible-item"
-      //   >
       <>
-          <Col s={12} id="recipe-list" className="section horizontal-scroll">
-            {this.state.suggestedRecipes.map((recipe, i) => (
-              <div key={i} className="col s12 m7">
-              <div className="card horizontal">
-                <div className="card-image">
-                  <img alt={recipe.title} src={recipe.thumbnail} />
-                </div>
-                <div className="card-stacked">
-                  <div className="card-content valign-wrapper">
-                    {recipe.title}
+        {!this.props.userData.loading ? (
+          this.props.userData.suggestedRecipes < 1 ? (
+            <Col s={12} id="recipe-list" className="section justify-content-center">
+              <h6>No Results Found</h6>
+            </Col>
+          ) : (
+            <Col s={12} id="recipe-list" className="section horizontal-scroll">
+              {this.props.userData.suggestedRecipes.map((recipe, i) => (
+                <div key={i} className="col s12 m7">
+                  <div className="card horizontal">
+                    <div className="card-image">
+                      <img alt={recipe.title} src={recipe.thumbnail} />
+                    </div>
+                    <div className="card-stacked">
+                      <div className="card-content valign-wrapper">
+                        {recipe.title}
+                      </div>
+                      <a href={recipe.href}>View recipe</a>
+                      <div className="card-action">
+                        <div
+                          className="btn add-recipe-btn"
+                          onClick={() => this.addRecipe(recipe)}
+                          data-url={recipe.href}
+                        >
+                          Add Recipe
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <a href={recipe.href}>View recipe</a>
-                  <div className="card-action">
-                    <div className="btn add-recipe-btn" onClick={this.addRecipe} data-url={recipe.href}>Add Recipe</div>
-                  </div>
                 </div>
-              </div>
-            </div>
-            ))}
-          </Col>
-          <Col s={12} className="section" id="recipe-button-containter">
-            {this.state.recipes.map((recipe, i) => (
-              <Button
-                className="col s4"
-                id="recipe-button"
-                key={i}
-                node="button"
-                tooltip={renderToStaticMarkup(this.renderTooltip(recipe))}
-                tooltipOptions={{
-                  position: "bottom",
-                }}
-                waves="light"
-              >
-                <small>{recipe.name}</small>
-              </Button>
-              //  <div key={i} className="">
-              //     <button
-              //       className="small teal lighten-5 rounded w-100"
-              //       id={`toggler${i}`}
-              //     >
-              //       {recipe.URL}
-              //     </button>
-              //     <UncontrolledCollapse toggler={`#toggler${i}`}>
-              //       <div className="card-body white">
-              //         {recipe.ingredients.map((ingredient, e) => (
-              //           <h6 key={e}>
-              //             {ingredient.amount} {ingredient.unit}{" "}
-              //             {ingredient.name}
-              //           </h6>
-              //         ))}
-              //       </div>
-              //     </UncontrolledCollapse>
-              //   </div>
-            ))}
-          </Col>
-          </>
-      //   </CollapsibleItem>
-      // </Collapsible>
+              ))}
+            </Col>
+          )
+        ) : (
+          <Preloader active color="green" flashing={false} size="big" />
+        )}
+        <Collapsible accordion id="my-recipes" className="col s12">
+          <CollapsibleItem
+            icon={<Icon>arrow_drop_down</Icon>}
+            id="collapsible-item"
+            header="My Recipes"
+            node="div"
+          >
+            <Col s={12} className="section" id="recipe-button-containter">
+              {this.props.userData.recipes.map((recipe, i) => (
+                <Button
+                  className="col s4"
+                  id="recipe-button"
+                  key={i}
+                  node="button"
+                  tooltip={renderToStaticMarkup(this.renderTooltip(recipe))}
+                  tooltipOptions={{
+                    position: "bottom",
+                  }}
+                  waves="light"
+                >
+                  <small>{recipe.name}</small>
+                </Button>
+                //  <div key={i} className="">
+                //     <button
+                //       className="small teal lighten-5 rounded w-100"
+                //       id={`toggler${i}`}
+                //     >
+                //       {recipe.URL}
+                //     </button>
+                //     <UncontrolledCollapse toggler={`#toggler${i}`}>
+                //       <div className="card-body white">
+                //         {recipe.ingredients.map((ingredient, e) => (
+                //           <h6 key={e}>
+                //             {ingredient.amount} {ingredient.unit}{" "}
+                //             {ingredient.name}
+                //           </h6>
+                //         ))}
+                //       </div>
+                //     </UncontrolledCollapse>
+                //   </div>
+              ))}
+            </Col>
+          </CollapsibleItem>
+        </Collapsible>
+        <Modal isOpen={this.state.toggleModal} toggle={this.toggleModal}>
+          <ModalHeader
+            toggle={this.toggleModal}
+            className="teal darken-4 white-text"
+            style={{ fontFamily: "monospace" }}
+          >
+            Sorry
+          </ModalHeader>
+          <ModalBody>No Recipe Data found from, Try another!</ModalBody>
+          <ModalFooter className="d-flex justify-content-center">
+            <Button color="secondary" onClick={this.toggleModal}>
+              Ok
+            </Button>
+          </ModalFooter>
+        </Modal>
+      </>
     );
   }
 }
@@ -241,5 +289,11 @@ const mapStateToProps = (state) => ({
   userData: state.userData,
 });
 export default connect(mapStateToProps, {
-  getUserFridgeData, setRecipes, setShoppingList, getUserShoppingList
+  getUserFridgeData,
+  setRecipes,
+  setShoppingList,
+  getUserShoppingList,
+  getSuggestedRecipes,
+  setDataLoading,
+  dataLoaded,
 })(RecipeList);

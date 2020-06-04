@@ -70,19 +70,17 @@ class Home extends Component {
   render(props) {
     return (
       <>
-        <Row className="justify-content-center">
+        <Row className="justify-content-center p-4 main-content">
           <RecipeForm />
           <RecipeList />
           
-          <Col s={12}>
+          <Col s={12} className="tabs-container">
           <Tabs
             className="tab-demo z-depth-1"
-            options={{
-              swipeable: true,
-            }}
+            
           >
             <Tab
-              // className="blue"
+              // className="final-component"
               options={{
                 duration: 100,
                 onShow: null,
@@ -95,7 +93,7 @@ class Home extends Component {
             </Tab>
             <Tab
               active
-              // className="red"
+              // className="final-component"
               options={{
                 duration: 100,
                 onShow: null,

@@ -14,9 +14,62 @@ import {
   SET_RECIPES,
   SET_BOARD_DATA,
   SET_PINTEREST_TOKEN,
+  GET_SUGGESTED_RECIPES,
+  DATA_LOADED,
+  DATA_LOADING
 } from "./types";
 require("dotenv").config();
 
+export const searchRecipes = (searchQuery) => (dispatch) => {
+  axios.get(`/api/yummlyAPI/search/${searchQuery}`).then((response) => {
+    let array = [];
+    response.data.map((recipe, i) => {
+      let url;
+      if (
+        recipe.display.source.sourceRecipeUrl.includes(
+          "https://www.yummly.com/private"
+        )
+      ) {
+        url = "https://www.yummly.com/" + recipe["tracking-id"];
+      } else {
+        url = recipe.display.source.sourceRecipeUrl;
+      }
+      const data = {
+        title: recipe.display.displayName,
+        thumbnail: recipe.display.images[0],
+        href: url,
+      };
+      array = [...array, data];
+    });
+    batch(() => {
+      dispatch({
+        type: GET_SUGGESTED_RECIPES,
+        payload: array,
+      });
+      dispatch({ type: DATA_LOADED });
+    });
+  });
+};
+export const getSuggestedRecipes = () => (dispatch) => {
+  axios.get("api/yummlyAPI/popular").then((response) => {
+    let array = [];
+    response.data.map((recipe, i) => {
+      const data = {
+        title: recipe.display.displayName,
+        thumbnail: recipe.display.images[0],
+        href: recipe.display.source.sourceRecipeUrl,
+      };
+      array = [...array, data];
+    });
+    batch(() => {
+      dispatch({
+        type: GET_SUGGESTED_RECIPES,
+        payload: array,
+      });
+      dispatch({ type: DATA_LOADED });
+    });
+  });
+};
 // Register User
 export const registerUser = (userData, history) => (dispatch) => {
   axios
@@ -31,7 +84,6 @@ export const registerUser = (userData, history) => (dispatch) => {
 };
 
 export const getAuthToken = (pinterestAuthCode) => (dispatch) => {
-  console.log("hit me");
   axios
     .post(
       `https://api.pinterest.com/v1/oauth/token?grant_type=authorization_code&client_id=${process.env.clientId}&client_secret=${process.env.clientSecret}&code=${pinterestAuthCode}`
@@ -56,7 +108,7 @@ export const setPinterestToken = (accessToken) => {
   };
 };
 export const pinterestAPIBoardRequest = (pinterestToken) => (dispatch) => {
-  let token = localStorage.getItem("jwtToken")
+  let token = localStorage.getItem("jwtToken");
   axios
     .get(
       `https://api.pinterest.com/v1/me/boards/?access_token=${pinterestToken}&fields=id%2Cname%2Curl%2Cimage%2Cdescription`
@@ -114,7 +166,7 @@ export const setBoards = (boardData) => {
   };
 };
 export const removeFridgeItem = (itemName, userId) => (dispatch) => {
-  console.log(itemName)
+  console.log(itemName);
   axios
     .put("/api/fridgeItem", { itemName: itemName, userId: userId })
     .then((res) => {
@@ -157,7 +209,7 @@ export const loginUser = (userData) => (dispatch) => {
     );
 };
 export const removeShoppingListItem = (itemName, userId) => (dispatch) => {
-  console.log(itemName)
+  console.log(itemName);
   axios
     .put("/api/shoppingListItem", { itemName: itemName, userId: userId })
     .then((res) => {
@@ -230,6 +282,16 @@ export const setCurrentUser = (userData) => {
 export const setUserLoading = () => {
   return {
     type: USER_LOADING,
+  };
+};
+export const setDataLoading = () => {
+  return {
+    type: DATA_LOADING,
+  };
+};
+export const dataLoaded = () => {
+  return {
+    type: DATA_LOADED,
   };
 };
 // Log user out
