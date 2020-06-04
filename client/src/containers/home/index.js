@@ -80,7 +80,7 @@ class Home extends Component {
             
           >
             <Tab
-              // className="final-component"
+              className="full-height"
               options={{
                 duration: 100,
                 onShow: null,
@@ -93,7 +93,7 @@ class Home extends Component {
             </Tab>
             <Tab
               active
-              // className="final-component"
+              className="full-height"
               options={{
                 duration: 100,
                 onShow: null,
@@ -105,7 +105,7 @@ class Home extends Component {
               <Fridge />
             </Tab>
             <Tab
-              // className="green"
+              className="full-height"
               options={{
                 duration: 100,
                 onShow: null,

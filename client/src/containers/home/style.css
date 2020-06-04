@@ -40,7 +40,7 @@ a {
 }
 .vertical-scroll {
   overflow-y: scroll !important;
-  height: 65% !important;
+  height: 100% !important;
   margin-top: 0;
 }
 .col.s8.vertical-scroll {
@@ -306,7 +306,7 @@ align-content: center;
   overflow: visible;
 }
 .tabs-container > .row {
-  height: 90%;
+  height: 75%;
 }
 #my-recipes {
   margin: 0 0 1rem 0 !important;
@@ -319,9 +319,6 @@ align-content: center;
 } */
 
 @media screen and (max-width: 767px) {
-  .vertical-scroll {
-    height: 83% !important;
-  }
   #recipe-list {
     grid-auto-columns: 47%;
   }
@@ -332,6 +329,8 @@ align-content: center;
     left: 4rem !important;
     -webkit-transform: unset !important;
     transform: unset !important;
-
+  }
+  .tabs-container > .row {
+    height: 85%;
   }
 }
