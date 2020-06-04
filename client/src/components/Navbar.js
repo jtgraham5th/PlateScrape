@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Button, Modal } from "reactstrap";
-import { Icon} from "react-materialize";
+import { Modal } from "reactstrap";
+import { Button, Navbar, Icon } from "react-materialize";
 import Login from "./auth/Login";
 import Logout from "./auth/Logout";
 import Register from "./auth/Register";
 
-class Navbar extends Component {
+class AppNavbar extends Component {
   state = {
     modal: false,
     modalContent: null,
@@ -65,40 +65,54 @@ class Navbar extends Component {
       </ul>
     );
     const guestLinks = (
-      <ul id="nav-mobile" className="right">
-        
-        <li>
-          <Button onClick={this.toggleModal}>Login</Button>
-        </li>
-        <li>
-          <Button onClick={this.toggleModal}>Register</Button>
-        </li>
-      </ul>
+      <>
+        <Button onClick={this.toggleModal}>Login</Button>
+        <Button onClick={this.toggleModal}>Register</Button>
+      </>
     );
 
     return (
-      <div className="navbar-fixed">
-        <nav className="z-depth-0">
-          <div className="nav-wrapper teal darken-4 pr-4 pl-4">
-            <Link
-              to="/"
-              className="s5 brand-logo white-text brand-font"
-            >
+      <>
+        <Navbar
+          alignLinks="right"
+          brand={
+            <Link to="/" className="brand-logo white-text brand-font">
               {/* <FontAwesomeIcon
-                icon={["fas", "drumstick-bite"]}
-                className="mr-3"
-              /> */}
+              icon={["fas", "drumstick-bite"]}
+              className="mr-3"
+            /> */}
               <Icon small>shopping_cart</Icon>
               PlateScrape
             </Link>
-            {isAuthenticated ? authLinks : guestLinks}
-          </div>
-        </nav>
-        (
+          }
+          className="teal darken-4 pr-4 pl-4"
+          id="mobile-nav"
+          menuIcon={<Icon>menu</Icon>}
+          sidenav={
+            <>
+              <li>
+                <nav class="teal darken-4 pr-4 pl-4 full-width" >
+                  <a className="brand-logo white-text brand-font ">
+                    <Icon small>shopping_cart</Icon>
+                    PlateScrape
+                  </a>
+                </nav>
+              </li>
+              <li className="p-2">
+                <button class="btn-large full-width" onClick={this.toggleModal}>Login</button>
+              </li>
+              <li className="p-2">
+                <button class="btn-large full-width" onClick={this.toggleModal}>Register</button>
+              </li>
+            </>
+          }
+        >
+          {isAuthenticated ? authLinks : guestLinks}
+        </Navbar>
         <Modal isOpen={this.state.modal} toggle={this.toggle}>
           {this.modalContent()}
         </Modal>
-      </div>
+      </>
     );
   }
 }
@@ -106,4 +120,4 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-export default connect(mapStateToProps, null)(Navbar);
+export default connect(mapStateToProps, null)(AppNavbar);

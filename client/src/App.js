@@ -5,7 +5,7 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import Home from "./containers/home";
 import "./App.css";
-import Navbar from "./components/Navbar";
+import AppNavbar from "./components/Navbar";
 // import Landing from "./components/Landing";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
@@ -26,7 +26,7 @@ class App extends Component {
       <Provider store={store}>
         <Router>
           <div className="App">
-            <Navbar />
+            <AppNavbar />
             <Route exact path="/" component={Home} />
             <Route exact path="/register" component={Register} />
             <Route exact path="/login" component={Login} />

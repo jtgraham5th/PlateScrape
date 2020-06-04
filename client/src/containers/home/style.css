@@ -1,4 +1,5 @@
-body, a {
+body,
+a {
   font-family: Roboto !important;
 }
 
@@ -24,7 +25,7 @@ body, a {
   font-size: 1.5em !important;
   color: #004d40 !important;
 }
-.tabs .tab a:hover, 
+.tabs .tab a:hover,
 .tabs .tab a:active,
 .tabs .tab a:focus {
   background-color: rgb(0, 77, 64, 0.2) !important;
@@ -81,12 +82,17 @@ body, a {
   width: 15%;
   margin-right: 2% !important;
 }
-.recipe-button > .card-image,.recipe-button > .card-content {
-  height: 50%
+.recipe-button > .card-image,
+.recipe-button > .card-content {
+  height: 50%;
+}
+.card-content > div {
+  height: 25%;
 }
 .activator.card-title {
   font-size: 1em !important;
   line-height: initial !important;
+  height: 60%;
 }
 .card-reveal > .card-title {
   font-size: 90% !important;
@@ -219,7 +225,7 @@ align-content: center;
 .btn-small {
   background-color: #004d40 !important;
   text-transform: capitalize;
-  font-size: 17px;
+  font-size: 1em;
 }
 .list {
   display: inherit;
@@ -234,17 +240,17 @@ align-content: center;
 }
 .card.horizontal {
   display: grid;
-    grid-template-columns: 38% 62%;
-    grid-template-rows: 75% 25%;
+  grid-template-columns: 38% 62%;
+  grid-template-rows: 75% 25%;
 }
 .card-stacked {
-  grid-row: 1 / 2
+  grid-row: 1 / 2;
 }
 .card-stacked > a {
   text-align: center;
 }
 .card .card-content {
-  padding: 0.5em 0.5em 0 0.5em!important;
+  padding: 0.5em 0.5em 0 0.5em !important;
   white-space: normal;
   text-align: center;
   font-family: Roboto;
@@ -254,9 +260,12 @@ align-content: center;
   grid-row: 2 / 3;
   padding: 0px !important;
 }
+.card-action > .add-recipe-btn {
+  height: 100%;
+}
 .add-recipe-btn {
   width: 100%;
-  height: 25px !important;
+  height: 100% !important;
   line-height: 25px !important;
   font-family: Oregano;
 }
@@ -266,9 +275,9 @@ align-content: center;
   white-space: nowrap;
   margin: 0 !important;
 }
-.horizontal-scroll > .card {
-  /* display: inline-flex */
-}
+/* .horizontal-scroll > .card {
+  display: inline-flex
+} */
 .brand-font {
   font-family: Oregano !important;
   text-decoration: none !important;
@@ -277,11 +286,11 @@ align-content: center;
   font-size: 3rem !important;
   margin-right: 2px !important;
 }
-.full-width{
+.full-width {
   width: 100% !important;
 }
-.full-height{
-  height: 100% !important
+.full-height {
+  height: 100% !important;
 }
 .container.fridge {
   background-color: rgb(0, 77, 64, 0.2) !important;
@@ -289,7 +298,7 @@ align-content: center;
 }
 .main-content {
   height: 90%;
-  padding: .5em 1em !important;
+  padding: 0.5em 1em !important;
   overflow: auto;
 }
 .tabs-container {
@@ -300,11 +309,14 @@ align-content: center;
   height: 90%;
 }
 #my-recipes {
-  margin: 0 0 1rem 0 !important
+  margin: 0 0 1rem 0 !important;
 }
 #my-recipes > li > .collapsible-header {
-  padding: .5rem !important;
+  padding: 0.5rem !important;
 }
+/* #mobile-nav {
+  background-color: rgb(0, 77, 64);
+} */
 
 @media screen and (max-width: 767px) {
   .vertical-scroll {
@@ -315,5 +327,11 @@ align-content: center;
   }
   .recipe-button {
     width: 35%;
+  }
+  #mobile-nav li nav .brand-logo {
+    left: 4rem !important;
+    -webkit-transform: unset !important;
+    transform: unset !important;
+
   }
 }

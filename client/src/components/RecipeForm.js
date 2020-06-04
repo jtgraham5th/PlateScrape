@@ -75,17 +75,18 @@ class RecipeForm extends Component {
   render(props) {
     return (
       <>
-        <Col s={12} className="submit-recipe-button mt-1">
+        <Col s={12} className="submit-recipe-button valign-wrapper">
           <Button
             type="submit"
-            className="col s1"
+            className="col s2 p-0"
             onClick={this.handleFormSubmit}
           >
             Search
           </Button>
           <input
             name="searchQuery"
-            className="col s10"
+            className="col s10 ml-2"
+            placeholder="Search for a recipe"
             type="text"
             id="recipe-form-input"
             onChange={this.handleInputChange}
