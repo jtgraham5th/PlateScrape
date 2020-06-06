@@ -200,7 +200,7 @@ class RecipeList extends Component {
                   </div>
                   <div className="card-stacked">
                     <div className="card-content valign-wrapper">
-                      <a href={recipe.href}>{recipe.title}</a>
+                      <a href={recipe.href} target="new">{recipe.title}</a>
                     </div>
                   </div>
                   <div className="card-action">
@@ -239,7 +239,7 @@ class RecipeList extends Component {
             }
             node="div"
           >
-            <Col s={12} className="section" id="recipe-button-container">
+            <Col s={12} className="section horizontal-scroll" id="recipe-button-container">
               {this.props.userData.recipes.map((recipe, i) => (
                 <Card
                   closeIcon={<Icon>close</Icon>}

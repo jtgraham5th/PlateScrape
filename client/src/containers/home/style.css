@@ -90,7 +90,7 @@ a {
   height: 25%;
 }
 .activator.card-title {
-  font-size: 1em !important;
+  font-size: 80% !important;
   line-height: initial !important;
   height: 60%;
 }
@@ -105,7 +105,7 @@ a {
 }
 #recipe-button-container {
   padding: 1rem;
-  display: flex;
+  display: -webkit-inline-box;
 }
 .shopping-list-item {
   padding: 0px 10px !important;
@@ -268,6 +268,7 @@ align-content: center;
   height: 100% !important;
   line-height: 25px !important;
   font-family: Oregano;
+  font-size: 90%;
 }
 .horizontal-scroll {
   flex-wrap: unset;

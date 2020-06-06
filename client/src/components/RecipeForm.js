@@ -70,6 +70,7 @@ class RecipeForm extends Component {
   handleFormSubmit = () => {
     this.props.setDataLoading()
     this.props.searchRecipes(this.state.searchQuery);
+    this.setState({searchQuery: ""})
   };
 
   render(props) {
@@ -88,6 +89,7 @@ class RecipeForm extends Component {
             className="col s10 ml-2"
             placeholder="Search for a recipe"
             type="text"
+            value={this.state.searchQuery}
             id="recipe-form-input"
             onChange={this.handleInputChange}
           />

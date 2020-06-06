@@ -167,22 +167,19 @@ class ShoppingList extends Component {
     const removeIndex = event.target.dataset.index;
     const item = event.target.dataset.name;
     let updatedList = this.state.shoppingList;
-    console.log(updatedList);
     updatedList.splice(removeIndex, 1);
     this.setState(
       {
         shoppingList: updatedList,
       },
       () => {
-        console.log(this.state.shoppingList);
-        this.props.setShoppingList(this.state.shoppingList);
+        this.props.setShoppingList(updatedList);
       }
     );
     if (this.props.auth.isAuthenticated) {
       this.props.removeShoppingListItem(item, this.props.auth.userId);
     }
     this.compareWithFridge();
-    this.toggleModal();
   };
   compareWithFridge = () => {
     this.props.userData.shoppingList.map((shopItem, x) => {

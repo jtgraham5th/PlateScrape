@@ -18,6 +18,8 @@ import {
   setFridgeData,
   removeFridgeItem,
   setShoppingList,
+  searchRecipes,
+  setDataLoading,
 } from "../actions";
 
 var axios = require("axios");
@@ -205,13 +207,15 @@ class Fridge extends Component {
       );
     }
   };
+  searchRecipesfromFridge = (searchQuery) => {
+    this.props.setDataLoading();
+    this.props.searchRecipes(searchQuery);
+  };
   render(props) {
     return (
       <Collection id="fridge-collection" className="vertical-scroll">
-        <CollectionItem
-          className="row collection-message"
-        >
-          <div className="col s12 small" style={{"line-height":"1rem"}}>
+        <CollectionItem className="row collection-message">
+          <div className="col s12 small" style={{ "line-height": "1rem" }}>
             Add items that you already have at home here and we'll compare them
             with what's in your shopping list so you won't have to worry about
             buying too much at the store!
@@ -244,63 +248,70 @@ class Fridge extends Component {
           </Button>
         </CollectionItem>
         <Container className="fridge">
-        <CollectionItem className="row fridge-item-header">
-          <Col s={9}>Ingredient Name</Col>
-          <Col s={1} className="">
-            Needed
-          </Col>
-          <Col s={1} className="">
-            Have
-          </Col>
-        </CollectionItem>
-        {this.state.fridge.map((ingredient, i) => (
-          <CollectionItem key={i} className="row fridge-item valign-wrapper">
-            <Col s={9}>{ingredient.name} </Col>
-            <small className="col s1 fridge-amount-needed ">
-              {ingredient.amountNeeded} {ingredient.unit}
-            </small>
-            {!ingredient.edit ? (
-              <small
-                className="col s1 center fridge-amount-have"
-                data-name={ingredient.name}
-                onClick={this.toggleFridgeEdit}
-              >
-                {ingredient.amountStored} {ingredient.unit}
-              </small>
-            ) : (
-              <small
-                className="col s1 center fridge-amount-have"
-                data-name={ingredient.name}
-              >
-                <form
-                  name={ingredient.name}
-                  data-name={ingredient.name}
-                  onSubmit={this.handleSubmit}
-                >
-                  <input
-                    type="text"
-                    className="w-100"
-                    name={ingredient.name}
-                    placeholder={ingredient.amountStored}
-                    onChange={this.handleInput}
-                  ></input>
-                </form>
-              </small>
-            )}
-            <button
-              className="btn-flat col s1 center fridge-remove-item-button"
-              onClick={this.removeFrmFridge}
-            >
-              <i
-                className="material-icons tiny"
-                data-index={i}
-                data-name={ingredient.name}
-              >
-                clear
-              </i>
-            </button>
+          <CollectionItem className="row fridge-item-header">
+            <Col s={9}>Ingredient Name</Col>
+            <Col s={1} className="">
+              Needed
+            </Col>
+            <Col s={1} className="">
+              Have
+            </Col>
           </CollectionItem>
-        ))}
+          {this.state.fridge.map((ingredient, i) => (
+            <CollectionItem key={i} className="row fridge-item valign-wrapper">
+              <Col s={9}>
+                <a
+                  href="#"
+                  onClick={() => this.props.searchRecipes(ingredient.name)}
+                >
+                  {ingredient.name}{" "}
+                </a>
+              </Col>
+              <small className="col s1 fridge-amount-needed ">
+                {ingredient.amountNeeded} {ingredient.unit}
+              </small>
+              {!ingredient.edit ? (
+                <small
+                  className="col s1 center fridge-amount-have"
+                  data-name={ingredient.name}
+                  onClick={this.toggleFridgeEdit}
+                >
+                  {ingredient.amountStored} {ingredient.unit}
+                </small>
+              ) : (
+                <small
+                  className="col s1 center fridge-amount-have"
+                  data-name={ingredient.name}
+                >
+                  <form
+                    name={ingredient.name}
+                    data-name={ingredient.name}
+                    onSubmit={this.handleSubmit}
+                  >
+                    <input
+                      type="text"
+                      className="w-100"
+                      name={ingredient.name}
+                      placeholder={ingredient.amountStored}
+                      onChange={this.handleInput}
+                    ></input>
+                  </form>
+                </small>
+              )}
+              <button
+                className="btn-flat col s1 center fridge-remove-item-button"
+                onClick={this.removeFrmFridge}
+              >
+                <i
+                  className="material-icons tiny"
+                  data-index={i}
+                  data-name={ingredient.name}
+                >
+                  clear
+                </i>
+              </button>
+            </CollectionItem>
+          ))}
         </Container>
       </Collection>
     );
@@ -321,4 +332,6 @@ export default connect(mapStateToProps, {
   setFridgeData,
   removeFridgeItem,
   setShoppingList,
+  searchRecipes,
+  setDataLoading,
 })(Fridge);
