@@ -6,7 +6,6 @@ import { fab } from "@fortawesome/free-brands-svg-icons";
 import Home from "./containers/home";
 import "./App.css";
 import AppNavbar from "./components/Navbar";
-// import Landing from "./components/Landing";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import PrivateRoute from "./components/private-route/PrivateRoute";

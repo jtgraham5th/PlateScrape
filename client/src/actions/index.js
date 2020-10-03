@@ -16,7 +16,8 @@ import {
   SET_PINTEREST_TOKEN,
   GET_SUGGESTED_RECIPES,
   DATA_LOADED,
-  DATA_LOADING
+  DATA_LOADING,
+  ADD_CATEGORY,
 } from "./types";
 require("dotenv").config();
 
@@ -39,6 +40,16 @@ export const searchRecipes = (searchQuery) => (dispatch) => {
         thumbnail: recipe.display.images[0],
         href: url,
       };
+      const ingredients = [];
+      recipe.content.ingredientLines.map((ingredient, i) => {
+        ingredients.push({
+          name: ingredient.ingredient,
+          quantity: ingredient.quantity,
+          unit: ingredient.unit,
+          category: ingredient.category,
+        });
+      })
+      data.ingredients = ingredients;
       array = [...array, data];
     });
     batch(() => {
@@ -271,6 +282,13 @@ export const setRecipes = (recipeData) => {
     payload: recipeData,
   };
 };
+export const addCategory = (category) => {
+  return {
+    type: ADD_CATEGORY,
+    payload: category,
+  };
+};
+
 //Store logged in user
 export const setCurrentUser = (userData) => {
   return {

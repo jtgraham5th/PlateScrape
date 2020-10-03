@@ -4,6 +4,7 @@ import {
   SET_RECIPES,
   SET_BOARD_DATA,
   GET_SUGGESTED_RECIPES,
+  ADD_CATEGORY,
   DATA_LOADED,
   DATA_LOADING
 } from "../actions/types";
@@ -14,6 +15,7 @@ const initialState = {
   recipes: [],
   boards: [],
   suggestedRecipes: [],
+  categories: [],
   loading: true
 };
 export default function(state = initialState, action) {
@@ -53,6 +55,11 @@ export default function(state = initialState, action) {
           ...state,
           loading: false,
         };
+      case ADD_CATEGORY:
+        return {
+          ...state,
+          categories: [...state.categories, action.payload]
+        }
     default:
       return state;
   }

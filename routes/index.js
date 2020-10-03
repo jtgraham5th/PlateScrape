@@ -52,20 +52,19 @@ router.get("/yummlyAPI/popular", (req, res) => {
 router.get("/yummlyAPI/search/:query", (req, res) => {
   axios({
     "method":"GET",
-    "url":"https://yummly2.p.rapidapi.com/feeds/search",
+    "url":"https://yummly2.p.rapidapi.com/feeds/list",
     "headers":{
     "x-rapidapi-host":"yummly2.p.rapidapi.com",
     "x-rapidapi-key":"8c9d803252msh0838d888ce56253p165855jsna533a76ddc02",
     "useQueryString":true
     },"params":{
-    "FAT_KCALMax":"1000",
-    "allowedAttribute":"diet-lacto-vegetarian%2Cdiet-low-fodmap",
-    "q": req.params.query,
-    "start":"0",
-    "maxResult":"20"
-    }
+      "tag":`list.recipe.search_based%3Asearch%3A${req.params.query}`,
+      "limit":"18",
+      "start":"0"
+      }
     })
     .then((response)=>{
+      console.log(response.data)
       res.json(response.data.feed)
     })
     .catch((error)=>{

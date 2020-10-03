@@ -29,27 +29,31 @@ class Fridge extends Component {
     fridge: [],
     shoppingList: [],
     newItem: "",
-    newAmount: 0,
+    newQuantity: 0,
   };
 
   componentDidMount() {
-    console.log(this.props);
-    if (this.props.auth.isAuthenticated && this.props.auth.userId) {
-      this.props.getUserFridgeData(this.props.auth.userId);
+    const { isAuthenticated, userId } = this.props.auth;
+    const { fridge, shoppingList } = this.props.userData;
+
+    if (isAuthenticated && userId) {
+      this.props.getUserFridgeData(userId);
       this.setState({
-        fridge: this.props.userData.fridge,
-        shoppingList: this.props.userData.shoppingList,
+        fridge: fridge,
+        shoppingList: shoppingList,
       });
     } else {
       this.props.setFridgeData([]);
     }
   }
   componentDidUpdate(prevProps) {
-    if (prevProps.userData.shoppingList !== this.props.userData.shoppingList) {
-      this.setState({ shoppingList: this.props.userData.shoppingList });
+    const { fridge, shoppingList } = this.props.userData;
+
+    if (prevProps.userData.shoppingList !== shoppingList) {
+      this.setState({ shoppingList: shoppingList });
     }
-    if (prevProps.userData.fridge !== this.props.userData.fridge) {
-      this.setState({ fridge: this.props.userData.fridge });
+    if (prevProps.userData.fridge !== fridge) {
+      this.setState({ fridge: fridge });
     }
   }
   toggleFridgeEdit = async (event) => {
@@ -71,7 +75,7 @@ class Fridge extends Component {
     } else {
       this.setState((prevState) => ({
         fridge: prevState.fridge.map((el) =>
-          el.name === ingredientName ? { ...el, amountStored: newValue } : el
+          el.name === ingredientName ? { ...el, quantityStored: newValue } : el
         ),
       }));
     }
@@ -81,11 +85,11 @@ class Fridge extends Component {
     this.toggleFridgeEdit(event);
     let ingredientName = event.target.name;
     console.log(ingredientName);
-    let ingredientAmount = 0;
+    let ingredientQuantity = 0;
     this.state.shoppingList.map((el) =>
-      el.name === ingredientName ? (ingredientAmount = el.amount) : el
+      el.name === ingredientName ? (ingredientQuantity = el.quantity) : el
     );
-    console.log(ingredientAmount);
+    console.log(ingredientQuantity);
     // this.getClasses(ingredientName, ingredientAmount);
     this.props.setFridgeData(this.state.fridge);
   };
@@ -95,30 +99,31 @@ class Fridge extends Component {
       newItem: newValue,
     });
   };
-  handleNewFridgeAmount = (event) => {
+  handleNewFridgeQuantity = (event) => {
     let newValue = event.target.value;
     if (isNaN(newValue)) {
       alert("Please enter a numeric value");
       newValue = "";
     } else {
       this.setState({
-        newAmount: newValue,
+        newQuantity: newValue,
       });
     }
   };
   userCreatedNewFridgeItem = (event) => {
     event.preventDefault();
     let newIngredientName = this.state.newItem;
-    let newIngredientAmount = this.state.newAmount;
+    let newIngredientQuantity = this.state.newQuantity;
     // let newIngredientUnit = 0;
+
     /* check to see if ingredient already exisit in the Fridge*/
     if (!this.state.fridge.some((e) => e.name === newIngredientName)) {
       console.log("included");
       let fridge = this.state.fridge;
       let newIngredient = {
         name: newIngredientName,
-        amountNeeded: 0,
-        amountStored: parseFloat(newIngredientAmount),
+        quantityNeeded: 0,
+        quantityStored: parseFloat(newIngredientQuantity),
         unit: "oz",
         edit: false,
       };
@@ -137,17 +142,18 @@ class Fridge extends Component {
         newItem: "",
       });
     }
-    this.getClasses(newIngredientName, newIngredientAmount);
+    this.getClasses(newIngredientName, newIngredientQuantity);
   };
   saveNewFridgeItem = (newIngredient) => {
-    if (this.props.auth.isAuthenticated) {
+    const { isAuthenticated, userId } = this.props.auth;
+    if (isAuthenticated) {
       axios
         .post("/api/fridgeItem", {
           newIngredient: newIngredient,
-          userId: this.props.auth.userId,
+          userId: userId,
         })
         .then((response) => {
-          this.props.getUserFridgeData(this.props.auth.userId);
+          this.props.getUserFridgeData(userId);
         })
         .catch((err) => {
           console.log(err);
@@ -156,6 +162,7 @@ class Fridge extends Component {
     }
   };
   removeFrmFridge = (event) => {
+    const { isAuthenticated, userId } = this.props.auth;
     const removeIndex = event.target.dataset.index;
     const item = event.target.dataset.name;
     let updatedList = this.state.fridge;
@@ -167,19 +174,19 @@ class Fridge extends Component {
       () => this.props.setFridgeData(updatedList)
     );
 
-    if (this.props.auth.isAuthenticated) {
-      this.props.removeFridgeItem(item, this.props.auth.userId);
+    if (isAuthenticated) {
+      this.props.removeFridgeItem(item, userId);
     }
   };
-  getClasses = (ingredient, amount) => {
+  getClasses = (ingredient, quantity) => {
     console.log("---getclasses---");
     let fridge = this.props.userData.fridge;
     console.log(fridge.length, fridge);
-    console.log(ingredient, amount);
+    console.log(ingredient, quantity);
     if (fridge.length > 0) {
       fridge.map((item, x) =>
         item.name === ingredient
-          ? item.amountStored >= amount
+          ? item.quantityStored >= quantity
             ? this.setState(
                 (prevState) => ({
                   shoppingList: prevState.shoppingList.map((el) =>
@@ -215,7 +222,7 @@ class Fridge extends Component {
     return (
       <Collection id="fridge-collection" className="vertical-scroll">
         <CollectionItem className="row collection-message">
-          <div className="col s12 small" style={{ "line-height": "1rem" }}>
+          <div className="col s12 small" style={{ "lineHeight": "1rem" }}>
             Add items that you already have at home here and we'll compare them
             with what's in your shopping list so you won't have to worry about
             buying too much at the store!
@@ -234,10 +241,10 @@ class Fridge extends Component {
           />
           <TextInput
             s={3}
-            id="fridge-amount-input"
+            id="fridge-quantity-input"
             type="text"
-            placeholder="Amount"
-            onChange={this.handleNewFridgeAmount}
+            placeholder="Quantity"
+            onChange={this.handleNewFridgeQuantity}
           />
           <Button
             type="submit"
@@ -267,20 +274,20 @@ class Fridge extends Component {
                   {ingredient.name}{" "}
                 </a>
               </Col>
-              <small className="col s1 fridge-amount-needed ">
-                {ingredient.amountNeeded} {ingredient.unit}
+              <small className="col s1 fridge-quantity-needed ">
+                {ingredient.quantityNeeded} {ingredient.unit}
               </small>
               {!ingredient.edit ? (
                 <small
-                  className="col s1 center fridge-amount-have"
+                  className="col s1 center fridge-quantity-have"
                   data-name={ingredient.name}
                   onClick={this.toggleFridgeEdit}
                 >
-                  {ingredient.amountStored} {ingredient.unit}
+                  {ingredient.quantityStored} {ingredient.unit}
                 </small>
               ) : (
                 <small
-                  className="col s1 center fridge-amount-have"
+                  className="col s1 center fridge-quantity-have"
                   data-name={ingredient.name}
                 >
                   <form
@@ -292,7 +299,7 @@ class Fridge extends Component {
                       type="text"
                       className="w-100"
                       name={ingredient.name}
-                      placeholder={ingredient.amountStored}
+                      placeholder={ingredient.quantityStored}
                       onChange={this.handleInput}
                     ></input>
                   </form>

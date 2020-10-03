@@ -1,45 +1,14 @@
 import React, { Component } from "react";
-// import { Link } from "react-router-dom";
-// import "./style.css";
 import { Button, Row, Col } from "react-materialize";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import {
-  getUserFridgeData,
-  getUserShoppingList,
-  setShoppingList,
-  setRecipes,
-  searchRecipes,
-  setDataLoading
-} from "../actions";
+import { searchRecipes, setDataLoading } from "../actions";
 
 class RecipeForm extends Component {
   state = {
-    recipes: [],
-    shoppingList: [],
-    fridge: [],
     searchQuery: "",
   };
 
-  componentDidMount() {
-    this.setState({
-      fridge: this.props.userData.fridge,
-      shoppingList: this.props.userData.shoppingList,
-    });
-  }
-  componentDidUpdate(prevProps) {
-    if (
-      this.state.shoppingList.length !== this.props.userData.shoppingList.length
-    ) {
-      this.setState({
-        fridge: this.props.userData.fridge,
-        shoppingList: this.props.userData.shoppingList,
-      });
-    }
-    if (prevProps.userData.recipes !== this.props.userData.recipes) {
-      this.setState({ recipes: this.props.userData.recipes });
-    }
-  }
   handleInputChange = (event) => {
     const { name, value } = event.target;
     this.setState({
@@ -47,33 +16,14 @@ class RecipeForm extends Component {
     });
   };
 
-  // updateShoppingListItem = (name, amount) => {
-  //   if (this.props.auth.isAuthenticated) {
-  //     axios
-  //       .put("/api/updateShoppingListItem", {
-  //         name: name,
-  //         amount: amount,
-  //         userId: this.props.auth.userId,
-  //       })
-  //       .then((response) => {
-  //         this.props.getUserShoppingList(this.props.auth.userId);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //         alert("Failed to create: " + err.message);
-  //       });
-  //   } else {
-  //     this.props.setShoppingList(this.state.shoppingList);
-  //   }
-  // };
-
   handleFormSubmit = () => {
-    this.props.setDataLoading()
+    this.props.setDataLoading();
     this.props.searchRecipes(this.state.searchQuery);
-    this.setState({searchQuery: ""})
+    this.setState({ searchQuery: "" });
   };
 
   render(props) {
+    const { searchQuery } = this.state;
     return (
       <>
         <Col s={12} className="submit-recipe-button valign-wrapper">
@@ -89,7 +39,7 @@ class RecipeForm extends Component {
             className="col s10 ml-2"
             placeholder="Search for a recipe"
             type="text"
-            value={this.state.searchQuery}
+            value={searchQuery}
             id="recipe-form-input"
             onChange={this.handleInputChange}
           />
@@ -100,18 +50,12 @@ class RecipeForm extends Component {
 }
 
 RecipeForm.propTypes = {
-  auth: PropTypes.object.isRequired,
   userData: PropTypes.object.isRequired,
 };
 const mapStateToProps = (state) => ({
-  auth: state.auth,
   userData: state.userData,
 });
 export default connect(mapStateToProps, {
-  getUserFridgeData,
-  getUserShoppingList,
-  setShoppingList,
-  setRecipes,
   searchRecipes,
-  setDataLoading
+  setDataLoading,
 })(RecipeForm);

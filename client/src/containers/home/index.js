@@ -7,7 +7,8 @@ import Fridge from "../../components/Fridge";
 import ShoppingList from "../../components/ShoppingList";
 import RecipeList from "../../components/RecipeList";
 import RecipeForm from "../../components/RecipeForm";
-import Pins from "../../components/Pins";
+import MealPlanner from "../../components/MealPlanner";
+// import Pins from "../../components/Pins";
 import {
   logoutUser,
   loginUser,
@@ -109,9 +110,9 @@ class Home extends Component {
                   responsiveThreshold: Infinity,
                   swipeable: false,
                 }}
-                title="Pinterest"
+                title="Meal Planner"
               >
-                <Pins />
+                <MealPlanner />
               </Tab>
             </Tabs>
           </Col>

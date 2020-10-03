@@ -309,6 +309,18 @@ align-content: center;
 .tabs-container > .row {
   height: 75%;
 }
+.list-category {
+    padding: 5px 20px !important;
+    font-family: Oregano !important;
+    font-size: 1.5em !important;
+    color: #004d40 !important;
+}
+.meal-select-choice {
+  text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid darkgreen;
+}
 #my-recipes {
   margin: 0 0 1rem 0 !important;
 }
@@ -317,6 +329,11 @@ align-content: center;
 }
 span.badge{
   min-width: 1.5rem !important;
+}
+.dropdown-content, .select-dropdown{
+  transform: none !important;
+  height: auto !important;
+  top: 0 !important
 }
 /* #mobile-nav {
   background-color: rgb(0, 77, 64);

@@ -91,7 +91,7 @@ class AppNavbar extends Component {
           sidenav={
             <>
               <li>
-                <nav class="teal darken-4 pr-4 pl-4 full-width" >
+                <nav className="teal darken-4 pr-4 pl-4 full-width" >
                   <a className="brand-logo white-text brand-font ">
                     <Icon small>shopping_cart</Icon>
                     PlateScrape
@@ -99,10 +99,10 @@ class AppNavbar extends Component {
                 </nav>
               </li>
               <li className="p-2">
-                <button class="btn-large full-width" onClick={this.toggleModal}>Login</button>
+                <button className="btn-large full-width" onClick={this.toggleModal}>Login</button>
               </li>
               <li className="p-2">
-                <button class="btn-large full-width" onClick={this.toggleModal}>Register</button>
+                <button className="btn-large full-width" onClick={this.toggleModal}>Register</button>
               </li>
             </>
           }

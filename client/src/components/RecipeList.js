@@ -3,72 +3,56 @@ import { renderToStaticMarkup } from "react-dom/server";
 // import { Link } from "react-router-dom";
 // import "./style.css";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
-import {
-  Col,
-  Button,
-  Collapsible,
-  CollapsibleItem,
-  Icon,
-  Preloader,
-  Card,
-  Badge,
-  CardTitle,
-} from "react-materialize";
+import { Col, Button, Preloader } from "react-materialize";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
-  getUserFridgeData,
   setRecipes,
   setShoppingList,
   getUserShoppingList,
   getSuggestedRecipes,
   setDataLoading,
+  addCategory,
   dataLoaded,
 } from "../actions";
 import axios from "axios";
-
-// var axios = require("axios");
+import MyRecipes from "./MyRecipes";
 
 class RecipeList extends Component {
   state = {
-    suggestedRecipes: [],
     recipes: [],
-    groceryList: [],
-    fridge: [],
     shoppingList: [],
     toggleModal: false,
   };
 
   async componentDidMount() {
     await this.props.getSuggestedRecipes();
-
-    // this.setState({
-    //   suggestedRecipes: this.props.userData.suggestedRecipes,
-    //   recipes: this.props.userData.recipes,
-    // });
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.userData.recipes !== this.props.userData.recipes) {
-      this.setState({ recipes: this.props.userData.recipes });
+    const { recipes } = this.props.userData;
+    if (prevProps.userData.recipes !== recipes) {
+      this.setState({ recipes: recipes });
     }
   }
   renderTooltip(recipe) {
     return recipe.ingredients.map((ingredient, e) => (
       <small className="left-align">
-        {ingredient.amount} {ingredient.unit} {ingredient.name}
+        {ingredient.quantity} {ingredient.unit} {ingredient.name}
       </small>
     ));
   }
   saveNewShoppingListItem = (newIngredient) => {
-    if (this.props.auth.isAuthenticated) {
+    const { isAuthenticated, userId } = this.props.auth;
+
+    if (isAuthenticated) {
       axios
         .post("/api/shoppingListItem", {
           newIngredient: newIngredient,
-          userId: this.props.auth.userId,
+          userId: userId,
         })
         .then((response) => {
-          this.props.getUserShoppingList(this.props.auth.userId);
+          this.props.getUserShoppingList(userId);
         })
         .catch((err) => {
           console.log(err);
@@ -78,14 +62,14 @@ class RecipeList extends Component {
       this.props.setShoppingList(this.state.shoppingList);
     }
   };
-  convertToDecimal = (amount, unit) => {
+  convertToDecimal = (quantity, unit) => {
     console.log(unit, "---------");
-    let result = amount;
-    if (amount.includes("/")) {
-      let split = amount.split("/");
-      result = parseInt(split[0], 10) / parseInt(split[1], 10);
-      console.log(result, "amount as a decimal");
-    }
+    let result = quantity;
+    // if (quantity.includes("/")) {
+    //   let split = quantity.split("/");
+    //   result = parseInt(split[0], 10) / parseInt(split[1], 10);
+    //   console.log(result, "quantity as a decimal");
+    // }
     //Convert CUPS to OUNCES
     if (unit === "cup" || unit === "cups") {
       result = +parseFloat(result * 8).toFixed(2);
@@ -99,10 +83,10 @@ class RecipeList extends Component {
       result = +parseFloat(result / 2).toFixed(2);
       console.log(result, "tbsp to oz");
     } else if (!unit) {
-      result = parseFloat(amount);
-    } else if (!amount) {
+      result = parseFloat(quantity);
+    } else if (!quantity) {
       result = 0;
-    } else if (isNaN(amount)) {
+    } else if (isNaN(quantity)) {
       result = 0;
     }
     console.log(result);
@@ -121,22 +105,29 @@ class RecipeList extends Component {
         let shoppingList = this.state.shoppingList;
         let newIngredient = {
           name: ingredient.name.toLowerCase(),
-          amount: this.convertToDecimal(ingredient.amount, ingredient.unit),
+          quantity: this.convertToDecimal(ingredient.quantity, ingredient.unit),
           unit: "oz",
+          category: ingredient.category,
           enoughInFridge: false,
-          // "row border-bottom border-primary d-flex bg-transparent pl-3 font-italic"
         };
         shoppingList.push(newIngredient);
         this.setState({
           shoppingList,
         });
         this.saveNewShoppingListItem(newIngredient);
+        if (!this.props.userData.categories.includes(ingredient.category)) {
+          this.props.addCategory(ingredient.category);
+          console.log(this.props.userData.categories)
+        } 
       } else {
         let key = ingredient.name;
         this.setState((prevState) => ({
           shoppingList: prevState.shoppingList.map((el) =>
             el.name === key
-              ? { ...el, amount: el.amount + parseFloat(ingredient.amount) }
+              ? {
+                  ...el,
+                  quantity: el.quantity + parseFloat(ingredient.quantity),
+                }
               : el
           ),
         }));
@@ -146,44 +137,45 @@ class RecipeList extends Component {
     });
   };
   addRecipe = (recipe) => {
-    const { title, thumbnail, href } = recipe;
+    const { title, thumbnail, href, ingredients } = recipe;
     const url = encodeURIComponent(href);
     this.props.setDataLoading();
-    axios.get(`/api/recipes/${url}`).then(
-      function(response) {
-        if (response.data.ingredients.length < 1) {
-          this.toggleModal();
-        } else {
-          console.log(response.data);
-          this.props.dataLoaded();
-          let recipes = this.state.recipes;
-          let newRecipe = {
-            URL: href,
-            name: title,
-            ingredients: response.data.ingredients,
-            image: thumbnail,
-          };
-          recipes.push(newRecipe);
-          this.setState({
-            recipes,
-          });
-          this.props.setRecipes(this.state.recipes);
+    axios.get(`/api/recipes/${url}`).then((response) => {
+      // if (response.data.ingredients.length < 1) {
+      // if (ingredients.length < 1) {
+      //   this.toggleModal();
+      // } else {
+      console.log(response.data);
+      this.props.dataLoaded();
+      let recipes = this.state.recipes;
+      let newRecipe = {
+        URL: href,
+        name: title,
+        // ingredients: response.data.ingredients,
+        ingredients: ingredients,
+        image: thumbnail,
+      };
+      recipes.push(newRecipe);
+      this.setState({
+        recipes,
+      });
+      this.props.setRecipes(this.state.recipes);
 
-          console.log(this.state.recipes);
-          this.addToList(response.data.ingredients);
-        }
-      }.bind(this)
-    );
+      console.log(this.state.recipes);
+      this.addToList(ingredients);
+    });
   };
   toggleModal = () => {
     this.setState({ toggleModal: !this.state.toggleModal });
     this.props.dataLoaded();
   };
   render() {
+    const { loading, suggestedRecipes, recipes } = this.props.userData;
+
     return (
       <>
-        {!this.props.userData.loading ? (
-          this.props.userData.suggestedRecipes < 1 ? (
+        {!loading ? (
+          suggestedRecipes < 1 ? (
             <Col
               s={12}
               id="recipe-list"
@@ -193,14 +185,16 @@ class RecipeList extends Component {
             </Col>
           ) : (
             <Col s={12} id="recipe-list" className="section horizontal-scroll">
-              {this.props.userData.suggestedRecipes.map((recipe, i) => (
+              {suggestedRecipes.map((recipe, i) => (
                 <div key={i} className="card horizontal">
                   <div className="card-image">
                     <img alt={recipe.title} src={recipe.thumbnail} />
                   </div>
                   <div className="card-stacked">
                     <div className="card-content valign-wrapper">
-                      <a href={recipe.href} target="new">{recipe.title}</a>
+                      <a href={recipe.href} target="new">
+                        {recipe.title}
+                      </a>
                     </div>
                   </div>
                   <div className="card-action">
@@ -219,58 +213,7 @@ class RecipeList extends Component {
         ) : (
           <Preloader active color="green" flashing={false} size="big" />
         )}
-        <Collapsible accordion id="my-recipes" className="col s12">
-          <CollapsibleItem
-            icon={<Icon>arrow_drop_down</Icon>}
-            id="collapsible-item"
-            header={
-              <>
-                <div>
-                  My Recipes
-                  
-                </div>{this.props.userData.recipes.length > 0 ? (
-                    <Badge className="ml-2 teal darken-4 white-text p-0">
-                      {this.props.userData.recipes.length}
-                    </Badge>
-                  ) : (
-                    ""
-                  )}
-              </>
-            }
-            node="div"
-          >
-            <Col s={12} className="section horizontal-scroll" id="recipe-button-container">
-              {this.props.userData.recipes.map((recipe, i) => (
-                <Card
-                  closeIcon={<Icon>close</Icon>}
-                  header={
-                    <CardTitle image={recipe.image} reveal waves="light" />
-                  }
-                  reveal={
-                    <ul>
-                      {recipe.ingredients.map((ingredient, e) => (
-                        <li className="left-align small">
-                          {ingredient.amount} {ingredient.unit}{" "}
-                          {ingredient.name}
-                        </li>
-                      ))}
-                    </ul>
-                  }
-                  title={recipe.name}
-                  className="recipe-button"
-                >
-                  <div
-                    className="btn add-recipe-btn"
-                    onClick={() => this.addToList(recipe.ingredient)}
-                    data-url={recipe.href}
-                  >
-                    Add Recipe
-                  </div>
-                </Card>
-              ))}
-            </Col>
-          </CollapsibleItem>
-        </Collapsible>
+        <MyRecipes recipes={recipes} addToList={this.addToList} />
         <Modal isOpen={this.state.toggleModal} toggle={this.toggleModal}>
           <ModalHeader
             toggle={this.toggleModal}
@@ -299,11 +242,11 @@ const mapStateToProps = (state) => ({
   userData: state.userData,
 });
 export default connect(mapStateToProps, {
-  getUserFridgeData,
   setRecipes,
   setShoppingList,
   getUserShoppingList,
   getSuggestedRecipes,
   setDataLoading,
+  addCategory,
   dataLoaded,
 })(RecipeList);
