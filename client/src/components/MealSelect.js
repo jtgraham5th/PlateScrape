@@ -39,7 +39,7 @@ class MealSelect extends Component {
     const {recipes} = this.props.userData
     const {value} = this.state
     return (
-      <Col s={3}>
+      <Col s={3} className="meal-select">
         {recipes[value] ? (
           <h6 className="meal-select-choice">{recipes[value].name}<br/><em></em></h6>
         ) : null}
@@ -70,7 +70,7 @@ class MealSelect extends Component {
             Choose your Meal
           </option>
           {recipes.map((recipe, i) => (
-            <option value={i}>{recipe.name}</option>
+            <option value={i} className="meal-select-dropdown-option">{recipe.name}</option>
           ))}
         </Select>
       </Col>

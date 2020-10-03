@@ -219,48 +219,74 @@ class MealPlanner extends Component {
       <Collection className="vertical-scroll">
         <CollectionItem>
           <Row>
-            <Col s={3}>Day One</Col>
+            <Col s={3} className="meal-planner-row-heading">
+              Day One
+            </Col>
             <MealSelect />
             <MealSelect />
             <MealSelect />
           </Row>
         </CollectionItem>
-        <CollectionItem><Row>
-            <Col s={3}>Day Two</Col>
+        <CollectionItem>
+          <Row>
+            <Col s={3} className="meal-planner-row-heading">
+              Day Two
+            </Col>
             <MealSelect />
             <MealSelect />
             <MealSelect />
-          </Row></CollectionItem>
-        <CollectionItem><Row>
-            <Col s={3}>Day Three</Col>
+          </Row>
+        </CollectionItem>
+        <CollectionItem>
+          <Row>
+            <Col s={3} className="meal-planner-row-heading">
+              Day Three
+            </Col>
             <MealSelect />
             <MealSelect />
             <MealSelect />
-          </Row></CollectionItem>
-        <CollectionItem><Row>
-            <Col s={3}>Day Four</Col>
+          </Row>
+        </CollectionItem>
+        <CollectionItem>
+          <Row>
+            <Col s={3} className="meal-planner-row-heading">
+              Day Four
+            </Col>
             <MealSelect />
             <MealSelect />
             <MealSelect />
-          </Row></CollectionItem>
-        <CollectionItem><Row>
-            <Col s={3}>Day Five</Col>
+          </Row>
+        </CollectionItem>
+        <CollectionItem>
+          <Row>
+            <Col s={3} className="meal-planner-row-heading">
+              Day Five
+            </Col>
             <MealSelect />
             <MealSelect />
             <MealSelect />
-          </Row></CollectionItem>
-        <CollectionItem><Row>
-            <Col s={3}>Day Six</Col>
+          </Row>
+        </CollectionItem>
+        <CollectionItem>
+          <Row>
+            <Col s={3} className="meal-planner-row-heading">
+              Day Six
+            </Col>
             <MealSelect />
             <MealSelect />
             <MealSelect />
-          </Row></CollectionItem>
-        <CollectionItem><Row>
-            <Col s={3}>Day Seven</Col>
+          </Row>
+        </CollectionItem>
+        <CollectionItem>
+          <Row>
+            <Col s={3} className="meal-planner-row-heading">
+              Day Seven
+            </Col>
             <MealSelect />
             <MealSelect />
             <MealSelect />
-          </Row></CollectionItem>
+          </Row>
+        </CollectionItem>
       </Collection>
     );
   }
