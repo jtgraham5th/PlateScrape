@@ -37,9 +37,9 @@ export const searchRecipes = (searchQuery) => (dispatch) => {
         url = recipe.display.source.sourceRecipeUrl;
       }
       const data = {
-        title: recipe.display.displayName,
-        thumbnail: recipe.display.images[0],
-        href: url,
+        name: recipe.display.displayName,
+        image: recipe.display.images[0],
+        URL: url,
       };
       const ingredients = [];
       recipe.content.ingredientLines.map((ingredient, i) => {
@@ -78,9 +78,9 @@ export const getSuggestedRecipes = () => (dispatch) => {
       console.log(response.data)
       response.data.map((recipe, i) => {
         const data = {
-          title: recipe.display.displayName,
-          thumbnail: recipe.display.images[0],
-          href: recipe.display.source.sourceRecipeUrl,
+          name: recipe.display.displayName,
+          image: recipe.display.images[0],
+          URL: recipe.display.source.sourceRecipeUrl,
         };
         const ingredients = [];
         recipe.content.ingredientLines.map((ingredient, i) => {

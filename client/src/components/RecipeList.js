@@ -41,8 +41,12 @@ const RecipeList = (props) => {
 
   useEffect(() => {
     addCategory(categories);
-    console.log("!!!", categories);
   }, [categories]);
+
+  useEffect(() => {
+    setRecipesData(recipes);
+    console.log(recipes);
+  }, [recipes]);
 
   const saveNewShoppingListItem = (newIngredient) => {
     const { isAuthenticated, userId } = auth;
@@ -156,30 +160,40 @@ const RecipeList = (props) => {
   };
 
   const addRecipe = (recipe) => {
-    const { title, thumbnail, href, ingredients } = recipe;
-    const url = encodeURIComponent(href);
-    setDataLoading();
-    axios.get(`/api/recipes/${url}`).then((response) => {
-      // if (response.data.ingredients.length < 1) {
-      // if (ingredients.length < 1) {
-      //   this.toggleModal();
-      // } else {
-      console.log(response.data);
-      dataLoaded();
-      let newList = recipes;
-      let newRecipe = {
-        URL: href,
-        name: title,
-        // ingredients: response.data.ingredients,
-        ingredients: ingredients,
-        image: thumbnail,
-      };
-      newList.push(newRecipe);
-      setRecipes(newList);
-      setRecipesData(recipes);
-      console.log(recipes);
-      addToList(ingredients);
-    });
+    if (recipes.indexOf(recipe) < 0) {
+      setRecipes([...recipes, recipe]);
+    } else {
+      let index = recipes.indexOf(recipe);
+      let recipesCopy = recipes;
+      recipesCopy.splice(index, 1);
+      setRecipes(recipesCopy);
+      setRecipesData(recipesCopy);
+    }
+
+    // const { title, thumbnail, href, ingredients } = recipe;
+    // const url = encodeURIComponent(href);
+    // setDataLoading();
+    // axios.get(`/api/recipes/${url}`).then((response) => {
+    // if (response.data.ingredients.length < 1) {
+    // if (ingredients.length < 1) {
+    //   this.toggleModal();
+    // } else {
+    // console.log(response.data);
+    // dataLoaded();
+    // let newList = recipes;
+    // let newRecipe = {
+    //   URL: href,
+    //   name: title,
+    //   // ingredients: response.data.ingredients,
+    //   ingredients: ingredients,
+    //   image: thumbnail,
+    // };
+    // newList.push(newRecipe);
+    //     setRecipes(newList);
+
+    //     console.log(recipes);
+    //     addToList(ingredients);
+    //   });
   };
   const loading = false;
   const { suggestedRecipes } = userData;
@@ -200,27 +214,27 @@ const RecipeList = (props) => {
           ) : (
             <Collection style={{ border: 0 }}>
               {suggestedRecipes.map((recipe, i) => (
-                <CollectionItem className="recipe-item">
+                <CollectionItem className="recipe-item" key={i}>
                   <div className="card-image">
-                    <img alt={recipe.title} src={recipe.thumbnail} />
+                    <img alt={recipe.name} src={recipe.image} />
                   </div>
                   <Row style={{ flexWrap: "nowrap" }}>
                     <Col s={8} className="recipe-searchlist-title">
-                      {recipe.title}
+                      {recipe.name}
                     </Col>
                     <Button
                       className="col s2 recipe-action-button"
                       flat
                       color="secondary"
                       node="a"
-                      href={recipe.href}
+                      href={recipe.URL}
                       icon={<Icon small>language</Icon>}
                     />
                     <Button
                       className="col s2 recipe-action-button"
                       flat
                       color="secondary"
-                      // onClick={() => addRecipe(recipe)}
+                      onClick={() => addToList(recipe.ingredients)}
                       data-url={recipe.href}
                       icon={<Icon small>playlist_add</Icon>}
                     />
@@ -229,8 +243,17 @@ const RecipeList = (props) => {
                       flat
                       color="secondary"
                       onClick={() => addRecipe(recipe)}
+                      // onClick={() => setRecipes([...recipes,recipe])}
                       data-url={recipe.href}
-                      icon={<Icon small>favorite_border</Icon>}
+                      icon={
+                        recipes.includes(recipe) ? (
+                          <Icon className="red-text" small>
+                            favorite
+                          </Icon>
+                        ) : (
+                          <Icon small>favorite_border</Icon>
+                        )
+                      }
                     />
                     {/* <Col s={4}>
                       <div
