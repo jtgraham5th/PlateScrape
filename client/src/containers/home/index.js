@@ -1,54 +1,51 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import "./style.css";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { Tabs, Tab, Row, Col } from "react-materialize";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { Row, Icon, Button } from "react-materialize";
+import { Modal, ModalBody, ModalHeader } from "reactstrap";
 import Fridge from "../../components/Fridge";
 import ShoppingList from "../../components/ShoppingList";
 import RecipeList from "../../components/RecipeList";
-import RecipeForm from "../../components/RecipeForm";
 import MealPlanner from "../../components/MealPlanner";
+import MyRecipes from "../../components/MyRecipes";
 // import Pins from "../../components/Pins";
-import {
-  logoutUser,
-  loginUser,
-  getAuthToken,
-  storeAuthToken,
-  loadUser,
-} from "../../actions";
+import { useSelector, useDispatch } from "react-redux";
+import * as ActionCreators from "../../state/store";
+import { bindActionCreators } from "redux";
 
-class Home extends Component {
-  state = {
-    recipes: [],
-    groceryList: [],
-    fridge: [],
-    newItem: "",
-    newAmount: 0,
-    recipelink: "",
-    userBoards: [],
-    togglePins: false,
-    boardPins: [],
-    accessToken: "",
-    activeTab: 1,
-    cards: [],
-    modal1: false,
-    modal2: false,
-  };
+const Home = () => {
+  const userData = useSelector((state) => state.userData);
+  const auth = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const {
+    // logoutUser,
+    // loginUser,
+    // storeAuthToken,
+    loadUser,
+    getAuthToken,
+  } = bindActionCreators(ActionCreators, dispatch);
 
-  async componentDidMount() {
+  const [modal, setModal] = useState({
+    trigger: false,
+    state: null,
+    title: null,
+    message: null,
+  });
+
+  useEffect(() => {
     // Load User Data
-    if (this.props.auth.isAuthenticated && localStorage.getItem("jwtToken")) {
-      await this.props.loadUser(localStorage.getItem("jwtToken"));
+    if (auth.isAuthenticated && localStorage.getItem("jwtToken")) {
+      loadUser(localStorage.getItem("jwtToken"));
 
       // -- GET AUTHORIZATION CODE --
       let params = new URLSearchParams(window.location.href);
       let pinterestAuthCode = params.get("code");
-      const { isAuthenticated, pinterestToken } = this.props.auth;
+      const { isAuthenticated, pinterestToken } = auth;
 
       //if user is logged in and does NOT have a pinterest auth Token
       if (isAuthenticated && !pinterestToken && pinterestAuthCode) {
         console.log("user has no pinterest token");
-        await this.props.getAuthToken(pinterestAuthCode);
+        getAuthToken(pinterestAuthCode);
       }
 
       //if user is logged in and does have a pinterest auth Token
@@ -61,79 +58,84 @@ class Home extends Component {
         console.log(
           "user is NOT logged in and does not have a pinterest Token"
         );
-        await this.props.getAuthToken(pinterestAuthCode);
+        getAuthToken(pinterestAuthCode);
       }
     }
-  }
+  });
 
-  componentDidUpdate(props) {}
+  const renderModal = (modalData) => {
+    setModal(modalData);
+  };
 
-  render(props) {
-    return (
-      <>
-        <Row className="justify-content-center p-4 main-content">
-          <RecipeForm />
-          <RecipeList />
-
-          <Col s={12} className="tabs-container">
-            <Tabs className="tab-demo z-depth-1">
-              <Tab
-                active
-                className="full-height"
-                options={{
-                  duration: 100,
-                  onShow: null,
-                  responsiveThreshold: Infinity,
-                  swipeable: false,
-                }}
-                title="Shopping List"
-              >
-                <ShoppingList />
-              </Tab>
-              <Tab
-                className="full-height"
-                options={{
-                  duration: 100,
-                  onShow: null,
-                  responsiveThreshold: Infinity,
-                  swipeable: false,
-                }}
-                title="Fridge"
-              >
-                <Fridge />
-              </Tab>
-              <Tab
-                className="full-height"
-                options={{
-                  duration: 100,
-                  onShow: null,
-                  responsiveThreshold: Infinity,
-                  swipeable: false,
-                }}
-                title="Meal Planner"
-              >
-                <MealPlanner />
-              </Tab>
-            </Tabs>
-          </Col>
-        </Row>
-      </>
-    );
-  }
-}
-Home.propTypes = {
-  logoutUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired,
-  userData: PropTypes.object.isRequired,
+  return (
+    <Router>
+      <Switch>
+        <Route
+          exact
+          path="/"
+          render={() => <RecipeList modal={renderModal} />}
+        />
+        <Route exact path="/my-list" component={ShoppingList} />
+        <Route exact path="/my-kitchen" component={Fridge} />
+        <Route
+          exact
+          path="/my-recipes"
+          render={() => <MyRecipes modal={renderModal} />}
+        />
+      </Switch>
+      <Row className="bottom-navbar">
+        <Link to="/my-recipes">
+          <Button flat node="button" waves="light">
+            <Icon>menu_book</Icon>{" "}
+          </Button>
+        </Link>
+        <Link to="/">
+          <Button flat node="button" waves="light">
+            <Icon>home</Icon>{" "}
+          </Button>
+        </Link>
+        <Link to="/my-list">
+          <Button flat node="button" waves="light">
+            <Icon>list</Icon>{" "}
+          </Button>
+        </Link>
+        <Link to="/my-kitchen">
+          <Button flat node="button" waves="light">
+            <Icon>kitchen</Icon>{" "}
+          </Button>
+        </Link>
+        <Link to="/search">
+          <Button flat node="button" waves="light">
+            <Icon>group</Icon>{" "}
+          </Button>
+        </Link>
+      </Row>
+      <Modal isOpen={modal.trigger} toggle={() => setModal(!modal.trigger)}>
+        <ModalHeader
+          toggle={() => setModal(!modal.trigger)}
+          className="teal darken-4 white-text"
+          style={{ padding: "0.5rem 1rem" }}
+        >
+          {modal.title}
+        </ModalHeader>
+        <ModalBody>{modal.message}</ModalBody>
+        {/* <ModalFooter className="d-flex justify-content-center">
+          <Button
+            color="secondary"
+            onClick={removeFrmList}
+            data-index={i}
+            className="mr-4"
+          >
+            Yes
+          </Button>
+          <Button color="secondary" onClick={() => setModal(!modal)}>
+            No
+          </Button>
+        </ModalFooter> */}
+      </Modal>
+      }
+    </Router>
+  );
 };
-const mapStateToProps = (state) => ({
-  auth: state.auth,
-  userData: state.userData,
-});
-export default connect(mapStateToProps, {
-  logoutUser,
-  loginUser,
-  storeAuthToken,
-  loadUser,
-  getAuthToken,
-})(Home);
+
+export default Home;

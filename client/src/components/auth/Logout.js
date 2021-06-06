@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button } from "reactstrap";
 import { connect } from "react-redux";
-import { logoutUser } from "../../actions";
+import { logoutUser } from "../../state/actions";
 import PropTypes from "prop-types";
 
 export class Logout extends Component {

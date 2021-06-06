@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { Button, Row, Col } from "react-materialize";
+import { Button, Col, Icon } from "react-materialize";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { searchRecipes, setDataLoading } from "../actions";
+import { searchRecipes, setDataLoading } from "../state/actions";
 
 class RecipeForm extends Component {
   state = {
@@ -29,10 +29,9 @@ class RecipeForm extends Component {
         <Col s={12} className="submit-recipe-button valign-wrapper">
           <Button
             type="submit"
-            className="col s2 p-0"
             onClick={this.handleFormSubmit}
           >
-            Search
+            <Icon>search</Icon>
           </Button>
           <input
             name="searchQuery"

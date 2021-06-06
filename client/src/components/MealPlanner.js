@@ -19,10 +19,10 @@ import {
   getUserFridgeData,
   setFridgeData,
   removeFridgeItem,
-  setShoppingList,
+  setShoppingListData,
   searchRecipes,
   setDataLoading,
-} from "../actions";
+} from "../state/actions";
 import MealSelect from "./MealSelect";
 
 var axios = require("axios");
@@ -194,7 +194,7 @@ class MealPlanner extends Component {
                       : el
                   ),
                 }),
-                () => this.props.setShoppingList(this.state.shoppingList)
+                () => this.props.setShoppingListData(this.state.shoppingList)
               )
             : this.setState((prevState) => ({
                 shoppingList: prevState.shoppingList.map((el) =>
@@ -305,7 +305,7 @@ export default connect(mapStateToProps, {
   getUserFridgeData,
   setFridgeData,
   removeFridgeItem,
-  setShoppingList,
+  setShoppingListData,
   searchRecipes,
   setDataLoading,
 })(MealPlanner);

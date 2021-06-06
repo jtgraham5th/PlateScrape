@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 // import { Link } from "react-router-dom";
 import "../containers/home/style.css";
 import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
@@ -10,107 +10,107 @@ import {
   CollectionItem,
   Button,
 } from "react-materialize";
-
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import {
-  getUserShoppingList,
-  setShoppingList,
-  removeShoppingListItem,
-  setFridgeData,
-} from "../actions";
+import { fraction } from "mathjs";
+import { useSelector, useDispatch } from "react-redux";
+import * as ActionCreators from "../state/actions";
+import { bindActionCreators } from "redux";
 
 var axios = require("axios");
 
-class ShoppingList extends Component {
-  state = {
-    recipes: [],
-    shoppingList: [],
-    itemKey: 0,
-    fridge: [],
-    modal: false,
-    categories: [],
-  };
+const ShoppingList = () => {
+  const userData = useSelector((state) => state.userData);
+  const auth = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const {
+    getUserShoppingList,
+    setShoppingListData,
+    removeShoppingListItem,
+    setFridgeData,
+  } = bindActionCreators(ActionCreators, dispatch);
 
-  componentDidMount() {
-    const { isAuthenticated, userId } = this.props.auth;
-    const { fridge, shoppingList } = this.props.userData;
+  const [shoppingList, setShoppingList] = useState(userData.shoppingList);
+  const [itemKey, setItemKey] = useState("");
+  const [fridge, setFridge] = useState(userData.fridge);
+  const [modal, setModal] = useState(false);
+  const [categories, setCatgories] = useState(userData.categories);
+  console.log(categories);
+  
+  useEffect(() => {
+    const { isAuthenticated, userId } = auth;
+    const {
+      fridge: newFridge,
+      shoppingList: newList,
+      categories: newCategories,
+    } = userData;
+    console.log(newList);
     if (isAuthenticated && userId) {
-      this.props.getUserShoppingList(userId);
-      this.setState(
-        {
-          fridge: fridge,
-          shoppingList: shoppingList,
-        },
-        this.compareWithFridge(),
-        this.addCategories()
-      );
-    } else {
-      this.props.setShoppingList([]);
+      getUserShoppingList(userId);
+      setFridge(newFridge);
+      setShoppingList(newList);
+      setCatgories(newCategories);
+      compareWithFridge();
+      console.log("");
+      // addCategories();
     }
-  }
-  componentDidUpdate(prevProps) {
-    const { fridge, shoppingList } = this.props.userData;
-    if (prevProps.userData.shoppingList !== shoppingList) {
-      this.setState({ shoppingList: shoppingList }, this.compareWithFridge());
+    // return (prevProps) => {
+    //   console.log(prevProps)
+    //   const { fridge, shoppingList } = userData;
+    // if (prevProps.userData.shoppingList !== shoppingList) {
+    //   setShoppingList(shoppingList);
+    //   compareWithFridge();
+    // }
+    // if (prevProps.userData.fridge !== fridge) {
+    //   setFridge(fridge);
+    //   compareWithFridge();
+    // }
+    // };
+  });
+  useEffect(() => {
+    setShoppingListData(shoppingList);
+  }, [shoppingList]);
+
+  useEffect(() => {
+    setFridgeData(fridge);
+  }, [fridge]);
+
+  useEffect((modal) => {
+    if (itemKey !== "") {
+      setModal(!modal);
     }
-    if (prevProps.userData.fridge !== fridge) {
-      this.setState({ fridge: fridge }, this.compareWithFridge());
-    }
-  }
-  alphaSort = (event) => {
-    let alphaSort = this.state.shoppingList.sort((a, b) =>
+  }, [itemKey]);
+
+  const alphaSort = (event) => {
+    let sortedList = shoppingList.sort((a, b) =>
       a.name.toLowerCase() > b.name.toLowerCase()
         ? 1
         : b.name.toLowerCase() > a.name.toLowerCase()
         ? -1
         : 0
     );
-    console.log(alphaSort);
-    this.setState({
-      shoppingList: alphaSort,
-    });
-    console.log(this.state.shoppingList);
+    console.log(sortedList);
+    setShoppingList(sortedList);
   };
-  increaseSort = (event) => {
-    let increaseSort = this.state.shoppingList.sort((a, b) =>
+  const increaseSort = (event) => {
+    let sortedList = shoppingList.sort((a, b) =>
       a.quantity > b.quantity ? 1 : b.quantity > a.quantity ? -1 : 0
     );
-    console.log(increaseSort);
-    this.setState({
-      shoppingList: increaseSort,
-    });
-
-    console.log(this.state.shoppingList);
+    setShoppingList(sortedList);
   };
-  decreaseSort = (event) => {
-    let decreaseSort = this.state.shoppingList.sort((a, b) =>
+  const decreaseSort = (event) => {
+    let sortedList = shoppingList.sort((a, b) =>
       b.quantity > a.quantity ? 1 : a.quantity > b.quantity ? -1 : 0
     );
-    console.log(decreaseSort);
-    this.setState({
-      shoppingList: decreaseSort,
-    });
-
-    console.log(this.state.shoppingList);
+    setShoppingList(sortedList);
   };
-  toggleModal = (event) => {
-    this.setState({
-      modal: !this.state.modal,
-    });
-  };
-  addToFridge = (event) => {
-    const { fridge, shoppingList } = this.props.userData;
-    const { isAuthenticated, userId } = this.props.auth;
-
+  const addToFridge = (event) => {
+    const newFridge = userData.fridge;
+    const { isAuthenticated, userId } = auth;
     let newIngredientName = event.target.dataset.name;
     let newIngredientQuantity = parseFloat(event.target.dataset.quantity) || 0;
     let newIngredientUnit = event.target.dataset.unit;
     console.log(newIngredientName, event.target);
     /* check to see if ingredient already exisit in the groceryList*/
-    if (!fridge.some((e) => e.name === newIngredientName)) {
-      // let fridge = fridge;
-      console.log(fridge);
+    if (!newFridge.some((e) => e.name === newIngredientName)) {
       let newIngredient = {
         name: newIngredientName,
         quantityNeeded: newIngredientQuantity,
@@ -118,17 +118,11 @@ class ShoppingList extends Component {
         unit: newIngredientUnit,
         edit: false,
       };
-      fridge.push(newIngredient);
+      newFridge.push(newIngredient);
+      setFridge(newFridge);
+      setItemKey(event.target.dataset.index);
+      compareWithFridge();
 
-      this.setState(
-        { fridge: fridge, itemKey: event.target.dataset.index },
-        () => {
-          console.log(this.state.itemKey);
-          this.props.setFridgeData(fridge);
-          this.compareWithFridge();
-          this.toggleModal();
-        }
-      );
       if (isAuthenticated) {
         axios
           .post("/api/fridgeItem", {
@@ -144,93 +138,100 @@ class ShoppingList extends Component {
           });
       }
     } else {
-      console.log("before:", this.state.fridge);
+      console.log("before:", fridge);
 
-      this.setState(
-        (prevState) => ({
-          fridge: prevState.fridge.map((el) =>
-            el.name === newIngredientName
-              ? {
-                  ...el,
-                  quantityNeeded:
-                    el.quantityNeeded + parseFloat(newIngredientQuantity),
-                }
-              : el
-          ),
-        }),
-        () => this.props.setFridgeData(this.state.fridge)
-      );
-      console.log("after:", this.state.fridge);
+      setFridge((prevState) => {
+        prevState.map((el) =>
+          el.name === newIngredientName
+            ? {
+                ...el,
+                quantityNeeded:
+                  el.quantityNeeded + parseFloat(newIngredientQuantity),
+              }
+            : el
+        );
+      });
     }
-    console.log(this.state.fridge);
   };
 
-  removeFrmList = (event) => {
-    const { isAuthenticated, userId } = this.props.auth;
+  const removeFrmList = (event) => {
+    const { isAuthenticated, userId } = auth;
     const removeIndex = event.target.dataset.index;
     const item = event.target.dataset.name;
-    let updatedList = this.state.shoppingList;
+    let updatedList = shoppingList;
     updatedList.splice(removeIndex, 1);
-    this.setState(
-      {
-        shoppingList: updatedList,
-      },
-      () => {
-        this.props.setShoppingList(updatedList);
-      }
-    );
-    if (isAuthenticated) {
-      this.props.removeShoppingListItem(item, userId);
-    }
-    this.compareWithFridge();
-  };
-  compareWithFridge = () => {
-    const { fridge, shoppingList } = this.props.userData;
+    setShoppingList(updatedList);
 
-    shoppingList.map((shopItem, x) => {
-      fridge.map((fridgeItem, y) =>
+    if (isAuthenticated) {
+      removeShoppingListItem(item, userId);
+    }
+    compareWithFridge();
+    setModal(!modal);
+  };
+
+  const compareWithFridge = () => {
+    const newFridge = userData.fridge;
+    const newShoppingList = userData.shoppingList;
+
+    newShoppingList.map((shopItem, x) =>
+      newFridge.map((fridgeItem, y) =>
         fridgeItem.name === shopItem.name
           ? fridgeItem.quantityStored >= shopItem.quantity
-            ? this.setState(
-                (prevState) => ({
-                  shoppingList: prevState.shoppingList.map((el) =>
-                    el.name === shopItem.name
-                      ? {
-                          ...el,
-                          enoughInFridge: true,
-                        }
-                      : el
-                  ),
-                }),
-                () => this.props.setShoppingList(this.state.shoppingList)
+            ? setShoppingList((prevState) =>
+                prevState.map((el) =>
+                  el.name === shopItem.name
+                    ? {
+                        ...el,
+                        enoughInFridge: true,
+                      }
+                    : el
+                )
               )
-            : this.setState(
-                (prevState) => ({
-                  shoppingList: prevState.shoppingList.map((el) =>
-                    el.name === shopItem.name
-                      ? {
-                          ...el,
-                          enoughInFridge: false,
-                        }
-                      : el
-                  ),
-                }),
-                () => this.props.setShoppingList(this.state.shoppingList)
+            : setShoppingList((prevState) =>
+                prevState.map((el) =>
+                  el.name === shopItem.name
+                    ? {
+                        ...el,
+                        enoughInFridge: false,
+                      }
+                    : el
+                )
               )
           : ""
-      );
-    });
+      )
+    );
   };
-  checkFridge = (ingredient) => {
+  const checkFridge = (ingredient) => {
     return ingredient.enoughInFridge ? "disabled" : "";
   };
-
-  render(props) {
-    const { fridge, shoppingList, categories } = this.props.userData;
-
-    return (
-      <>
-        {/* <Row className="teal darken-4 white-text valign-wrapper">
+  const unitAbbreviation = (unit) => {
+    switch (unit) {
+      case "teaspoon":
+        return "tsp";
+      case "tablespoon":
+        return "Tbs";
+      case "pound":
+        return "lbs";
+      default:
+        return unit;
+    }
+  };
+  const convertQuantity = (quantity) => {
+    if (quantity < 1) {
+      return fraction(quantity).toFraction();
+    }
+    if (typeof quantity === "number" && !Number.isInteger(quantity)){
+      console.log(quantity)
+      let wholeNum = Math.trunc(quantity)
+      let decimalPart = quantity % 1
+      return `${wholeNum}  ${fraction(decimalPart).toFraction()}`
+    }
+    return quantity;
+  };
+  console.log(categories);
+  return (
+    <Row className="justify-content-center p-4 main-content">
+      {/* <Row className="teal darken-4 white-text valign-wrapper">
           <Col s={8}>
             <h5>Shopping List</h5>
           </Col>
@@ -258,155 +259,138 @@ class ShoppingList extends Component {
           />
         </Row> */}
 
-        <Collection className="vertical-scroll list">
-          {shoppingList.length < 1 ? (
-            <CollectionItem className="section center-align border">
-              <h5>Select a recipe to display the Ingredients</h5>
-            </CollectionItem>
-          ) : (
-            categories.map((category, i) => (
-              <>
-                <CollectionItem className="list-category">
-                  <em >{category}</em>
-                </CollectionItem>
-                {shoppingList.map((ingredient, i) => {
-                  return ingredient.category === category ? (
-                    <>
-                      <CollectionItem
-                        className={`row transparent shopping-list-item ${this.checkFridge(
-                          ingredient
-                        )}
-                    `}
-                        data-name={ingredient.name}
-                        data-quantity={ingredient.quantity}
-                        data-category={ingredient.category}
-                        key={i}
-                      >
-                        <Col s={8} className="shopping-list-item-name">
-                          {ingredient.name}
-                        </Col>
-                        <small className="col s1 shopping-list-button">
-                          {ingredient.quantity} {ingredient.unit}
-                        </small>
-                        <button
-                          className={`col s1 btn-flat shopping-list-button ${
-                            ingredient.enoughInFridge ? "disabled" : ""
-                          }`}
-                          onClick={this.addToFridge}
-                        >
-                          <i
-                            className="material-icons tiny"
-                            data-name={ingredient.name}
-                            data-quantity={ingredient.quantity}
-                            data-unit={ingredient.unit}
-                            data-index={i}
-                          >
-                            add
-                          </i>
-                        </button>
-                        <button
-                          className={`col s1 btn-flat shopping-list-button ${
-                            ingredient.enoughInFridge ? "red-text" : ""
-                          }`}
-                          onClick={this.removeFrmList}
-                        >
-                          <i
-                            className="material-icons tiny"
-                            data-name={ingredient.name}
-                            data-index={i}
-                          >
-                            close
-                          </i>
-                        </button>
-                      </CollectionItem>
-                      {this.state.itemKey === i ? (
-                        <Modal
-                          isOpen={this.state.modal}
-                          toggle={this.toggleModal}
-                        >
-                          <ModalHeader
-                            toggle={this.toggleModal}
-                            className="teal darken-4 white-text"
-                            style={{ fontFamily: "monospace" }}
-                          >
-                            Item added to Fridge
-                          </ModalHeader>
-                          <ModalBody>
-                            Would you also like to remove this item from your
-                            shopping list?
-                          </ModalBody>
-                          <ModalFooter className="d-flex justify-content-center">
-                            <Button
-                              color="secondary"
-                              onClick={this.removeFrmList}
-                              data-index={i}
-                              className="mr-4"
-                            >
-                              Yes
-                            </Button>
-                            <Button
-                              color="secondary"
-                              onClick={this.toggleModal}
-                            >
-                              No
-                            </Button>
-                          </ModalFooter>
-                        </Modal>
-                      ) : null}
-                    </>
-                  ) : null;
-                })}
-              </>
-            ))
-          )}
-          <CollectionItem className="white-text">
-            <Button
-              large
-              className="col s4"
-              // onClick={this.alphaSort}
-              icon={<Icon tiny>local_printshop</Icon>}
-            >
-              {" "}
-              Print{" "}
-            </Button>
-            <Button
-              large
-              className="col s4"
-              // onClick={this.increaseSort}
-              icon={<Icon tiny>send</Icon>}
-            >
-              Send
-            </Button>
-            <Button
-              large
-              className="col s4"
-              onClick={this.decreaseSort}
-              icon={
-                <Icon tiny center>
-                  share
-                </Icon>
-              }
-            >
-              Share
-            </Button>
+      <Collection className="vertical-scroll" style={{ width: "100%" }}>
+        {shoppingList.length < 1 ? (
+          <CollectionItem className="section center-align border">
+            <h5>Select a recipe to display the Ingredients</h5>
           </CollectionItem>
-        </Collection>
-      </>
-    );
-  }
-}
-ShoppingList.propTypes = {
-  auth: PropTypes.object.isRequired,
-  userData: PropTypes.object.isRequired,
-  setShoppingList: PropTypes.func.isRequired,
+        ) : (
+          categories.map((category, i) => (
+            <>
+              <CollectionItem className="list-category">
+                <em>{category}</em>
+              </CollectionItem>
+              {shoppingList.map((ingredient, i) => {
+                return ingredient.category === category ? (
+                  <>
+                    <CollectionItem
+                      className={`row transparent shopping-list-item ${checkFridge(
+                        ingredient
+                      )}
+                    `}
+                      data-name={ingredient.name}
+                      data-quantity={ingredient.quantity}
+                      data-category={ingredient.category}
+                      key={i}
+                    >
+                      <Col s={6} className="shopping-list-item-name">
+                        {ingredient.name}
+                      </Col>
+                      <div className="col s3 shopping-list-button">
+                        <small>{convertQuantity(ingredient.quantity)}{" "}
+                        {unitAbbreviation(ingredient.unit)}</small>
+                      </div>
+                      <button
+                        className={`col s1 btn-flat shopping-list-button ${
+                          ingredient.enoughInFridge ? "disabled" : ""
+                        }`}
+                        onClick={addToFridge}
+                      >
+                        <i
+                          className="material-icons tiny"
+                          data-name={ingredient.name}
+                          data-quantity={ingredient.quantity}
+                          data-unit={ingredient.unit}
+                          data-index={i}
+                        >
+                          add
+                        </i>
+                      </button>
+                      <button
+                        className={`col s1 btn-flat shopping-list-button ${
+                          ingredient.enoughInFridge ? "red-text" : ""
+                        }`}
+                        onClick={removeFrmList}
+                      >
+                        <i
+                          className="material-icons tiny"
+                          data-name={ingredient.name}
+                          data-index={i}
+                        >
+                          close
+                        </i>
+                      </button>
+                    </CollectionItem>
+                    {itemKey === i ? (
+                      <Modal isOpen={modal} toggle={() => setModal(!modal)}>
+                        <ModalHeader
+                          toggle={() => setModal(!modal)}
+                          className="teal darken-4 white-text"
+                          style={{ fontFamily: "monospace" }}
+                        >
+                          Item added to Fridge
+                        </ModalHeader>
+                        <ModalBody>
+                          Would you also like to remove this item from your
+                          shopping list?
+                        </ModalBody>
+                        <ModalFooter className="d-flex justify-content-center">
+                          <Button
+                            color="secondary"
+                            onClick={removeFrmList}
+                            data-index={i}
+                            className="mr-4"
+                          >
+                            Yes
+                          </Button>
+                          <Button
+                            color="secondary"
+                            onClick={() => setModal(!modal)}
+                          >
+                            No
+                          </Button>
+                        </ModalFooter>
+                      </Modal>
+                    ) : null}
+                  </>
+                ) : null;
+              })}
+            </>
+          ))
+        )}
+        <CollectionItem className="white-text">
+          <Button
+            large
+            className="col s4"
+            // onClick={this.alphaSort}
+            icon={<Icon tiny>local_printshop</Icon>}
+          >
+            {" "}
+            Print{" "}
+          </Button>
+          <Button
+            large
+            className="col s4"
+            // onClick={this.increaseSort}
+            icon={<Icon tiny>send</Icon>}
+          >
+            Send
+          </Button>
+          <Button
+            large
+            className="col s4"
+            onClick={decreaseSort}
+            icon={
+              <Icon tiny center>
+                share
+              </Icon>
+            }
+          >
+            Share
+          </Button>
+        </CollectionItem>
+      </Collection>
+    </Row>
+  );
 };
-const mapStateToProps = (state) => ({
-  auth: state.auth,
-  userData: state.userData,
-});
-export default connect(mapStateToProps, {
-  getUserShoppingList,
-  setShoppingList,
-  removeShoppingListItem,
-  setFridgeData,
-})(ShoppingList);
+export default ShoppingList;

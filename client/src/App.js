@@ -10,7 +10,7 @@ import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import PrivateRoute from "./components/private-route/PrivateRoute";
 import { Provider } from "react-redux";
-import store from "./store";
+import store from "./state/store";
 
 
 library.add(fas, fab);
@@ -31,9 +31,9 @@ class App extends Component {
             <Route exact path="/login" component={Login} />
             <Route exact path="/api/pinterest" />
             {/* <Route exact path="/home" component={Home} /> */}
-            <Switch>
+            {/* <Switch>
               <PrivateRoute exact path="/home" component={Home} />
-            </Switch>
+            </Switch> */}
           </div>
         </Router>
       </Provider>

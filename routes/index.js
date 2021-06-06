@@ -181,9 +181,9 @@ router.get("/recipes/:id", (req, res) => {
         .find(".ingredient").text()
         console.log(result);
         ingredientData.push(result);
-      }, console.log(ingredientData),(recipeData.ingredients = ingredientData));
+      }, console.log("INGREDIENT DATA:",ingredientData),(recipeData.ingredients = ingredientData));
     }
-    console.log(recipeData)
+    console.log("RECIPE DATA:",recipeData)
     // Send a recipeData back as an object with name and ingredients as keys back to the browser
     res.json(recipeData);
   });

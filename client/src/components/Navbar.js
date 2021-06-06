@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Modal } from "reactstrap";
@@ -55,7 +54,7 @@ class AppNavbar extends Component {
     }
   };
   render() {
-    const { isAuthenticated, user } = this.props.auth;
+    const { isAuthenticated } = this.props.auth;
 
     const authLinks = (
       <ul id="nav-mobile" className="right">
@@ -81,7 +80,7 @@ class AppNavbar extends Component {
               icon={["fas", "drumstick-bite"]}
               className="mr-3"
             /> */}
-              <Icon small>shopping_cart</Icon>
+              <Icon medium>shopping_cart</Icon>
               PlateScrape
             </Link>
           }
@@ -92,10 +91,9 @@ class AppNavbar extends Component {
             <>
               <li>
                 <nav className="teal darken-4 pr-4 pl-4 full-width" >
-                  <a className="brand-logo white-text brand-font ">
-                    <Icon small>shopping_cart</Icon>
+                <Link to="/" className="brand-logo white-text brand-font">                    <Icon small>shopping_cart</Icon>
                     PlateScrape
-                  </a>
+                  </Link>
                 </nav>
               </li>
               <li className="p-2">

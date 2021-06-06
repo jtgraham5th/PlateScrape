@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { loginUser, getUserFridgeData } from "../../actions";
-import { clearErrors } from "../../actions/errorActions";
+import { loginUser, getUserFridgeData } from "../../state/actions";
+import { clearErrors } from "../../state/actions/errorActions";
 import classnames from "classnames";
 import {
   Button,

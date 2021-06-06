@@ -3,7 +3,7 @@ import React, { Component } from "react";
 // import "./style.css";
 import { connect } from "react-redux";
 import { Row, Col, Select, Icon } from "react-materialize";
-import { setDataLoading } from "../actions";
+import { setDataLoading } from "../state/actions";
 
 class MealSelect extends Component {
   state = {

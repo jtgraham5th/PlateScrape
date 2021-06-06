@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { loginUser, getUserFridgeData } from "../../actions";
-import { clearErrors } from "../../actions/errorActions";
+import { loginUser, getUserFridgeData } from "../../state/actions";
+import { clearErrors } from "../../state/actions/errorActions";
 import { Modal, Button, TextInput } from "react-materialize";
 
 const Login = () => {

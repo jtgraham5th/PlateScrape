@@ -4,9 +4,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
-  Row,
   Col,
   Container,
+  CollapsibleItem,
+  Icon,
   Collection,
   CollectionItem,
   TextInput,
@@ -16,10 +17,10 @@ import {
   getUserFridgeData,
   setFridgeData,
   removeFridgeItem,
-  setShoppingListData,
+  setShoppingList,
   searchRecipes,
   setDataLoading,
-} from "../state/actions";
+} from "../actions";
 
 var axios = require("axios");
 
@@ -42,9 +43,7 @@ class Fridge extends Component {
         shoppingList: shoppingList,
       });
     } else {
-      this.setState({
-        fridge: fridge,
-      });
+      this.props.setFridgeData([]);
     }
   }
   componentDidUpdate(prevProps) {
@@ -143,7 +142,7 @@ class Fridge extends Component {
         newItem: "",
       });
     }
-    // this.getClasses(newIngredientName, newIngredientQuantity);
+    this.getClasses(newIngredientName, newIngredientQuantity);
   };
   saveNewFridgeItem = (newIngredient) => {
     const { isAuthenticated, userId } = this.props.auth;
@@ -199,7 +198,7 @@ class Fridge extends Component {
                       : el
                   ),
                 }),
-                () => this.props.setShoppingListData(this.state.shoppingList)
+                () => this.props.setShoppingList(this.state.shoppingList)
               )
             : this.setState((prevState) => ({
                 shoppingList: prevState.shoppingList.map((el) =>
@@ -221,11 +220,9 @@ class Fridge extends Component {
   };
   render(props) {
     return (
-      <Row className="justify-content-center p-4 main-content">
-
       <Collection id="fridge-collection" className="vertical-scroll">
         <CollectionItem className="row collection-message">
-          <div className="col s12 small" style={{ lineHeight: "1rem" }}>
+          <div className="col s12 small" style={{ "lineHeight": "1rem" }}>
             Add items that you already have at home here and we'll compare them
             with what's in your shopping list so you won't have to worry about
             buying too much at the store!
@@ -324,7 +321,6 @@ class Fridge extends Component {
           ))}
         </Container>
       </Collection>
-      </Row>
     );
   }
 }
@@ -342,7 +338,7 @@ export default connect(mapStateToProps, {
   getUserFridgeData,
   setFridgeData,
   removeFridgeItem,
-  setShoppingListData,
+  setShoppingList,
   searchRecipes,
   setDataLoading,
 })(Fridge);

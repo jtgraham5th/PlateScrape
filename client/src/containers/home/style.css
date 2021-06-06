@@ -79,23 +79,24 @@ a {
   width: 20rem;
 }
 .recipe-button {
-  width: 15%;
-  margin-right: 2% !important;
+  border-radius: 5%;
 }
-.recipe-button > .card-image,
+/* .recipe-button > .card-image,
 .recipe-button > .card-content {
   height: 50%;
-}
+} */
 .card-content > div {
   height: 25%;
 }
 .activator.card-title {
-  font-size: 80% !important;
+  /* font-size: 80% !important; */
+  font-family: Oregano !important;
   line-height: initial !important;
   height: 60%;
 }
 .card-reveal > .card-title {
-  font-size: 90% !important;
+  /* font-size: 90% !important; */
+  font-family: Oregano !important;
   line-height: initial;
   font-weight: 600;
   margin-bottom: 1 !important;
@@ -103,9 +104,16 @@ a {
 .card-reveal {
   padding: 5px !important;
 }
-#recipe-button-container {
+/* #recipe-button-container {
   padding: 1rem;
   display: -webkit-inline-box;
+} */
+#recipe-button-container {
+  /* padding: 1rem; */
+  display: block;
+  column-count: 2;
+  column-gap: 0.2rem;
+  width: 100%;
 }
 .shopping-list-item {
   padding: 0px 10px !important;
@@ -181,13 +189,14 @@ small.shopping-list-button {
   margin-bottom: 0px;
 }
 .modal {
-  background-color: transparent;
+  background-color: #004d40bf;
   max-height: 100%;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1050;
-  display: none;
+  display: flex !important;
+  align-items: center;
   width: 100%;
   overflow: hidden;
   outline: 0;
@@ -197,6 +206,14 @@ small.shopping-list-button {
 }
 .modal .modal-content {
   padding: 0px;
+}
+.modal-title {
+  margin: 0 !important;
+  font-family: Oregano;
+}
+.modal-dialog {
+  margin: auto;
+  width: 75% !important;
 }
 .exists {
   color: red;
@@ -227,14 +244,17 @@ align-content: center;
   text-transform: capitalize;
   font-size: 1em;
 }
-.list {
+/* .list {
   display: inherit;
 }
+*/
 .card-image > img {
   width: 100% !important;
   height: 100% !important;
+  border-top-left-radius: 5% !important;
+  border-top-right-radius: 5% !important;
 }
-.card-image {
+/* .card-image {
   grid-row: 1 / 3;
   max-width: unset !important;
 }
@@ -248,12 +268,12 @@ align-content: center;
 }
 .card-stacked > a {
   text-align: center;
-}
+} */
 .card .card-content {
   padding: 0.5em 0.5em 0 0.5em !important;
   white-space: normal;
-  text-align: center;
-  font-family: Roboto;
+  /* text-align: center; */
+  /* font-family: Roboto; */
   line-height: initial;
 }
 .card-action {
@@ -270,12 +290,12 @@ align-content: center;
   font-family: Oregano;
   font-size: 90%;
 }
-.horizontal-scroll {
+/* .horizontal-scroll {
   flex-wrap: unset;
   overflow: auto !important;
   white-space: nowrap;
   margin: 0 !important;
-}
+} */
 /* .horizontal-scroll > .card {
   display: inline-flex
 } */
@@ -283,9 +303,13 @@ align-content: center;
   font-family: Oregano !important;
   text-decoration: none !important;
 }
+.brand-logo {
+  line-height: normal !important;
+}
 .brand-logo > i {
-  font-size: 3rem !important;
+  font-size: 1.5rem !important;
   margin-right: 2px !important;
+  line-height: 3rem !important;
 }
 .full-width {
   width: 100% !important;
@@ -298,19 +322,24 @@ align-content: center;
   border: 2px;
 }
 .main-content {
-  height: 90%;
+  height: 89vh;
+  padding: 0.5em 1em !important;
+  overflow: auto;
+}
+.main-content-with-search {
+  height: 81.5vh;
   padding: 0.5em 1em !important;
   overflow: auto;
 }
 .tabs-container {
-  height: 55%;
+  height: 90vh;
   overflow: visible;
 }
 .tabs-container > .row {
   height: 75%;
 }
-.list-category {
-  padding: 5px 20px !important;
+.collection-item.list-category{
+  padding: 5px 10px !important;
   font-family: Oregano !important;
   font-size: 1.5em !important;
   color: #004d40 !important;
@@ -357,14 +386,78 @@ span.badge {
 /* #mobile-nav {
   background-color: rgb(0, 77, 64);
 } */
+.recipe-searchlist-title {
+  font-family: Oregano !important;
+  font-size: 1.5rem !important;
+  padding: 0.5rem 0.75rem !important;
+  align-self: center;
+}
+.collection-item.recipe-item {
+  padding: unset !important;
+  margin-bottom: 1rem !important;
+  border-radius: 5%;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0.1rem 0.1rem 0.5rem silver;
+}
 
+.bottom-navbar {
+  flex-wrap: nowrap !important;
+  height: 6vh;
+  background-color: #004d40;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.bottom-navbar > a {
+  width: 100%;
+  height: 100%;
+  padding-top: 0.25rem;
+}
+.bottom-navbar > a > button > i {
+  font-size: 2.5rem !important;
+  color: #fff;
+}
+.sidenav-trigger,
+nav {
+  height: 5vh !important;
+}
+nav .sidenav-trigger i {
+  line-height: 2.5rem;
+}
+.recipe-card {
+  display: inline-block;
+  padding: 0 0.25rem !important;
+  width: 100%;
+}
+.card-content > .card-title {
+  font-size: 1.15rem !important;
+  font-family: Oregano !important;
+  line-height: initial !important;
+  height: 60%;
+}
+
+.preloader-wrapper {
+  align-self: center;
+}
+.recipe-action-button {
+  height: auto;
+}
+.recipe-action-button > i {
+  font-size: 2rem !important;
+}
+.card-action-button {
+  height: 2rem;
+}
+.card-action-button > i {
+  font-size: 1.5rem !important;
+  line-height: normal !important;
+}
 @media screen and (max-width: 767px) {
   #recipe-list {
     grid-auto-columns: 47%;
   }
-  .recipe-button {
+  /* .recipe-button {
     width: 35%;
-  }
+  } */
   #mobile-nav li nav .brand-logo {
     left: 4rem !important;
     -webkit-transform: unset !important;

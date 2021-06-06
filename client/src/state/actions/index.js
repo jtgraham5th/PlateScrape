@@ -1,6 +1,7 @@
 import axios from "axios";
-import setAuthToken from "../utils/setAuthToken";
+import setAuthToken from "../../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
+import { fraction } from "mathjs";
 import { returnErrors } from "./errorActions";
 import { batch } from "react-redux";
 import {
@@ -42,16 +43,24 @@ export const searchRecipes = (searchQuery) => (dispatch) => {
       };
       const ingredients = [];
       recipe.content.ingredientLines.map((ingredient, i) => {
+        let newQuantity;
+        if (ingredient.quantity < 1) {
+          newQuantity = fraction(ingredient.quantity).toFraction();
+        } else {
+          newQuantity = ingredient.quantity;
+        }
         ingredients.push({
           name: ingredient.ingredient,
-          quantity: ingredient.quantity,
+          quantity: newQuantity,
           unit: ingredient.unit,
           category: ingredient.category,
         });
-      })
+      });
       data.ingredients = ingredients;
       array = [...array, data];
     });
+    console.log("ARRAY:", array);
+
     batch(() => {
       dispatch({
         type: GET_SUGGESTED_RECIPES,
@@ -62,24 +71,51 @@ export const searchRecipes = (searchQuery) => (dispatch) => {
   });
 };
 export const getSuggestedRecipes = () => (dispatch) => {
-  axios.get("api/yummlyAPI/popular").then((response) => {
-    let array = [];
-    response.data.map((recipe, i) => {
-      const data = {
-        title: recipe.display.displayName,
-        thumbnail: recipe.display.images[0],
-        href: recipe.display.source.sourceRecipeUrl,
-      };
-      array = [...array, data];
-    });
-    batch(() => {
-      dispatch({
-        type: GET_SUGGESTED_RECIPES,
-        payload: array,
+  axios
+    .get("api/yummlyAPI/popular")
+    .then((response) => {
+      let array = [];
+      console.log(response.data)
+      response.data.map((recipe, i) => {
+        const data = {
+          title: recipe.display.displayName,
+          thumbnail: recipe.display.images[0],
+          href: recipe.display.source.sourceRecipeUrl,
+        };
+        const ingredients = [];
+        recipe.content.ingredientLines.map((ingredient, i) => {
+          let newQuantity;
+          if (ingredient.quantity < 1) {
+            newQuantity = fraction(ingredient.quantity).toFraction();
+          } else {
+            newQuantity = ingredient.quantity;
+          }
+          ingredients.push({
+            name: ingredient.ingredient,
+            quantity: newQuantity,
+            unit: ingredient.unit,
+            category: ingredient.category,
+          });
+        });
+        data.ingredients = ingredients;
+        array = [...array, data];
+        console.log(array)
       });
-      dispatch({ type: DATA_LOADED });
+      batch(() => {
+        dispatch({
+          type: GET_SUGGESTED_RECIPES,
+          payload: array,
+        });
+        dispatch({ type: DATA_LOADED });
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      // dispatch({
+      //   type: GET_ERRORS,
+      //   payload: err.response.data,
+      // });
     });
-  });
 };
 // Register User
 export const registerUser = (userData, history) => (dispatch) => {
@@ -205,10 +241,10 @@ export const loginUser = (userData) => (dispatch) => {
       console.log(decoded);
       // Set current user
       batch(() => {
-        dispatch(setRecipes([]));
+        dispatch(setRecipesData([]));
         dispatch(setCurrentUser(userData));
         dispatch(setFridgeData(userData.fridge));
-        dispatch(setShoppingList(userData.shoppingList));
+        dispatch(setShoppingListData(userData.shoppingList));
         dispatch(setBoards(userData.boards));
       });
     })
@@ -252,7 +288,7 @@ export const getUserShoppingList = (userId) => (dispatch) => {
   axios
     .get(`/api/getShoppingList/${userId}`)
     .then((response) => {
-      dispatch(setShoppingList(response.data.data.shoppingList));
+      dispatch(setShoppingListData(response.data.data.shoppingList));
     })
     .catch((err) =>
       dispatch({
@@ -262,7 +298,7 @@ export const getUserShoppingList = (userId) => (dispatch) => {
     );
 };
 //Store user Shopping List
-export const setShoppingList = (shoppingListData) => {
+export const setShoppingListData = (shoppingListData) => {
   return {
     type: SET_SHOPPINGLIST,
     payload: shoppingListData,
@@ -276,7 +312,7 @@ export const setFridgeData = (fridgeData) => {
   };
 };
 //Store Recipe Data
-export const setRecipes = (recipeData) => {
+export const setRecipesData = (recipeData) => {
   return {
     type: SET_RECIPES,
     payload: recipeData,
@@ -322,8 +358,8 @@ export const logoutUser = () => (dispatch) => {
   batch(() => {
     dispatch(setCurrentUser({}));
     dispatch(setFridgeData([]));
-    dispatch(setShoppingList([]));
-    dispatch(setRecipes([]));
+    dispatch(setShoppingListData([]));
+    dispatch(setRecipesData([]));
     dispatch(setBoards([]));
   });
 };
@@ -342,7 +378,7 @@ export const loadUser = (token) => async (dispatch) => {
       batch(() => {
         dispatch(setCurrentUser(res.data));
         dispatch(setFridgeData(res.data.fridge));
-        dispatch(setShoppingList(res.data.shoppingList));
+        dispatch(setShoppingListData(res.data.shoppingList));
         dispatch(setBoards(res.data.boards));
         dispatch({ type: USER_LOADED });
       })
