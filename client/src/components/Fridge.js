@@ -17,18 +17,15 @@ import RecipeFilter from "./RecipeFilter";
 
 const Fridge = () => {
   const userData = useSelector((state) => state.userData);
-  const auth = useSelector((state) => state.auth);
+  // const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const {
-    getUserShoppingList,
-    setShoppingListData,
-    removeShoppingListItem,
     setFridgeData,
   } = bindActionCreators(ActionCreators, dispatch);
 
   const [recipes, setRecipes] = useState(userData.recipes);
   const [fridge, setFridge] = useState(userData.fridge);
-  const [shoppingList, setShoppingList] = useState(userData.shoppingList);
+  // const [shoppingList, setShoppingList] = useState(userData.shoppingList);
   const [newItem, setNewItem] = useState("");
   const [newQuantity, setNewQuantity] = useState(0);
   const [selectedRecipes, setSelectedRecipes] = useState([]);
@@ -114,23 +111,23 @@ const Fridge = () => {
     // }
     // // this.getClasses(newIngredientName, newIngredientQuantity);
   };
-  const saveNewFridgeItem = (newIngredient) => {
-    // const { isAuthenticated, userId } = this.props.auth;
-    // if (isAuthenticated) {
-    //   axios
-    //     .post("/api/fridgeItem", {
-    //       newIngredient: newIngredient,
-    //       userId: userId,
-    //     })
-    //     .then((response) => {
-    //       this.props.getUserFridgeData(userId);
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //       alert("Failed to create: " + err.message);
-    //     });
-    // }
-  };
+  // const saveNewFridgeItem = (newIngredient) => {
+  //   // const { isAuthenticated, userId } = this.props.auth;
+  //   // if (isAuthenticated) {
+  //   //   axios
+  //   //     .post("/api/fridgeItem", {
+  //   //       newIngredient: newIngredient,
+  //   //       userId: userId,
+  //   //     })
+  //   //     .then((response) => {
+  //   //       this.props.getUserFridgeData(userId);
+  //   //     })
+  //   //     .catch((err) => {
+  //   //       console.log(err);
+  //   //       alert("Failed to create: " + err.message);
+  //   //     });
+  //   // }
+  // };
   const removeFrmFridge = (event) => {
     // const { isAuthenticated, userId } = this.props.auth;
     // const removeIndex = event.target.dataset.index;
@@ -147,42 +144,42 @@ const Fridge = () => {
     //   this.props.removeFridgeItem(item, userId);
     // }
   };
-  const getClasses = (ingredient, quantity) => {
-    // console.log("---getclasses---");
-    // let fridge = this.props.userData.fridge;
-    // console.log(fridge.length, fridge);
-    // console.log(ingredient, quantity);
-    // if (fridge.length > 0) {
-    //   fridge.map((item, x) =>
-    //     item.name === ingredient
-    //       ? item.quantityStored >= quantity
-    //         ? this.setState(
-    //             (prevState) => ({
-    //               shoppingList: prevState.shoppingList.map((el) =>
-    //                 el.name === ingredient
-    //                   ? {
-    //                       ...el,
-    //                       enoughInFridge: true,
-    //                     }
-    //                   : el
-    //               ),
-    //             }),
-    //             () => this.props.setShoppingListData(shoppingList)
-    //           )
-    //         : this.setState((prevState) => ({
-    //             shoppingList: prevState.shoppingList.map((el) =>
-    //               el.name === ingredient
-    //                 ? {
-    //                     ...el,
-    //                     enoughInFridge: false,
-    //                   }
-    //                 : el
-    //             ),
-    //           }))
-    //       : ""
-    //   );
-    // }
-  };
+  // const getClasses = (ingredient, quantity) => {
+  //   // console.log("---getclasses---");
+  //   // let fridge = this.props.userData.fridge;
+  //   // console.log(fridge.length, fridge);
+  //   // console.log(ingredient, quantity);
+  //   // if (fridge.length > 0) {
+  //   //   fridge.map((item, x) =>
+  //   //     item.name === ingredient
+  //   //       ? item.quantityStored >= quantity
+  //   //         ? this.setState(
+  //   //             (prevState) => ({
+  //   //               shoppingList: prevState.shoppingList.map((el) =>
+  //   //                 el.name === ingredient
+  //   //                   ? {
+  //   //                       ...el,
+  //   //                       enoughInFridge: true,
+  //   //                     }
+  //   //                   : el
+  //   //               ),
+  //   //             }),
+  //   //             () => this.props.setShoppingListData(shoppingList)
+  //   //           )
+  //   //         : this.setState((prevState) => ({
+  //   //             shoppingList: prevState.shoppingList.map((el) =>
+  //   //               el.name === ingredient
+  //   //                 ? {
+  //   //                     ...el,
+  //   //                     enoughInFridge: false,
+  //   //                   }
+  //   //                 : el
+  //   //             ),
+  //   //           }))
+  //   //       : ""
+  //   //   );
+  //   // }
+  // };
   return (
     <Row className="justify-content-center p-4 main-content">
       <RecipeFilter setSelectedRecipes={setSelectedRecipes} recipes={recipes} />

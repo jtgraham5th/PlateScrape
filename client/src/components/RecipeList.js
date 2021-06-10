@@ -26,9 +26,9 @@ const RecipeList = (props) => {
     setShoppingListData,
     getUserShoppingList,
     // getSuggestedRecipes,
-    setDataLoading,
+    // setDataLoading,
     addCategory,
-    dataLoaded,
+    // dataLoaded,
   } = bindActionCreators(ActionCreators, dispatch);
 
   const [shoppingList, setShoppingList] = useState(userData.shoppingList);
@@ -72,7 +72,7 @@ const RecipeList = (props) => {
   const addToList = async (recipe) => {
     let ingredients = recipe.ingredients
     let array = categories;
-    ingredients.map(
+    ingredients.forEach(
       (ingredient, i) => {
         console.log(ingredient);
         /* check to see if ingredient already exisit in the shoppingList*/
@@ -103,7 +103,7 @@ const RecipeList = (props) => {
         } else {
           let key = ingredient.name;
           let newList = [];
-          shoppingList.map((item) => {
+          shoppingList.forEach((item) => {
             if (item.name === key) {
               if (typeof item.quantity === "string") {
                 item.quantity = fraction(ingredient.quantity).valueOf();
@@ -136,7 +136,7 @@ const RecipeList = (props) => {
           setShoppingList(newList);
         }
       },
-      props.modal({
+      props.alert({
         trigger: true,
         state: "success",
         title: recipe.name,

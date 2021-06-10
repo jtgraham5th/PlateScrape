@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 // import { Link } from "react-router-dom";
 import "../containers/home/style.css";
-import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
 import {
   Row,
   Col,
@@ -9,9 +8,6 @@ import {
   Collection,
   CollectionItem,
   Button,
-  Chip,
-  Collapsible,
-  CollapsibleItem,
 } from "react-materialize";
 import { fraction } from "mathjs";
 import { useSelector, useDispatch } from "react-redux";
@@ -25,7 +21,7 @@ const ShoppingList = () => {
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const {
-    getUserShoppingList,
+    // getUserShoppingList,
     setShoppingListData,
     removeShoppingListItem,
     setFridgeData,
@@ -40,7 +36,7 @@ const ShoppingList = () => {
   const [selectedRecipes, setSelectedRecipes] = useState([])
 
   useEffect(() => {
-    const { isAuthenticated, userId } = auth;
+    // const { isAuthenticated, userId } = auth;
     // if (isAuthenticated && userId) {
     //   getUserShoppingList(userId);
     //   setFridge(newFridge);
@@ -71,33 +67,33 @@ const ShoppingList = () => {
     [itemKey]
   );
 
-  const alphaSort = (event) => {
-    let sortedList = shoppingList.sort((a, b) =>
-      a.name.toLowerCase() > b.name.toLowerCase()
-        ? 1
-        : b.name.toLowerCase() > a.name.toLowerCase()
-        ? -1
-        : 0
-    );
-    console.log(sortedList);
-    setShoppingList(sortedList);
-  };
-  const increaseSort = (event) => {
-    let sortedList = shoppingList.sort((a, b) =>
-      a.quantity > b.quantity ? 1 : b.quantity > a.quantity ? -1 : 0
-    );
-    setShoppingList(sortedList);
-  };
+  // const alphaSort = (event) => {
+  //   let sortedList = shoppingList.sort((a, b) =>
+  //     a.name.toLowerCase() > b.name.toLowerCase()
+  //       ? 1
+  //       : b.name.toLowerCase() > a.name.toLowerCase()
+  //       ? -1
+  //       : 0
+  //   );
+  //   console.log(sortedList);
+  //   setShoppingList(sortedList);
+  // };
+  // const increaseSort = (event) => {
+  //   let sortedList = shoppingList.sort((a, b) =>
+  //     a.quantity > b.quantity ? 1 : b.quantity > a.quantity ? -1 : 0
+  //   );
+  //   setShoppingList(sortedList);
+  // };
   const decreaseSort = (event) => {
     let sortedList = shoppingList.sort((a, b) =>
       b.quantity > a.quantity ? 1 : a.quantity > b.quantity ? -1 : 0
     );
     setShoppingList(sortedList);
   };
-  const addToFridge = (event) => {
-    setItemKey(event.target.dataset.index);
-    setModal(!modal);
-  };
+  // const addToFridge = (event) => {
+  //   setItemKey(event.target.dataset.index);
+  //   setModal(!modal);
+  // };
 
   const removeFrmList = (event) => {
     const { isAuthenticated, userId } = auth;
@@ -150,14 +146,6 @@ const ShoppingList = () => {
     }
     return quantity;
   };
-  const highlightIngredients = (recipe) => {
-    let ingredientArray = []
-    recipe.ingredients.forEach(ingredient => {
-      ingredientArray.push(ingredient.name)
-    })
-    setSelectedRecipes(ingredientArray)
-    console.log(selectedRecipes)
-  }
 
   return (
     <Row className="justify-content-center p-4 main-content">

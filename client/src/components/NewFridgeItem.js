@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../containers/home/style.css";
-import { Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap";
-import pkg00 from "../media/pkg00.jpeg";
+import { Modal, ModalBody} from "reactstrap";
 import pkg01 from "../media/pkg01.png";
 import pkg02 from "../media/pkg02.jpeg";
 import pkg03 from "../media/pkg03.jpeg";
@@ -13,14 +12,13 @@ import pkg08 from "../media/pkg08.jpeg";
 
 import { Row, Col, Button } from "react-materialize";
 import convert from "convert-units";
-import { fraction } from "mathjs";
 import { useSelector, useDispatch } from "react-redux";
 import * as ActionCreators from "../state/actions";
 import { bindActionCreators } from "redux";
 
 const NewFridgeItem = (props) => {
   const userData = useSelector((state) => state.userData);
-  const auth = useSelector((state) => state.auth);
+  // const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const { setShoppingListData } = bindActionCreators(ActionCreators, dispatch);
 
@@ -99,7 +97,7 @@ const NewFridgeItem = (props) => {
     } else if (
       fridge.some((item) => item.name === shoppingList[itemKey].name)
     ) {
-      fridge.map((item, i) => {
+      fridge.forEach((item, i) => {
         if (item.name === shoppingList[itemKey].name) {
           setFridge((prevFridge) => [
             ...prevFridge,
@@ -185,13 +183,6 @@ const NewFridgeItem = (props) => {
 
   return (
     <Modal isOpen={modal} toggle={() => setModal(!modal)} id="new-fridge-item">
-      {/* <ModalHeader
-        className="teal darken-4 white-text"
-        style={{ padding: "0.5rem 1rem" }}
-        toggle={() => setModal(!modal)}
-      >
-        How much do you have?
-      </ModalHeader> */}
       <div className="newItem-header">How much do you have?</div>
       <div className="newItem-text">
         Unsure of how much of an ingredient you have? Choose one of the
@@ -210,7 +201,7 @@ const NewFridgeItem = (props) => {
               onClick={convertUnits}
               className="newItem-button"
             >
-              <img src={pkg01} className="newItem-image" />
+              <img src={pkg01} alt={"15 oz package"} className="newItem-image" />
               15 oz
             </Button>
           </Col>
@@ -221,7 +212,7 @@ const NewFridgeItem = (props) => {
               onClick={convertUnits}
               className="newItem-button"
             >
-              <img src={pkg02} className="newItem-image" />5 lb
+              <img src={pkg02} alt={"5 lb package"} className="newItem-image" />5 lb
             </Button>
           </Col>
           <Col s={3} className="newItem-column">
@@ -231,7 +222,7 @@ const NewFridgeItem = (props) => {
               onClick={convertUnits}
               className="newItem-button"
             >
-              <img src={pkg03} className="newItem-image" />
+              <img src={pkg03} alt={"20 oz package"} className="newItem-image" />
               20 oz
             </Button>
           </Col>
@@ -242,7 +233,7 @@ const NewFridgeItem = (props) => {
               onClick={convertUnits}
               className="newItem-button"
             >
-              <img src={pkg07} className="newItem-image" />
+              <img src={pkg07} alt={"16 oz package"} className="newItem-image" />
               16 oz
             </Button>
           </Col>
@@ -255,7 +246,7 @@ const NewFridgeItem = (props) => {
               onClick={convertUnits}
               className="newItem-button"
             >
-              <img src={pkg04} className="newItem-image" />
+              <img src={pkg04} alt={"32 oz package"}className="newItem-image" />
               <div>32 oz</div>
             </Button>
           </Col>
@@ -266,7 +257,7 @@ const NewFridgeItem = (props) => {
               onClick={convertUnits}
               className="newItem-button"
             >
-              <img src={pkg05} className="newItem-image" />
+              <img src={pkg05} alt={"16 oz package"} className="newItem-image" />
               16 oz
             </Button>
           </Col>
@@ -277,7 +268,7 @@ const NewFridgeItem = (props) => {
               onClick={convertUnits}
               className="newItem-button"
             >
-              <img src={pkg06} className="newItem-image" />
+              <img src={pkg06} alt={"10 oz package"} className="newItem-image" />
               10 oz
             </Button>
           </Col>
@@ -288,7 +279,7 @@ const NewFridgeItem = (props) => {
               onClick={convertUnits}
               className="newItem-button"
             >
-              <img src={pkg08} className="newItem-image" />3 lb
+              <img src={pkg08} alt={"3 lb package"} className="newItem-image" />3 lb
             </Button>
           </Col>
         </Row>

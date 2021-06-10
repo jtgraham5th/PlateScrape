@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import "./style.css";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { Row, Icon, Button } from "react-materialize";
-import { Modal, ModalBody, ModalHeader, Alert } from "reactstrap";
+import { Alert } from "reactstrap";
 import Fridge from "../../components/Fridge";
 import ShoppingList from "../../components/ShoppingList";
 import RecipeList from "../../components/RecipeList";
-import MealPlanner from "../../components/MealPlanner";
+// import MealPlanner from "../../components/MealPlanner";
 import MyRecipes from "../../components/MyRecipes";
 // import Pins from "../../components/Pins";
 import { useSelector, useDispatch } from "react-redux";
@@ -14,7 +14,7 @@ import * as ActionCreators from "../../state/store";
 import { bindActionCreators } from "redux";
 
 const Home = () => {
-  const userData = useSelector((state) => state.userData);
+  // const userData = useSelector((state) => state.userData);
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const {
@@ -25,7 +25,7 @@ const Home = () => {
     getAuthToken,
   } = bindActionCreators(ActionCreators, dispatch);
 
-  const [modal, setModal] = useState({
+  const [alert, setAlert] = useState({
     trigger: false,
     state: null,
     title: null,
@@ -73,8 +73,8 @@ const Home = () => {
     }
   });
 
-  const renderModal = (modalData) => {
-    setModal(modalData);
+  const renderAlert = (alertData) => {
+    setAlert(alertData);
   };
 
   return (
@@ -83,25 +83,25 @@ const Home = () => {
         <Route
           exact
           path="/"
-          render={() => <RecipeList modal={renderModal} />}
+          render={() => <RecipeList alert={renderAlert} />}
         />
         <Route exact path="/my-list" component={ShoppingList} />
         <Route exact path="/my-kitchen" component={Fridge} />
         <Route
           exact
           path="/my-recipes"
-          render={() => <MyRecipes modal={renderModal} />}
+          render={() => <MyRecipes alert={renderAlert} />}
         />
       </Switch>
       <Alert
         color="info"
-        isOpen={modal.trigger}
+        isOpen={alert.trigger}
         toggle={() =>
-          setModal({ trigger: false, state: null, title: null, message: null })
+          setAlert({ trigger: false, state: null, title: null, message: null })
         }
       >
-        <b>{modal.title}</b>
-        {modal.message}
+        <b>{alert.title}</b>
+        {alert.message}
       </Alert>
       <Row className="bottom-navbar">
         <Link to="/my-recipes">

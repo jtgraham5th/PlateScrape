@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Button,
-  Icon,
-  Card,
-  CardTitle,
-  Row,
-} from "react-materialize";
+import { Button, Icon, Card, CardTitle, Row } from "react-materialize";
 import { fraction } from "mathjs";
 import convert from "convert-units";
 
@@ -15,7 +9,7 @@ import { bindActionCreators } from "redux";
 
 const MyRecipes = (props) => {
   const userData = useSelector((state) => state.userData);
-  const auth = useSelector((state) => state.auth);
+  // const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const {
     setShoppingListData,
@@ -46,10 +40,10 @@ const MyRecipes = (props) => {
     }
   };
   const addToList = async (recipe) => {
-    let ingredients = recipe.ingredients
+    let ingredients = recipe.ingredients;
     let array = categories;
-    ingredients.map(
-      (ingredient, i) => {
+    ingredients.forEach(
+      (ingredient) => {
         console.log(ingredient);
         /* check to see if ingredient already exisit in the shoppingList*/
         if (
@@ -78,7 +72,7 @@ const MyRecipes = (props) => {
         } else {
           let key = ingredient.name;
           let newList = [];
-          shoppingList.map((item) => {
+          shoppingList.forEach((item) => {
             if (item.name === key) {
               if (typeof item.quantity === "string") {
                 item.quantity = fraction(ingredient.quantity).valueOf();
@@ -88,7 +82,7 @@ const MyRecipes = (props) => {
               }
               if (ingredient.unit === item.unit) {
                 item.quantity = ingredient.quantity + item.quantity;
-                console.log(item.name, ingredient.name, item.quantity)
+                console.log(item.name, ingredient.name, item.quantity);
               } else {
                 let convertedAmount = convert(ingredient.quantity)
                   .from(unitAbbreviation(ingredient.unit))
@@ -96,10 +90,14 @@ const MyRecipes = (props) => {
                 console.log("converted:", convertedAmount, ingredient.name);
                 if (typeof convertedAmount === "string") {
                   convertedAmount = fraction(convertedAmount).valueOf();
-                  console.log("convert Fractions:", convertedAmount, ingredient.name);
+                  console.log(
+                    "convert Fractions:",
+                    convertedAmount,
+                    ingredient.name
+                  );
                 }
                 item.quantity = convertedAmount + item.quantity;
-                console.log("item quantity after adding", item.quantity)
+                console.log("item quantity after adding", item.quantity);
               }
             }
             newList.push(item);
@@ -108,7 +106,7 @@ const MyRecipes = (props) => {
         }
       },
 
-      props.modal({
+      props.alert({
         trigger: true,
         state: "success",
         title: recipe.name,
