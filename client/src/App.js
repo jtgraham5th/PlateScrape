@@ -16,8 +16,9 @@ import store from "./state/store";
 library.add(fas, fab);
 
 class App extends Component {
+  
   componentDidMount() {
-    // store.dispatch(loadUser());
+
   }
 
   render() {

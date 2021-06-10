@@ -69,7 +69,8 @@ const RecipeList = (props) => {
     }
   };
 
-  const addToList = async (ingredients) => {
+  const addToList = async (recipe) => {
+    let ingredients = recipe.ingredients
     let array = categories;
     ingredients.map(
       (ingredient, i) => {
@@ -88,7 +89,6 @@ const RecipeList = (props) => {
             quantity: ingredient.quantity,
             unit: ingredient.unit,
             category: ingredient.category,
-            enoughInFridge: false,
           };
           newShoppingList.push(newIngredient);
           setShoppingList(newShoppingList);
@@ -139,8 +139,8 @@ const RecipeList = (props) => {
       props.modal({
         trigger: true,
         state: "success",
-        title: "Added",
-        message: "Recipe ingredients successfully added to your shopping list!",
+        title: recipe.name,
+        message: ": ingredients added to your shopping list",
       })
     );
   };
@@ -234,7 +234,7 @@ const RecipeList = (props) => {
                       className="col s2 recipe-action-button"
                       flat
                       color="secondary"
-                      onClick={() => addToList(recipe.ingredients)}
+                      onClick={() => addToList(recipe)}
                       data-url={recipe.href}
                       icon={<Icon small>playlist_add</Icon>}
                     />

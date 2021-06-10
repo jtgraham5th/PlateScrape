@@ -45,7 +45,8 @@ const MyRecipes = (props) => {
       setToggle(index);
     }
   };
-  const addToList = async (ingredients) => {
+  const addToList = async (recipe) => {
+    let ingredients = recipe.ingredients
     let array = categories;
     ingredients.map(
       (ingredient, i) => {
@@ -110,8 +111,8 @@ const MyRecipes = (props) => {
       props.modal({
         trigger: true,
         state: "success",
-        title: "Added",
-        message: "Recipe ingredients successfully added to your shopping list!",
+        title: recipe.name,
+        message: ": ingredients added to your shopping list",
       })
     );
   };
@@ -191,7 +192,7 @@ const MyRecipes = (props) => {
                   className="col card-action-button"
                   flat
                   color="secondary"
-                  onClick={() => addToList(recipe.ingredients)}
+                  onClick={() => addToList(recipe)}
                   data-url={recipe.href}
                   icon={<Icon small>playlist_add</Icon>}
                 />

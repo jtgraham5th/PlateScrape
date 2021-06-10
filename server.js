@@ -45,19 +45,19 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 
-mongoose.set("useCreateIndex", true);
+// mongoose.set("useCreateIndex", true);
 
 var db = process.env.MONGODB_URI;
 // mongoose.connect(db)
-mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true });
-const connection = mongoose.connection;
+// mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true });
+// const connection = mongoose.connection;
 
-connection.on("connected", () => {
-  console.log("Mongoose connected successfully");
-});
-connection.on("error", (err) => {
-  console.log("Mongoose default connection error: " + err);
-});
+// connection.on("connected", () => {
+//   console.log("Mongoose connected successfully");
+// });
+// connection.on("error", (err) => {
+//   console.log("Mongoose default connection error: " + err);
+// });                                                                         
 app.use("/api", routes);
 
 // Serve up static assets (usually on heroku)
