@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./style.css";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { Row, Icon, Button } from "react-materialize";
-import { Modal, ModalBody, ModalHeader } from "reactstrap";
+import { Modal, ModalBody, ModalHeader, Alert } from "reactstrap";
 import Fridge from "../../components/Fridge";
 import ShoppingList from "../../components/ShoppingList";
 import RecipeList from "../../components/RecipeList";
@@ -33,6 +33,16 @@ const Home = () => {
   });
 
   useEffect(() => {
+    let vh = window.innerHeight * 0.01;
+
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+
+    window.addEventListener("resize", () => {
+      // We execute the same script as before
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    });
+
     // Load User Data
     if (auth.isAuthenticated && localStorage.getItem("jwtToken")) {
       loadUser(localStorage.getItem("jwtToken"));
@@ -83,6 +93,16 @@ const Home = () => {
           render={() => <MyRecipes modal={renderModal} />}
         />
       </Switch>
+      <Alert
+        color="info"
+        isOpen={modal.trigger}
+        toggle={() =>
+          setModal({ trigger: false, state: null, title: null, message: null })
+        }
+      >
+        <b>{modal.title}</b>
+        {modal.message}
+      </Alert>
       <Row className="bottom-navbar">
         <Link to="/my-recipes">
           <Button flat node="button" waves="light">
@@ -110,7 +130,7 @@ const Home = () => {
           </Button>
         </Link>
       </Row>
-      <Modal isOpen={modal.trigger} toggle={() => setModal(!modal.trigger)}>
+      {/* <Modal isOpen={modal.trigger} toggle={() => setModal(!modal.trigger)}>
         <ModalHeader
           toggle={() => setModal(!modal.trigger)}
           className="teal darken-4 white-text"
@@ -131,9 +151,8 @@ const Home = () => {
           <Button color="secondary" onClick={() => setModal(!modal)}>
             No
           </Button>
-        </ModalFooter> */}
-      </Modal>
-      }
+        </ModalFooter>
+      </Modal> */}
     </Router>
   );
 };

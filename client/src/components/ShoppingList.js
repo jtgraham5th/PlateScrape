@@ -9,13 +9,16 @@ import {
   Collection,
   CollectionItem,
   Button,
+  Chip,
+  Collapsible,
+  CollapsibleItem,
 } from "react-materialize";
 import { fraction } from "mathjs";
 import { useSelector, useDispatch } from "react-redux";
 import * as ActionCreators from "../state/actions";
 import { bindActionCreators } from "redux";
-
-var axios = require("axios");
+import NewFridgeItem from "./NewFridgeItem";
+import RecipeFilter from "./RecipeFilter";
 
 const ShoppingList = () => {
   const userData = useSelector((state) => state.userData);
@@ -28,43 +31,29 @@ const ShoppingList = () => {
     setFridgeData,
   } = bindActionCreators(ActionCreators, dispatch);
 
+  const [recipes, setRecipes] = useState(userData.recipes);
   const [shoppingList, setShoppingList] = useState(userData.shoppingList);
   const [itemKey, setItemKey] = useState("");
   const [fridge, setFridge] = useState(userData.fridge);
   const [modal, setModal] = useState(false);
   const [categories, setCatgories] = useState(userData.categories);
-  console.log(categories);
-  
+  const [selectedRecipes, setSelectedRecipes] = useState([])
+
   useEffect(() => {
     const { isAuthenticated, userId } = auth;
-    const {
-      fridge: newFridge,
-      shoppingList: newList,
-      categories: newCategories,
-    } = userData;
-    console.log(newList);
-    if (isAuthenticated && userId) {
-      getUserShoppingList(userId);
-      setFridge(newFridge);
-      setShoppingList(newList);
-      setCatgories(newCategories);
-      compareWithFridge();
-      console.log("");
-      // addCategories();
-    }
-    // return (prevProps) => {
-    //   console.log(prevProps)
-    //   const { fridge, shoppingList } = userData;
-    // if (prevProps.userData.shoppingList !== shoppingList) {
-    //   setShoppingList(shoppingList);
+    // if (isAuthenticated && userId) {
+    //   getUserShoppingList(userId);
+    //   setFridge(newFridge);
+    //   setShoppingList(newList);
+    //   setCatgories(newCategories);
     //   compareWithFridge();
     // }
-    // if (prevProps.userData.fridge !== fridge) {
-    //   setFridge(fridge);
-    //   compareWithFridge();
-    // }
-    // };
-  });
+    return () => {
+      console.log("reset itemKey");
+      setItemKey("");
+    };
+  }, []);
+
   useEffect(() => {
     setShoppingListData(shoppingList);
   }, [shoppingList]);
@@ -73,11 +62,14 @@ const ShoppingList = () => {
     setFridgeData(fridge);
   }, [fridge]);
 
-  useEffect((modal) => {
-    if (itemKey !== "") {
-      setModal(!modal);
-    }
-  }, [itemKey]);
+  useEffect(
+    (modal) => {
+      if (itemKey !== "") {
+        setModal(!modal);
+      }
+    },
+    [itemKey]
+  );
 
   const alphaSort = (event) => {
     let sortedList = shoppingList.sort((a, b) =>
@@ -103,55 +95,8 @@ const ShoppingList = () => {
     setShoppingList(sortedList);
   };
   const addToFridge = (event) => {
-    const newFridge = userData.fridge;
-    const { isAuthenticated, userId } = auth;
-    let newIngredientName = event.target.dataset.name;
-    let newIngredientQuantity = parseFloat(event.target.dataset.quantity) || 0;
-    let newIngredientUnit = event.target.dataset.unit;
-    console.log(newIngredientName, event.target);
-    /* check to see if ingredient already exisit in the groceryList*/
-    if (!newFridge.some((e) => e.name === newIngredientName)) {
-      let newIngredient = {
-        name: newIngredientName,
-        quantityNeeded: newIngredientQuantity,
-        quantityStored: newIngredientQuantity,
-        unit: newIngredientUnit,
-        edit: false,
-      };
-      newFridge.push(newIngredient);
-      setFridge(newFridge);
-      setItemKey(event.target.dataset.index);
-      compareWithFridge();
-
-      if (isAuthenticated) {
-        axios
-          .post("/api/fridgeItem", {
-            newIngredient: newIngredient,
-            userId: userId,
-          })
-          .then((response) => {
-            console.log(response);
-          })
-          .catch((err) => {
-            console.log(err);
-            alert("Failed to create: " + err.message);
-          });
-      }
-    } else {
-      console.log("before:", fridge);
-
-      setFridge((prevState) => {
-        prevState.map((el) =>
-          el.name === newIngredientName
-            ? {
-                ...el,
-                quantityNeeded:
-                  el.quantityNeeded + parseFloat(newIngredientQuantity),
-              }
-            : el
-        );
-      });
-    }
+    setItemKey(event.target.dataset.index);
+    setModal(!modal);
   };
 
   const removeFrmList = (event) => {
@@ -168,42 +113,19 @@ const ShoppingList = () => {
     compareWithFridge();
     setModal(!modal);
   };
-
-  const compareWithFridge = () => {
-    const newFridge = userData.fridge;
-    const newShoppingList = userData.shoppingList;
-
-    newShoppingList.map((shopItem, x) =>
-      newFridge.map((fridgeItem, y) =>
-        fridgeItem.name === shopItem.name
-          ? fridgeItem.quantityStored >= shopItem.quantity
-            ? setShoppingList((prevState) =>
-                prevState.map((el) =>
-                  el.name === shopItem.name
-                    ? {
-                        ...el,
-                        enoughInFridge: true,
-                      }
-                    : el
-                )
-              )
-            : setShoppingList((prevState) =>
-                prevState.map((el) =>
-                  el.name === shopItem.name
-                    ? {
-                        ...el,
-                        enoughInFridge: false,
-                      }
-                    : el
-                )
-              )
-          : ""
-      )
-    );
+  const compareWithFridge = (ingredient) => {
+    if (fridge.length > 0) {
+      for (let i = 0; i <= fridge.length - 1; i++) {
+        if (fridge[i].name === ingredient.name) {
+          if (fridge[i].quantity >= ingredient.quantity) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   };
-  const checkFridge = (ingredient) => {
-    return ingredient.enoughInFridge ? "disabled" : "";
-  };
+
   const unitAbbreviation = (unit) => {
     switch (unit) {
       case "teaspoon":
@@ -220,15 +142,23 @@ const ShoppingList = () => {
     if (quantity < 1) {
       return fraction(quantity).toFraction();
     }
-    if (typeof quantity === "number" && !Number.isInteger(quantity)){
-      console.log(quantity)
-      let wholeNum = Math.trunc(quantity)
-      let decimalPart = quantity % 1
-      return `${wholeNum}  ${fraction(decimalPart).toFraction()}`
+    if (typeof quantity === "number" && !Number.isInteger(quantity)) {
+      console.log(quantity);
+      let wholeNum = Math.trunc(quantity);
+      let decimalPart = quantity % 1;
+      return `${wholeNum}  ${fraction(decimalPart).toFraction()}`;
     }
     return quantity;
   };
-  console.log(categories);
+  const highlightIngredients = (recipe) => {
+    let ingredientArray = []
+    recipe.ingredients.forEach(ingredient => {
+      ingredientArray.push(ingredient.name)
+    })
+    setSelectedRecipes(ingredientArray)
+    console.log(selectedRecipes)
+  }
+
   return (
     <Row className="justify-content-center p-4 main-content">
       {/* <Row className="teal darken-4 white-text valign-wrapper">
@@ -258,7 +188,7 @@ const ShoppingList = () => {
             }
           />
         </Row> */}
-
+      <RecipeFilter setSelectedRecipes={setSelectedRecipes} recipes={recipes} />
       <Collection className="vertical-scroll" style={{ width: "100%" }}>
         {shoppingList.length < 1 ? (
           <CollectionItem className="section center-align border">
@@ -274,41 +204,36 @@ const ShoppingList = () => {
                 return ingredient.category === category ? (
                   <>
                     <CollectionItem
-                      className={`row transparent shopping-list-item ${checkFridge(
-                        ingredient
-                      )}
+                      className={`row transparent shopping-list-item ${
+                        compareWithFridge(ingredient) ? "disabled" : ""
+                      } ${selectedRecipes.includes(ingredient.name) ? "highlighted" : ""}
                     `}
                       data-name={ingredient.name}
                       data-quantity={ingredient.quantity}
                       data-category={ingredient.category}
                       key={i}
                     >
+                      <div className="shopping-list-check">
+                        {compareWithFridge(ingredient) ? (
+                          <Icon onClick={() => setItemKey(i)}>check_box</Icon>
+                        ) : (
+                          <Icon onClick={() => setItemKey(i)}>
+                            check_box_outline_blank
+                          </Icon>
+                        )}
+                      </div>
                       <Col s={6} className="shopping-list-item-name">
                         {ingredient.name}
                       </Col>
                       <div className="col s3 shopping-list-button">
-                        <small>{convertQuantity(ingredient.quantity)}{" "}
-                        {unitAbbreviation(ingredient.unit)}</small>
+                        <small>
+                          {convertQuantity(ingredient.quantity)}{" "}
+                          {unitAbbreviation(ingredient.unit)}
+                        </small>
                       </div>
                       <button
                         className={`col s1 btn-flat shopping-list-button ${
-                          ingredient.enoughInFridge ? "disabled" : ""
-                        }`}
-                        onClick={addToFridge}
-                      >
-                        <i
-                          className="material-icons tiny"
-                          data-name={ingredient.name}
-                          data-quantity={ingredient.quantity}
-                          data-unit={ingredient.unit}
-                          data-index={i}
-                        >
-                          add
-                        </i>
-                      </button>
-                      <button
-                        className={`col s1 btn-flat shopping-list-button ${
-                          ingredient.enoughInFridge ? "red-text" : ""
+                          compareWithFridge(ingredient) ? "" : "red-text"
                         }`}
                         onClick={removeFrmList}
                       >
@@ -317,47 +242,24 @@ const ShoppingList = () => {
                           data-name={ingredient.name}
                           data-index={i}
                         >
-                          close
+                          highlight_off
                         </i>
                       </button>
                     </CollectionItem>
-                    {itemKey === i ? (
-                      <Modal isOpen={modal} toggle={() => setModal(!modal)}>
-                        <ModalHeader
-                          toggle={() => setModal(!modal)}
-                          className="teal darken-4 white-text"
-                          style={{ fontFamily: "monospace" }}
-                        >
-                          Item added to Fridge
-                        </ModalHeader>
-                        <ModalBody>
-                          Would you also like to remove this item from your
-                          shopping list?
-                        </ModalBody>
-                        <ModalFooter className="d-flex justify-content-center">
-                          <Button
-                            color="secondary"
-                            onClick={removeFrmList}
-                            data-index={i}
-                            className="mr-4"
-                          >
-                            Yes
-                          </Button>
-                          <Button
-                            color="secondary"
-                            onClick={() => setModal(!modal)}
-                          >
-                            No
-                          </Button>
-                        </ModalFooter>
-                      </Modal>
-                    ) : null}
                   </>
                 ) : null;
               })}
             </>
           ))
         )}
+        <NewFridgeItem
+          modal={modal}
+          setModal={setModal}
+          itemKey={itemKey}
+          setItemKey={setItemKey}
+          fridge={fridge}
+          setFridge={setFridge}
+        />
         <CollectionItem className="white-text">
           <Button
             large
