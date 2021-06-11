@@ -6,12 +6,12 @@ const bodyParser = require("body-parser");
 const express = require("express");
 const path = require("path");
 // const mongoose = require("mongoose");
-const app = express();
 const routes = require("./routes");
 const passport = require("passport");
 const cors = require("cors");
 
 const PORT = process.env.PORT || 3001;
+const app = express();
 // Use HTTPS on local machine for Development to access pinterest api
 // https
 //   .createServer(
